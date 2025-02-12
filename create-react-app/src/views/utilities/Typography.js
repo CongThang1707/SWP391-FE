@@ -1,172 +1,389 @@
-// import { Grid, Link } from '@mui/material';
-// import MuiTypography from '@mui/material/Typography';
-
-// // project imports
-// import SubCard from 'ui-component/cards/SubCard';
-// import MainCard from 'ui-component/cards/MainCard';
-// import SecondaryAction from 'ui-component/cards/CardSecondaryAction';
-// import { gridSpacing } from 'store/constant';
+import { Grid } from '@mui/material';
+import MainCard from 'ui-component/cards/MainCard';
+import React, { useState, useEffect } from 'react';
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
+import { Paper } from '@mui/material';
+import { getUserByRoleId } from '../../service/api_service.js';
 
 // // ==============================|| TYPOGRAPHY ||============================== //
 
-// const Typography = () => (
-//   <MainCard title="Basic Typography" secondary={<SecondaryAction link="https://next.material-ui.com/system/typography/" />}>
-//     <Grid container spacing={gridSpacing}>
-//       {/* <Grid item xs={12} sm={6}>
-//         <SubCard title="Heading">
-//           <Grid container direction="column" spacing={1}>
-//             <Grid item>
-//               <MuiTypography variant="h1" gutterBottom>
-//                 h1. Heading
-//               </MuiTypography>
-//             </Grid>
-//             <Grid item>
-//               <MuiTypography variant="h2" gutterBottom>
-//                 h2. Heading
-//               </MuiTypography>
-//             </Grid>
-//             <Grid item>
-//               <MuiTypography variant="h3" gutterBottom>
-//                 h3. Heading
-//               </MuiTypography>
-//             </Grid>
-//             <Grid item>
-//               <MuiTypography variant="h4" gutterBottom>
-//                 h4. Heading
-//               </MuiTypography>
-//             </Grid>
-//             <Grid item>
-//               <MuiTypography variant="h5" gutterBottom>
-//                 h5. Heading
-//               </MuiTypography>
-//             </Grid>
-//             <Grid item>
-//               <MuiTypography variant="h6" gutterBottom>
-//                 h6. Heading
-//               </MuiTypography>
-//             </Grid>
-//           </Grid>
-//         </SubCard>
-//       </Grid> */}
-//       {/* <Grid item xs={12} sm={6}>
-//         <SubCard title="Sub title">
-//           <Grid container direction="column" spacing={1}>
-//             <Grid item>
-//               <MuiTypography variant="subtitle1" gutterBottom>
-//                 subtitle1. Lorem ipsum dolor sit connecter adieu siccing eliot. Quos blanditiis tenetur
-//               </MuiTypography>
-//             </Grid>
-//             <Grid item>
-//               <MuiTypography variant="subtitle2" gutterBottom>
-//                 subtitle2. Lorem ipsum dolor sit connecter adieu siccing eliot. Quos blanditiis tenetur
-//               </MuiTypography>
-//             </Grid>
-//           </Grid>
-//         </SubCard>
-//       </Grid> */}
-//       <Grid item xs={12} sm={6}>
-//         <SubCard title="Body">
-//           <Grid container direction="column" spacing={1}>
-//             <Grid item>
-//               <MuiTypography variant="body1" gutterBottom>
-//                 body1. Lorem ipsum dolor sit connecter adieu siccing eliot. Quos blanditiis tenetur unde suscipit, quam beatae rerum
-//                 inventore consectetur, neque doloribus, cupiditate numquam dignissimos laborum fugiat deleniti? Eum quasi quidem quibusdam.
-//               </MuiTypography>
-//             </Grid>
-//             <Grid item>
-//               <MuiTypography variant="body2" gutterBottom>
-//                 body2. Lorem ipsum dolor sit connecter adieu siccing eliot. Quos blanditiis tenetur unde suscipit, quam beatae rerum
-//                 inventore consectetur, neque doloribus, cupiditate numquam dignissimos laborum fugiat deleniti? Eum quasi quidem quibusdam.
-//               </MuiTypography>
-//             </Grid>
-//           </Grid>
-//         </SubCard>
-//       </Grid>
-//       <Grid item xs={12} sm={6}>
-//         <SubCard title="Extra">
-//           <Grid container direction="column" spacing={1}>
-//             <Grid item>
-//               <MuiTypography variant="button" display="block" gutterBottom>
-//                 button text
-//               </MuiTypography>
-//             </Grid>
-//             <Grid item>
-//               <MuiTypography variant="caption" display="block" gutterBottom>
-//                 caption text
-//               </MuiTypography>
-//             </Grid>
-//             <Grid item>
-//               <MuiTypography variant="overline" display="block" gutterBottom>
-//                 overline text
-//               </MuiTypography>
-//             </Grid>
-//             <Grid item>
-//               <MuiTypography
-//                 variant="body2"
-//                 color="primary"
-//                 component={Link}
-//                 href="https://berrydashboard.io"
-//                 target="_blank"
-//                 display="block"
-//                 underline="hover"
-//                 gutterBottom
-//               >
-//                 https://berrydashboard.io
-//               </MuiTypography>
-//             </Grid>
-//           </Grid>
-//         </SubCard>
-//       </Grid>
-//     </Grid>
-//   </MainCard>
-// );
-
-// export default Typography;
-import React, { useState, useEffect } from 'react';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
-import Paper from '@mui/material/Paper';
-import { fetchData } from '../../service/parent_service.js'; // Import hàm fetchData
-
-export default function BasicTable() {
-  const [data, setData] = useState([]);
+const Typography = () => {
+  const [parentData, setParentData] = useState([]);
 
   useEffect(() => {
-    const getData = async () => {
-      const result = await fetchData();
-      setData(result); // Lưu dữ liệu vào state
+    const fetchUserData = async () => {
+      const data = await getUserByRoleId(3);
+      setParentData(data);
     };
-    getData();
+    fetchUserData();
   }, []);
 
   return (
-    <TableContainer component={Paper}>
-      <Table sx={{ minWidth: 650 }} aria-label="simple table">
-        <TableHead>
-          <TableRow>
-            <TableCell>Email</TableCell>
-            <TableCell align="right">Full Name</TableCell>
-            <TableCell align="right">Name</TableCell>
-            <TableCell align="right">Gender</TableCell>
-            <TableCell align="right">Phone</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {data.map((row, index) => (
-            <TableRow key={index}>
-              <TableCell>{row.email}</TableCell>
-              <TableCell align="right">{row.fullName}</TableCell>
-              <TableCell align="right">{row.name}</TableCell>
-              <TableCell align="right">{row.gender}</TableCell>
-              <TableCell align="right">{row.phone}</TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
+    <MainCard title="Typography" content={false}>
+      <Grid container>
+        <TableContainer component={Paper}>
+          <Table sx={{ minWidth: 650 }}>
+            <TableHead>
+              <TableRow>
+                <TableCell>Username</TableCell>
+                <TableCell>Fullname</TableCell>
+                <TableCell>Email</TableCell>
+                <TableCell>Gender</TableCell>
+                <TableCell>Phone</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {parentData.map((parent) => (
+                <TableRow key={parent.user_id}>
+                  <TableCell>{parent.username}</TableCell>
+                  <TableCell>{parent.fullName}</TableCell>
+                  <TableCell>{parent.email}</TableCell>
+                  <TableCell>{parent.gender}</TableCell>
+                  <TableCell sx={{ display: 'flex', gap: 1 }}>{parent.phone}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </Grid>
+    </MainCard>
   );
-}
+};
+
+export default Typography;
+
+
+// import * as React from 'react';
+// import PropTypes from 'prop-types';
+// import { alpha } from '@mui/material/styles';
+// import Box from '@mui/material/Box';
+// import Table from '@mui/material/Table';
+// import TableBody from '@mui/material/TableBody';
+// import TableCell from '@mui/material/TableCell';
+// import TableContainer from '@mui/material/TableContainer';
+// import TableHead from '@mui/material/TableHead';
+// import TablePagination from '@mui/material/TablePagination';
+// import TableRow from '@mui/material/TableRow';
+// import TableSortLabel from '@mui/material/TableSortLabel';
+// import Toolbar from '@mui/material/Toolbar';
+// import Typography from '@mui/material/Typography';
+// import Paper from '@mui/material/Paper';
+// import IconButton from '@mui/material/IconButton';
+// import Tooltip from '@mui/material/Tooltip';
+// import DeleteIcon from '@mui/icons-material/Delete';
+// import FilterListIcon from '@mui/icons-material/FilterList';
+// import { visuallyHidden } from '@mui/utils';
+
+// function createData(id, name, calories, fat, carbs, protein) {
+//   return {
+//     id,
+//     name,
+//     calories,
+//     fat,
+//     carbs,
+//     protein,
+//   };
+// }
+
+// const rows = [
+//   createData(1, 'Cupcake', 305, 3.7, 67, 4.3),
+//   createData(2, 'Donut', 452, 25.0, 51, 4.9),
+//   createData(3, 'Eclair', 262, 16.0, 24, 6.0),
+//   createData(4, 'Frozen yoghurt', 159, 6.0, 24, 4.0),
+//   createData(5, 'Gingerbread', 356, 16.0, 49, 3.9),
+//   createData(6, 'Honeycomb', 408, 3.2, 87, 6.5),
+//   createData(7, 'Ice cream sandwich', 237, 9.0, 37, 4.3),
+//   createData(8, 'Jelly Bean', 375, 0.0, 94, 0.0),
+//   createData(9, 'KitKat', 518, 26.0, 65, 7.0),
+//   createData(10, 'Lollipop', 392, 0.2, 98, 0.0),
+//   createData(11, 'Marshmallow', 318, 0, 81, 2.0),
+//   createData(12, 'Nougat', 360, 19.0, 9, 37.0),
+//   createData(13, 'Oreo', 437, 18.0, 63, 4.0),
+// ];
+
+// function descendingComparator(a, b, orderBy) {
+//   if (b[orderBy] < a[orderBy]) {
+//     return -1;
+//   }
+//   if (b[orderBy] > a[orderBy]) {
+//     return 1;
+//   }
+//   return 0;
+// }
+
+// function getComparator(order, orderBy) {
+//   return order === 'desc'
+//     ? (a, b) => descendingComparator(a, b, orderBy)
+//     : (a, b) => -descendingComparator(a, b, orderBy);
+// }
+
+// const headCells = [
+//   {
+//     id: 'name',
+//     numeric: false,
+//     disablePadding: true,
+//     label: 'Full Name',
+//   },
+//   {
+//     id: 'calories',
+//     numeric: true,
+//     disablePadding: false,
+//     label: 'Name',
+//   },
+//   {
+//     id: 'fat',
+//     numeric: true,
+//     disablePadding: false,
+//     label: 'Email',
+//   },
+//   {
+//     id: 'carbs',
+//     numeric: true,
+//     disablePadding: false,
+//     label: 'Gender',
+//   },
+//   {
+//     id: 'protein',
+//     numeric: true,
+//     disablePadding: false,
+//     label: 'Phone',
+//   },
+// ];
+
+// function EnhancedTableHead(props) {
+//   const {  order, orderBy, onRequestSort } =
+//     props;
+//   const createSortHandler = (property) => (event) => {
+//     onRequestSort(event, property);
+//   };
+
+//   return (
+//     <TableHead>
+//       <TableRow>
+     
+//         {headCells.map((headCell) => (
+//           <TableCell
+//             key={headCell.id}
+//             align={headCell.numeric ? 'right' : 'left'}
+//             sortDirection={orderBy === headCell.id ? order : false}
+//           >
+//             <TableSortLabel
+//               active={orderBy === headCell.id}
+//               direction={orderBy === headCell.id ? order : 'asc'}
+//               onClick={createSortHandler(headCell.id)}
+//             >
+//               {headCell.label}
+//               {orderBy === headCell.id ? (
+//                 <Box component="span" sx={visuallyHidden}>
+//                   {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
+//                 </Box>
+//               ) : null}
+//             </TableSortLabel>
+//           </TableCell>
+//         ))}
+//       </TableRow>
+//     </TableHead>
+//   );
+// }
+
+// EnhancedTableHead.propTypes = {
+//   numSelected: PropTypes.number.isRequired,
+//   onRequestSort: PropTypes.func.isRequired,
+//   onSelectAllClick: PropTypes.func.isRequired,
+//   order: PropTypes.oneOf(['asc', 'desc']).isRequired,
+//   orderBy: PropTypes.string.isRequired,
+//   rowCount: PropTypes.number.isRequired,
+// };
+
+// function EnhancedTableToolbar(props) {
+//   const { numSelected } = props;
+//   return (
+//     <Toolbar
+//       sx={[
+//         {
+//           pl: { sm: 2 },
+//           pr: { xs: 1, sm: 1 },
+//         },
+//         numSelected > 0 && {
+//           bgcolor: (theme) =>
+//             alpha(theme.palette.primary.main, theme.palette.action.activatedOpacity),
+//         },
+//       ]}
+//     >
+//       {numSelected > 0 ? (
+//         <Typography
+//           sx={{ flex: '1 1 100%' }}
+//           color="inherit"
+//           variant="subtitle1"
+//           component="div"
+//         >
+//           {numSelected} selected
+//         </Typography>
+//       ) : (
+//         <Typography
+//           sx={{ flex: '1 1 100%' }}
+//           variant="h6"
+//           id="tableTitle"
+//           component="div"
+//         >
+//           Nutrition
+//         </Typography>
+//       )}
+//       {numSelected > 0 ? (
+//         <Tooltip title="Delete">
+//           <IconButton>
+//             <DeleteIcon />
+//           </IconButton>
+//         </Tooltip>
+//       ) : (
+//         <Tooltip title="Filter list">
+//           <IconButton>
+//             <FilterListIcon />
+//           </IconButton>
+//         </Tooltip>
+//       )}
+//     </Toolbar>
+//   );
+// }
+
+// EnhancedTableToolbar.propTypes = {
+//   numSelected: PropTypes.number.isRequired,
+// };
+
+// export default function EnhancedTable() {
+//   const [order, setOrder] = React.useState('asc');
+//   const [orderBy, setOrderBy] = React.useState('calories');
+//   const [selected, setSelected] = React.useState([]);
+//   const [page, setPage] = React.useState(0);
+//   const [dense] = React.useState(false);
+//   const [rowsPerPage, setRowsPerPage] = React.useState(5);
+
+//   const handleRequestSort = (event, property) => {
+//     const isAsc = orderBy === property && order === 'asc';
+//     setOrder(isAsc ? 'desc' : 'asc');
+//     setOrderBy(property);
+//   };
+
+//   const handleSelectAllClick = (event) => {
+//     if (event.target.checked) {
+//       const newSelected = rows.map((n) => n.id);
+//       setSelected(newSelected);
+//       return;
+//     }
+//     setSelected([]);
+//   };
+
+//   const handleClick = (event, id) => {
+//     const selectedIndex = selected.indexOf(id);
+//     let newSelected = [];
+
+//     if (selectedIndex === -1) {
+//       newSelected = newSelected.concat(selected, id);
+//     } else if (selectedIndex === 0) {
+//       newSelected = newSelected.concat(selected.slice(1));
+//     } else if (selectedIndex === selected.length - 1) {
+//       newSelected = newSelected.concat(selected.slice(0, -1));
+//     } else if (selectedIndex > 0) {
+//       newSelected = newSelected.concat(
+//         selected.slice(0, selectedIndex),
+//         selected.slice(selectedIndex + 1),
+//       );
+//     }
+//     setSelected(newSelected);
+//   };
+
+//   const handleChangePage = (event, newPage) => {
+//     setPage(newPage);
+//   };
+
+//   const handleChangeRowsPerPage = (event) => {
+//     setRowsPerPage(parseInt(event.target.value, 10));
+//     setPage(0);
+//   };
+
+//   // Avoid a layout jump when reaching the last page with empty rows.
+//   const emptyRows =
+//     page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
+
+//   const visibleRows = React.useMemo(
+//     () =>
+//       [...rows]
+//         .sort(getComparator(order, orderBy))
+//         .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage),
+//     [order, orderBy, page, rowsPerPage],
+//   );
+
+//   return (
+//     <Box sx={{ width: '100%' }}>
+//       <Paper sx={{ width: '100%', mb: 2 }}>
+//         <EnhancedTableToolbar numSelected={selected.length} />
+//         <TableContainer>
+//           <Table
+//             sx={{ minWidth: 750 }}
+//             aria-labelledby="tableTitle"
+//             size={dense ? 'small' : 'medium'}
+//           >
+//             <EnhancedTableHead
+//               numSelected={selected.length}
+//               order={order}
+//               orderBy={orderBy}
+//               onSelectAllClick={handleSelectAllClick}
+//               onRequestSort={handleRequestSort}
+//               rowCount={rows.length}
+//             />
+//             <TableBody>
+//               {visibleRows.map((row, index) => {
+//                 const isItemSelected = selected.includes(row.id);
+//                 const labelId = `enhanced-table-checkbox-${index}`;
+
+//                 return (
+//                   <TableRow
+//                     hover
+//                     onClick={(event) => handleClick(event, row.id)}
+//                     role="checkbox"
+//                     aria-checked={isItemSelected}
+//                     tabIndex={-1}
+//                     key={row.id}
+//                     selected={isItemSelected}
+//                     sx={{ cursor: 'pointer' }}
+//                   >
+//                     <TableCell
+//                       component="th"
+//                       id={labelId}
+//                       scope="row"
+//                     >
+//                       {row.name}
+//                     </TableCell>
+//                     <TableCell align="right">{row.calories}</TableCell>
+//                     <TableCell align="right">{row.fat}</TableCell>
+//                     <TableCell align="right">{row.carbs}</TableCell>
+//                     <TableCell align="right">{row.protein}</TableCell>
+//                   </TableRow>
+//                 );
+//               })}
+//               {emptyRows > 0 && (
+//                 <TableRow
+//                   style={{
+//                     height: (dense ? 33 : 53) * emptyRows,
+//                   }}
+//                 >
+//                   <TableCell colSpan={6} />
+//                 </TableRow>
+//               )}
+//             </TableBody>
+//           </Table>
+//         </TableContainer>
+//         <TablePagination
+//           rowsPerPageOptions={[5, 10, 25]}
+//           component="div"
+//           count={rows.length}
+//           rowsPerPage={rowsPerPage}
+//           page={page}
+//           onPageChange={handleChangePage}
+//           onRowsPerPageChange={handleChangeRowsPerPage}
+//         />
+//       </Paper>
+      
+//     </Box>
+//   );
+// }
