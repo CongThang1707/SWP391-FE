@@ -1,14 +1,16 @@
 const API_URL = 'http://localhost:8080/';
 
-import axios from 'axios';
+export default API_URL;
 
-const getUserByRoleId = async (roleId) => {
-  try {
-    const response = await axios.get(`${API_URL}api/getUserByRoleId/${roleId}`);
-    return response.data;
-  } catch (error) {
-    console.error(error);
-  }
-};
+// import axios from 'axios';
 
-export { getUserByRoleId };
+// const getUserByRoleId = async (roleId) => {
+//   try {
+//     const response = await axios.get(`${API_URL}api/getUserByRoleId/${roleId}`);
+//     return response.data;
+//   } catch (error) {
+//     console.error(error);
+//   }
+// };
+
+// export { getUserByRoleId };

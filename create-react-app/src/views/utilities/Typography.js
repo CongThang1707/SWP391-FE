@@ -52,7 +52,6 @@
 
 // export default Typography;
 
-
 // import * as React from 'react';
 // import PropTypes from 'prop-types';
 // import { alpha } from '@mui/material/styles';
@@ -73,7 +72,6 @@
 // import DeleteIcon from '@mui/icons-material/Delete';
 // import FilterListIcon from '@mui/icons-material/FilterList';
 // import { visuallyHidden } from '@mui/utils';
-
 
 // function descendingComparator(a, b, orderBy) {
 //   if (b[orderBy] < a[orderBy]) {
@@ -134,7 +132,7 @@
 //   return (
 //     <TableHead>
 //       <TableRow>
-     
+
 //         {headCells.map((headCell) => (
 //           <TableCell
 //             key={headCell.id}
@@ -357,11 +355,10 @@
 //           onRowsPerPageChange={handleChangeRowsPerPage}
 //         />
 //       </Paper>
-      
+
 //     </Box>
 //   );
 // }
-
 
 import { Grid, Button } from '@mui/material';
 import MainCard from 'ui-component/cards/MainCard';
@@ -422,7 +419,7 @@ const EnhancedTable = () => {
                   { id: 'email', label: 'Email' },
                   { id: 'gender', label: 'Gender' },
                   { id: 'phone', label: 'Phone' },
-                  { id: 'action', label: 'Action' },
+                  { id: 'action', label: 'Action' }
                 ].map((head) => (
                   <TableCell key={head.id}>
                     <TableSortLabel
@@ -445,8 +442,12 @@ const EnhancedTable = () => {
                   <TableCell>{parent.gender}</TableCell>
                   <TableCell>{parent.phone}</TableCell>
                   <TableCell>
-                    <Button variant="contained" color="primary" size="small">Update</Button>
-                    <Button variant="contained" color="secondary" size="small" style={{ marginLeft: 8 }}>Delete</Button>
+                    <Button variant="contained" color="primary" size="small">
+                      Update
+                    </Button>
+                    <Button variant="contained" color="secondary" size="small" style={{ marginLeft: 8 }}>
+                      Delete
+                    </Button>
                   </TableCell>
                 </TableRow>
               ))}

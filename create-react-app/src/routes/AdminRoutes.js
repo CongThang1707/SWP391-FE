@@ -19,7 +19,7 @@ const SamplePage = Loadable(lazy(() => import('views/sample-page')));
 
 // ==============================|| MAIN ROUTING ||============================== //
 
-const MainRoutes = {
+const AdminRoutes = {
   path: '/',
   element: <MainLayout />,
   children: [
@@ -88,4 +88,4 @@ const MainRoutes = {
   ]
 };
 
-export default MainRoutes;
+export default AdminRoutes;

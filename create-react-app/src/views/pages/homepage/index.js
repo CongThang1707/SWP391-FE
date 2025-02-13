@@ -4,9 +4,7 @@ const DoctorsComponent = () => {
   return (
     <div className="flex flex-col items-center bg-gradient-to-r from-blue-100 to-blue-300 min-h-screen p-10">
       <div className="bg-white shadow-lg rounded-xl p-8 w-full max-w-4xl">
-        <h1 className="text-2xl font-bold text-gray-800 text-center mb-6">
-          Meet Our Expert Doctors
-        </h1>
+        <h1 className="text-2xl font-bold text-gray-800 text-center mb-6">Meet Our Expert Doctors</h1>
         <div className="flex justify-center space-x-8">
           <div className="flex flex-col items-center">
             <div className="w-40 h-40 bg-gray-300 rounded-full overflow-hidden">
