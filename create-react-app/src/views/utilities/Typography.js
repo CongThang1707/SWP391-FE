@@ -1,56 +1,56 @@
-import { Grid } from '@mui/material';
-import MainCard from 'ui-component/cards/MainCard';
-import React, { useState, useEffect } from 'react';
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
-import { Paper } from '@mui/material';
-import { getUserByRoleId } from '../../service/api_service.js';
+// import { Grid } from '@mui/material';
+// import MainCard from 'ui-component/cards/MainCard';
+// import React, { useState, useEffect } from 'react';
+// import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
+// import { Paper } from '@mui/material';
+// import { getUserByRoleId } from '../../service/api_service.js';
 
-// // ==============================|| TYPOGRAPHY ||============================== //
+// // // ==============================|| TYPOGRAPHY ||============================== //
 
-const Typography = () => {
-  const [parentData, setParentData] = useState([]);
+// const Typography = () => {
+//   const [parentData, setParentData] = useState([]);
 
-  useEffect(() => {
-    const fetchUserData = async () => {
-      const data = await getUserByRoleId(3);
-      setParentData(data);
-    };
-    fetchUserData();
-  }, []);
+//   useEffect(() => {
+//     const fetchUserData = async () => {
+//       const data = await getUserByRoleId(3);
+//       setParentData(data);
+//     };
+//     fetchUserData();
+//   }, []);
 
-  return (
-    <MainCard title="Typography" content={false}>
-      <Grid container>
-        <TableContainer component={Paper}>
-          <Table sx={{ minWidth: 650 }}>
-            <TableHead>
-              <TableRow>
-                <TableCell>Username</TableCell>
-                <TableCell>Fullname</TableCell>
-                <TableCell>Email</TableCell>
-                <TableCell>Gender</TableCell>
-                <TableCell>Phone</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {parentData.map((parent) => (
-                <TableRow key={parent.user_id}>
-                  <TableCell>{parent.username}</TableCell>
-                  <TableCell>{parent.fullName}</TableCell>
-                  <TableCell>{parent.email}</TableCell>
-                  <TableCell>{parent.gender}</TableCell>
-                  <TableCell sx={{ display: 'flex', gap: 1 }}>{parent.phone}</TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
-      </Grid>
-    </MainCard>
-  );
-};
+//   return (
+//     <MainCard title="Typography" content={false}>
+//       <Grid container>
+//         <TableContainer component={Paper}>
+//           <Table sx={{ minWidth: 650 }}>
+//             <TableHead>
+//               <TableRow>
+//                 <TableCell>Username</TableCell>
+//                 <TableCell>Fullname</TableCell>
+//                 <TableCell>Email</TableCell>
+//                 <TableCell>Gender</TableCell>
+//                 <TableCell>Phone</TableCell>
+//               </TableRow>
+//             </TableHead>
+//             <TableBody>
+//               {parentData.map((parent) => (
+//                 <TableRow key={parent.user_id}>
+//                   <TableCell>{parent.username}</TableCell>
+//                   <TableCell>{parent.fullName}</TableCell>
+//                   <TableCell>{parent.email}</TableCell>
+//                   <TableCell>{parent.gender}</TableCell>
+//                   <TableCell sx={{ display: 'flex', gap: 1 }}>{parent.phone}</TableCell>
+//                 </TableRow>
+//               ))}
+//             </TableBody>
+//           </Table>
+//         </TableContainer>
+//       </Grid>
+//     </MainCard>
+//   );
+// };
 
-export default Typography;
+// export default Typography;
 
 
 // import * as React from 'react';
@@ -74,32 +74,6 @@ export default Typography;
 // import FilterListIcon from '@mui/icons-material/FilterList';
 // import { visuallyHidden } from '@mui/utils';
 
-// function createData(id, name, calories, fat, carbs, protein) {
-//   return {
-//     id,
-//     name,
-//     calories,
-//     fat,
-//     carbs,
-//     protein,
-//   };
-// }
-
-// const rows = [
-//   createData(1, 'Cupcake', 305, 3.7, 67, 4.3),
-//   createData(2, 'Donut', 452, 25.0, 51, 4.9),
-//   createData(3, 'Eclair', 262, 16.0, 24, 6.0),
-//   createData(4, 'Frozen yoghurt', 159, 6.0, 24, 4.0),
-//   createData(5, 'Gingerbread', 356, 16.0, 49, 3.9),
-//   createData(6, 'Honeycomb', 408, 3.2, 87, 6.5),
-//   createData(7, 'Ice cream sandwich', 237, 9.0, 37, 4.3),
-//   createData(8, 'Jelly Bean', 375, 0.0, 94, 0.0),
-//   createData(9, 'KitKat', 518, 26.0, 65, 7.0),
-//   createData(10, 'Lollipop', 392, 0.2, 98, 0.0),
-//   createData(11, 'Marshmallow', 318, 0, 81, 2.0),
-//   createData(12, 'Nougat', 360, 19.0, 9, 37.0),
-//   createData(13, 'Oreo', 437, 18.0, 63, 4.0),
-// ];
 
 // function descendingComparator(a, b, orderBy) {
 //   if (b[orderBy] < a[orderBy]) {
@@ -387,3 +361,110 @@ export default Typography;
 //     </Box>
 //   );
 // }
+
+
+import { Grid, Button } from '@mui/material';
+import MainCard from 'ui-component/cards/MainCard';
+import React, { useState, useEffect } from 'react';
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TableSortLabel, TablePagination, Paper } from '@mui/material';
+import { getUserByRoleId } from '../../service/api_service.js';
+
+const EnhancedTable = () => {
+  const [parentData, setParentData] = useState([]);
+  const [order, setOrder] = useState('asc');
+  const [orderBy, setOrderBy] = useState('fullName');
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      const data = await getUserByRoleId(3);
+      setParentData(data);
+    };
+    fetchUserData();
+  }, []);
+
+  const handleRequestSort = (event, property) => {
+    const isAsc = orderBy === property && order === 'asc';
+    setOrder(isAsc ? 'desc' : 'asc');
+    setOrderBy(property);
+    setParentData((prevData) =>
+      [...prevData].sort((a, b) => {
+        if (property === 'phone') {
+          return isAsc ? a[property] - b[property] : b[property] - a[property];
+        }
+        if (a[property] < b[property]) return isAsc ? -1 : 1;
+        if (a[property] > b[property]) return isAsc ? 1 : -1;
+        return 0;
+      })
+    );
+  };
+
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
+
+  return (
+    <MainCard title="Parent" content={false}>
+      <Grid container>
+        <TableContainer component={Paper}>
+          <Table sx={{ minWidth: 650 }}>
+            <TableHead>
+              <TableRow>
+                {[
+                  { id: 'username', label: 'Username' },
+                  { id: 'fullName', label: 'Full Name' },
+                  { id: 'email', label: 'Email' },
+                  { id: 'gender', label: 'Gender' },
+                  { id: 'phone', label: 'Phone' },
+                  { id: 'action', label: 'Action' },
+                ].map((head) => (
+                  <TableCell key={head.id}>
+                    <TableSortLabel
+                      active={orderBy === head.id}
+                      direction={orderBy === head.id ? order : 'asc'}
+                      onClick={(event) => handleRequestSort(event, head.id)}
+                    >
+                      {head.label}
+                    </TableSortLabel>
+                  </TableCell>
+                ))}
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {parentData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((parent) => (
+                <TableRow key={parent.user_id}>
+                  <TableCell>{parent.username}</TableCell>
+                  <TableCell>{parent.fullName}</TableCell>
+                  <TableCell>{parent.email}</TableCell>
+                  <TableCell>{parent.gender}</TableCell>
+                  <TableCell>{parent.phone}</TableCell>
+                  <TableCell>
+                    <Button variant="contained" color="primary" size="small">Update</Button>
+                    <Button variant="contained" color="secondary" size="small" style={{ marginLeft: 8 }}>Delete</Button>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+        <TablePagination
+          rowsPerPageOptions={[5, 10, 25]}
+          component="div"
+          count={parentData.length}
+          rowsPerPage={rowsPerPage}
+          page={page}
+          onPageChange={handleChangePage}
+          onRowsPerPageChange={handleChangeRowsPerPage}
+        />
+      </Grid>
+    </MainCard>
+  );
+};
+
+export default EnhancedTable;
