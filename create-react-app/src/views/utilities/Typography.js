@@ -3,7 +3,7 @@ import MainCard from 'ui-component/cards/MainCard';
 import React, { useState, useEffect } from 'react';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
 import { Paper } from '@mui/material';
-import { getUserByRoleId } from '../../service/api_service.js';
+import { getUserByRoleId } from '../../service/user_service/get_user.js';
 
 // // ==============================|| TYPOGRAPHY ||============================== //
 
@@ -12,7 +12,7 @@ const Typography = () => {
 
   useEffect(() => {
     const fetchUserData = async () => {
-      const data = await getUserByRoleId(3);
+      const data = await getUserByRoleId(1);
       setParentData(data);
     };
     fetchUserData();
@@ -51,7 +51,6 @@ const Typography = () => {
 };
 
 export default Typography;
-
 
 // import * as React from 'react';
 // import PropTypes from 'prop-types';
@@ -160,7 +159,7 @@ export default Typography;
 //   return (
 //     <TableHead>
 //       <TableRow>
-     
+
 //         {headCells.map((headCell) => (
 //           <TableCell
 //             key={headCell.id}
@@ -383,7 +382,7 @@ export default Typography;
 //           onRowsPerPageChange={handleChangeRowsPerPage}
 //         />
 //       </Paper>
-      
+
 //     </Box>
 //   );
 // }

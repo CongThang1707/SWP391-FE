@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { useSelector } from 'react-redux';
 
@@ -53,12 +52,12 @@ const FirebaseRegister = ({ ...others }) => {
 
   return (
     <>
-      <Grid container direction="column" justifyContent="center" spacing={2}>
+      <Grid container direction="column" justifyContent="center">
         <Formik
           initialValues={{
             email: '',
             password: '',
-            fullName:'',
+            fullName: '',
             submit: null
           }}
           validationSchema={Yup.object().shape({
@@ -91,14 +90,11 @@ const FirebaseRegister = ({ ...others }) => {
                   type="email"
                   value={values.email}
                   name="email"
+                  label="User Name"
                   onBlur={handleBlur}
                   onChange={handleChange}
                 />
-                {touched.email && errors.email && (
-                  <FormHelperText error>
-                    {errors.email}
-                  </FormHelperText>
-                )}
+                {touched.email && errors.email && <FormHelperText error>{errors.email}</FormHelperText>}
               </FormControl>
               <FormControl fullWidth error={Boolean(touched.password && errors.password)} sx={{ mb: 2 }}>
                 <InputLabel htmlFor="outlined-adornment-password-register">Password</InputLabel>
@@ -123,13 +119,9 @@ const FirebaseRegister = ({ ...others }) => {
                     </InputAdornment>
                   }
                 />
-                {touched.password && errors.password && (
-                  <FormHelperText error>
-                    {errors.password}
-                  </FormHelperText>
-                )}
+                {touched.password && errors.password && <FormHelperText error>{errors.password}</FormHelperText>}
               </FormControl>
-              
+
               <FormControl fullWidth error={Boolean(touched.fullName && errors.fullName)} sx={{ mb: 1 }}>
                 <InputLabel htmlFor="outlined-adornment-email-register">Full Name</InputLabel>
                 <OutlinedInput
@@ -137,14 +129,11 @@ const FirebaseRegister = ({ ...others }) => {
                   type="fullName"
                   value={values.fullName}
                   name="fullName"
+                  label="Full Name"
                   onBlur={handleBlur}
                   onChange={handleChange}
                 />
-                {touched.fullName && errors.fullName && (
-                  <FormHelperText error>
-                    {errors.fullName}
-                  </FormHelperText>
-                )}
+                {touched.fullName && errors.fullName && <FormHelperText error>{errors.fullName}</FormHelperText>}
               </FormControl>
               <Grid container spacing={matchDownSM ? 0 : 2}>
                 <Grid item xs={12} sm={6}>
@@ -179,7 +168,8 @@ const FirebaseRegister = ({ ...others }) => {
                     size="large"
                     type="submit"
                     variant="contained"
-                    color="secondary">
+                    color="secondary"
+                  >
                     Sign up
                   </Button>
                 </AnimateButton>

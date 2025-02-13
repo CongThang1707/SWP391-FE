@@ -10,7 +10,7 @@ import Breadcrumbs from 'ui-component/extended/Breadcrumbs';
 import Header from './Header';
 import Sidebar from './Sidebar';
 import Customization from '../Customization';
-import navigation from 'menu-items';
+import navigation from 'admin-menu-items';
 import { drawerWidth } from 'store/constant';
 import { SET_MENU } from 'store/actions';
 
