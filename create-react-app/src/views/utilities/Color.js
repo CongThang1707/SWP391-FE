@@ -2,7 +2,7 @@ import { Grid, Button } from '@mui/material';
 import MainCard from 'ui-component/cards/MainCard';
 import React, { useState, useEffect } from 'react';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TableSortLabel, TablePagination, Paper } from '@mui/material';
-import { getUserByRoleId } from '../../service/api_service.js';
+import { getUserByRoleId } from '../../service/user_service/get_user.js';
 
 const EnhancedTable = () => {
   const [parentData, setParentData] = useState([]);
