@@ -7,6 +7,8 @@ import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Table
 import { getUserByRoleId } from '../../service/user_service/get_user.js';
 import { deleteUserById } from '../../service/user_service/delete_user.js';
 import { createUser } from '../../service/user_service/create_user.js';
+import { useNavigate } from 'react-router-dom';
+
 
 const EnhancedTable = () => {
   const [parentData, setParentData] = useState([]);
@@ -24,6 +26,9 @@ const EnhancedTable = () => {
     phone: '',
     address: '',
   });
+
+  const navigate = useNavigate();
+
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -141,7 +146,8 @@ const EnhancedTable = () => {
                   <TableCell>{doctor.email}</TableCell>
                   <TableCell>{doctor.phone}</TableCell>
                   <TableCell>
-                    <Button variant="contained" color="primary" size="small">Detail</Button>
+                    <Button variant="contained" color="primary" size="small"
+                    onClick={() => navigate(`/doctor-detail/${doctor.user_id}`)}>Detail</Button>
                     <Button variant="contained" color="secondary" size="small" style={{ marginLeft: 8 }}
                       onClick={() => handleDeleteUser(doctor.user_id)}>
                       Delete
