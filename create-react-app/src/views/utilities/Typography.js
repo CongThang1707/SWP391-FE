@@ -1,4 +1,3 @@
-
 import { Grid, Button } from '@mui/material';
 import MainCard from 'ui-component/cards/MainCard';
 import React, { useState, useEffect } from 'react';
@@ -6,7 +5,6 @@ import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Table
 import { getUserByRoleId } from '../../service/user_service/get_user.js';
 import { deleteUserById } from '../../service/user_service/delete_user.js';
 import { useNavigate } from 'react-router-dom';
-
 
 const EnhancedTable = () => {
   const [parentData, setParentData] = useState([]);
@@ -16,10 +14,9 @@ const EnhancedTable = () => {
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const navigate = useNavigate();
 
-
   useEffect(() => {
     const fetchUserData = async () => {
-      const data = await getUserByRoleId(3);
+      const data = await getUserByRoleId(1);
       setParentData(data);
     };
     fetchUserData();
@@ -50,22 +47,21 @@ const EnhancedTable = () => {
     setPage(0);
   };
 
-const handleDeleteUser = async (userId) => {
-  if (window.confirm('Are you sure you want to delete this user?')) {
-    try {
-      await deleteUserById(userId);
-      
-      // Cập nhật danh sách sau khi xóa thành công
-      setParentData((prevData) => prevData.filter((user) => user.user_id !== userId));
+  const handleDeleteUser = async (userId) => {
+    if (window.confirm('Are you sure you want to delete this user?')) {
+      try {
+        await deleteUserById(userId);
 
-      console.log(`User ${userId} deleted successfully!`);
-    } catch (error) {
-      console.error('Failed to delete user:', error.response ? error.response.data : error.message);
-      alert('Error deleting user. Please try again.');
+        // Cập nhật danh sách sau khi xóa thành công
+        setParentData((prevData) => prevData.filter((user) => user.user_id !== userId));
+
+        console.log(`User ${userId} deleted successfully!`);
+      } catch (error) {
+        console.error('Failed to delete user:', error.response ? error.response.data : error.message);
+        alert('Error deleting user. Please try again.');
+      }
     }
-  }
-};
-
+  };
 
   return (
     <MainCard title="Parent" content={false}>
@@ -101,12 +97,16 @@ const handleDeleteUser = async (userId) => {
                   <TableCell>{parent.email}</TableCell>
                   <TableCell>{parent.phone}</TableCell>
                   <TableCell>
-                    <Button variant="contained" color="primary" size="small"
-                    onClick={() => navigate(`/parent-detail/${parent.user_id}`)}>
+                    <Button variant="contained" color="primary" size="small" onClick={() => navigate(`/parent-detail/${parent.user_id}`)}>
                       Detail
                     </Button>
-                    <Button variant="contained" color="secondary" size="small" style={{ marginLeft: 8 }}
-                    onClick={() => handleDeleteUser(parent.user_id)}>
+                    <Button
+                      variant="contained"
+                      color="secondary"
+                      size="small"
+                      style={{ marginLeft: 8 }}
+                      onClick={() => handleDeleteUser(parent.user_id)}
+                    >
                       Delete
                     </Button>
                   </TableCell>

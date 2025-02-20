@@ -1,4 +1,3 @@
-
 import { Grid, Button, IconButton, TextField, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import MainCard from 'ui-component/cards/MainCard';
@@ -8,7 +7,6 @@ import { getUserByRoleId } from '../../service/user_service/get_user.js';
 import { deleteUserById } from '../../service/user_service/delete_user.js';
 import { createUser } from '../../service/user_service/create_user.js';
 import { useNavigate } from 'react-router-dom';
-
 
 const EnhancedTable = () => {
   const [parentData, setParentData] = useState([]);
@@ -24,11 +22,10 @@ const EnhancedTable = () => {
     fullName: '',
     gender: '',
     phone: '',
-    address: '',
+    address: ''
   });
 
   const navigate = useNavigate();
-
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -102,7 +99,6 @@ const EnhancedTable = () => {
       alert('Failed to create user. Please try again.');
     }
   };
-  
 
   return (
     <MainCard
@@ -124,7 +120,7 @@ const EnhancedTable = () => {
                   { id: 'fullName', label: 'Full Name' },
                   { id: 'email', label: 'Email' },
                   { id: 'phone', label: 'Phone' },
-                  { id: 'action', label: 'Action' },
+                  { id: 'action', label: 'Action' }
                 ].map((head) => (
                   <TableCell key={head.id}>
                     <TableSortLabel
@@ -146,10 +142,16 @@ const EnhancedTable = () => {
                   <TableCell>{doctor.email}</TableCell>
                   <TableCell>{doctor.phone}</TableCell>
                   <TableCell>
-                    <Button variant="contained" color="primary" size="small"
-                    onClick={() => navigate(`/doctor-detail/${doctor.user_id}`)}>Detail</Button>
-                    <Button variant="contained" color="secondary" size="small" style={{ marginLeft: 8 }}
-                      onClick={() => handleDeleteUser(doctor.user_id)}>
+                    <Button variant="contained" color="primary" size="small" onClick={() => navigate(`/doctor-detail/${doctor.user_id}`)}>
+                      Detail
+                    </Button>
+                    <Button
+                      variant="contained"
+                      color="secondary"
+                      size="small"
+                      style={{ marginLeft: 8 }}
+                      onClick={() => handleDeleteUser(doctor.user_id)}
+                    >
                       Delete
                     </Button>
                   </TableCell>
@@ -189,7 +191,9 @@ const EnhancedTable = () => {
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCloseDialog}>Cancel</Button>
-          <Button onClick={handleSubmit} variant="contained" color="primary">Submit</Button>
+          <Button onClick={handleSubmit} variant="contained" color="primary">
+            Submit
+          </Button>
         </DialogActions>
       </Dialog>
     </MainCard>
@@ -197,4 +201,3 @@ const EnhancedTable = () => {
 };
 
 export default EnhancedTable;
-

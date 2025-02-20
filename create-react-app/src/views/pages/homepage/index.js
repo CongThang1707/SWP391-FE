@@ -1,29 +1,59 @@
 import React from 'react';
+import { Typography, Button, Container, Box, Grid, Paper } from '@mui/material';
 
-const DoctorsComponent = () => {
+const ParentLandingPage = () => {
   return (
-    <div className="flex flex-col items-center bg-gradient-to-r from-blue-100 to-blue-300 min-h-screen p-10">
-      <div className="bg-white shadow-lg rounded-xl p-8 w-full max-w-4xl">
-        <h1 className="text-2xl font-bold text-gray-800 text-center mb-6">Meet Our Expert Doctors</h1>
-        <div className="flex justify-center space-x-8">
-          <div className="flex flex-col items-center">
-            <div className="w-40 h-40 bg-gray-300 rounded-full overflow-hidden">
-              <img src="https://a.ppy.sh/18521788?1628914267.jpeg" alt="Doctor 1" className="w-full h-full object-cover" />
-            </div>
-            <p className="mt-4 font-semibold text-gray-700">Dr. John Smith</p>
-            <p className="text-gray-500">Cardiologist</p>
-          </div>
-          <div className="flex flex-col items-center">
-            <div className="w-40 h-40 bg-gray-300 rounded-full overflow-hidden">
-              <img src="https://a.ppy.sh/18521788?1628914267.jpeg" alt="Doctor 2" className="w-full h-full object-cover" />
-            </div>
-            <p className="mt-4 font-semibold text-gray-700">Dr. Alex Johnson</p>
-            <p className="text-gray-500">Neurologist</p>
-          </div>
-        </div>
-      </div>
-    </div>
+    <>
+      {/* Hero Section */}
+      <Box
+        sx={{
+          height: '60vh',
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'center',
+          alignItems: 'center',
+          background: 'linear-gradient(90deg, #1976D2, #42A5F5)',
+          color: 'white',
+          textAlign: 'center',
+          p: 4
+        }}
+      >
+        <Typography variant="h3" fontWeight={700}>
+          Welcome to Our Landing Page!
+        </Typography>
+        <Typography variant="h6" sx={{ mt: 2, maxWidth: '600px' }}>
+          We provide the best services to help you grow. Join us today and experience innovation like never before.
+        </Typography>
+        <Button variant="contained" color="secondary" sx={{ mt: 3 }}>
+          Get Started
+        </Button>
+      </Box>
+
+      {/* Features Section */}
+      <Container sx={{ py: 6 }}>
+        <Typography variant="h4" textAlign="center" fontWeight={700} mb={4}>
+          Our Features
+        </Typography>
+        <Grid container spacing={4}>
+          {['Fast', 'Reliable', 'Secure'].map((feature, index) => (
+            <Grid item xs={12} md={4} key={index}>
+              <Paper sx={{ p: 4, textAlign: 'center', boxShadow: 3 }}>
+                <Typography variant="h5" fontWeight={600}>
+                  {feature}
+                </Typography>
+                <Typography sx={{ mt: 1 }}>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</Typography>
+              </Paper>
+            </Grid>
+          ))}
+        </Grid>
+      </Container>
+
+      {/* Footer */}
+      <Box sx={{ background: '#eee', py: 3, textAlign: 'center' }}>
+        <Typography variant="body2">© 2025 MyBrand. All rights reserved.</Typography>
+      </Box>
+    </>
   );
 };
 
-export default DoctorsComponent;
+export default ParentLandingPage;

@@ -5,7 +5,7 @@ import Loadable from 'ui-component/Loadable';
 import MinimalLayout from 'layout/MinimalLayout';
 
 // login option 3 routing
-const DoctorHomePage = Loadable(lazy(() => import('views/pages/homepage/DoctorPage.js')));
+const DoctorHomePage = Loadable(lazy(() => import('views/pages/homepage/index.js')));
 
 // ==============================|| PARENT ROUTING ||============================== //
 
