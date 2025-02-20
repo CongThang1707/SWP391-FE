@@ -18,7 +18,7 @@ const utilities = {
   children: [
     {
       id: 'util-typography',
-      title: 'Typography',
+      title: 'Parents',
       type: 'item',
       url: '/utils/util-typography',
       icon: icons.IconTypography,
@@ -26,7 +26,7 @@ const utilities = {
     },
     {
       id: 'util-color',
-      title: 'Color',
+      title: 'Doctors',
       type: 'item',
       url: '/utils/util-color',
       icon: icons.IconPalette,

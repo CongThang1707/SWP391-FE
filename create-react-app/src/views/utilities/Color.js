@@ -2,7 +2,7 @@ import { Grid, Button } from '@mui/material';
 import MainCard from 'ui-component/cards/MainCard';
 import React, { useState, useEffect } from 'react';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TableSortLabel, TablePagination, Paper } from '@mui/material';
-import { getUserByRoleId } from '../../service/api_service.js';
+import { getUserByRoleId } from '../../service/user_service/get_user.js';
 
 const EnhancedTable = () => {
   const [parentData, setParentData] = useState([]);
@@ -57,7 +57,7 @@ const EnhancedTable = () => {
                   { id: 'email', label: 'Email' },
                   { id: 'gender', label: 'Gender' },
                   { id: 'phone', label: 'Phone' },
-                  { id: 'action', label: 'Action' },
+                  { id: 'action', label: 'Action' }
                 ].map((head) => (
                   <TableCell key={head.id}>
                     <TableSortLabel
@@ -80,8 +80,12 @@ const EnhancedTable = () => {
                   <TableCell>{parent.gender}</TableCell>
                   <TableCell>{parent.phone}</TableCell>
                   <TableCell>
-                    <Button variant="contained" color="primary" size="small">Update</Button>
-                    <Button variant="contained" color="secondary" size="small" style={{ marginLeft: 8 }}>Delete</Button>
+                    <Button variant="contained" color="primary" size="small">
+                      Update
+                    </Button>
+                    <Button variant="contained" color="secondary" size="small" style={{ marginLeft: 8 }}>
+                      Delete
+                    </Button>
                   </TableCell>
                 </TableRow>
               ))}
