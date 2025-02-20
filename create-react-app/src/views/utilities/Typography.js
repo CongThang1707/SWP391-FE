@@ -5,6 +5,8 @@ import React, { useState, useEffect } from 'react';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TableSortLabel, TablePagination, Paper } from '@mui/material';
 import { getUserByRoleId } from '../../service/user_service/get_user.js';
 import { deleteUserById } from '../../service/user_service/delete_user.js';
+import { useNavigate } from 'react-router-dom';
+
 
 const EnhancedTable = () => {
   const [parentData, setParentData] = useState([]);
@@ -12,6 +14,8 @@ const EnhancedTable = () => {
   const [orderBy, setOrderBy] = useState('fullName');
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
+  const navigate = useNavigate();
+
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -97,7 +101,8 @@ const handleDeleteUser = async (userId) => {
                   <TableCell>{parent.email}</TableCell>
                   <TableCell>{parent.phone}</TableCell>
                   <TableCell>
-                    <Button variant="contained" color="primary" size="small">
+                    <Button variant="contained" color="primary" size="small"
+                    onClick={() => navigate(`/parent-detail/${parent.user_id}`)}>
                       Detail
                     </Button>
                     <Button variant="contained" color="secondary" size="small" style={{ marginLeft: 8 }}

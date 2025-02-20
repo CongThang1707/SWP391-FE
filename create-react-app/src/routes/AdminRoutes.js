@@ -13,9 +13,9 @@ const UtilsColor = Loadable(lazy(() => import('views/utilities/Color')));
 const UtilsShadow = Loadable(lazy(() => import('views/utilities/Shadow')));
 const UtilsMaterialIcons = Loadable(lazy(() => import('views/utilities/MaterialIcons')));
 const UtilsTablerIcons = Loadable(lazy(() => import('views/utilities/TablerIcons')));
+const DoctorDetail = Loadable(lazy(() => import('views/sample-page/doctor_detail')));
+const ParentDetail = Loadable(lazy(() => import('views/sample-page/parent_detail')));
 
-// sample page routing
-const SamplePage = Loadable(lazy(() => import('views/sample-page')));
 
 // ==============================|| MAIN ROUTING ||============================== //
 
@@ -82,9 +82,13 @@ const AdminRoutes = {
       ]
     },
     {
-      path: 'sample-page',
-      element: <SamplePage />
-    }
+      path: 'doctor-detail/:id',
+      element: <DoctorDetail />
+    },
+    {
+      path: 'parent-detail/:id',
+      element: <ParentDetail />
+    },
   ]
 };
 

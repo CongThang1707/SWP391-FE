@@ -5,8 +5,8 @@ const createUser = async (userData) => {
   try {
     const response = await axios.post(`${API_URL}api/register/2`, userData, {
       headers: {
-        'Content-Type': 'application/json',
-      },
+        'Content-Type': 'application/json'
+      }
     });
     return response.data;
   } catch (error) {
