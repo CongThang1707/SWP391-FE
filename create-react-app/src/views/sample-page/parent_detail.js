@@ -19,11 +19,21 @@ const ParentDetail = () => {
   return (
     <div>
       <h2>User Detail</h2>
-      <p><strong>Username:</strong> {parent.username}</p>
-      <p><strong>Full Name:</strong> {parent.fullName}</p>
-      <p><strong>Email:</strong> {parent.email}</p>
-      <p><strong>Phone:</strong> {parent.phone}</p>
-      <p><strong>Address:</strong> {parent.address}</p>
+      <p>
+        <strong>Username:</strong> {parent.username}
+      </p>
+      <p>
+        <strong>Full Name:</strong> {parent.fullName}
+      </p>
+      <p>
+        <strong>Email:</strong> {parent.email}
+      </p>
+      <p>
+        <strong>Phone:</strong> {parent.phone}
+      </p>
+      <p>
+        <strong>Address:</strong> {parent.address}
+      </p>
     </div>
   );
 };

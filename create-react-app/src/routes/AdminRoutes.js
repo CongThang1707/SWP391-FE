@@ -16,7 +16,6 @@ const UtilsTablerIcons = Loadable(lazy(() => import('views/utilities/TablerIcons
 const DoctorDetail = Loadable(lazy(() => import('views/sample-page/doctor_detail')));
 const ParentDetail = Loadable(lazy(() => import('views/sample-page/parent_detail')));
 
-
 // ==============================|| MAIN ROUTING ||============================== //
 
 const AdminRoutes = {
@@ -88,7 +87,7 @@ const AdminRoutes = {
     {
       path: 'parent-detail/:id',
       element: <ParentDetail />
-    },
+    }
   ]
 };
 
