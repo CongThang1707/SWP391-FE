@@ -19,11 +19,21 @@ const DoctorDetail = () => {
   return (
     <div>
       <h2>Doctor Detail</h2>
-      <p><strong>Username:</strong> {doctor.username}</p>
-      <p><strong>Full Name:</strong> {doctor.fullName}</p>
-      <p><strong>Email:</strong> {doctor.email}</p>
-      <p><strong>Phone:</strong> {doctor.phone}</p>
-      <p><strong>Address:</strong> {doctor.address}</p>
+      <p>
+        <strong>Username:</strong> {doctor.username}
+      </p>
+      <p>
+        <strong>Full Name:</strong> {doctor.fullName}
+      </p>
+      <p>
+        <strong>Email:</strong> {doctor.email}
+      </p>
+      <p>
+        <strong>Phone:</strong> {doctor.phone}
+      </p>
+      <p>
+        <strong>Address:</strong> {doctor.address}
+      </p>
     </div>
   );
 };

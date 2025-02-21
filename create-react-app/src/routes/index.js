@@ -5,6 +5,7 @@ import AdminRoutes from './AdminRoutes';
 import AuthenticationRoutes from './AuthenticationRoutes';
 import ParentRoutes from './ParentRoutes';
 import DoctorRoutes from './DoctorRoutes';
+import UserRoutes from './UserRoutes';
 import { Button, Typography, Container } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 
@@ -62,13 +63,13 @@ export default function ThemeRoutes() {
   const getRoutesForRole = (role) => {
     switch (role) {
       case 'Admin':
-        return [AuthenticationRoutes, AdminRoutes];
+        return [UserRoutes, AuthenticationRoutes, AdminRoutes];
       case 'Parent':
-        return [AuthenticationRoutes, ParentRoutes];
+        return [UserRoutes, AuthenticationRoutes, ParentRoutes];
       case 'Doctor':
-        return [AuthenticationRoutes, DoctorRoutes];
+        return [UserRoutes, AuthenticationRoutes, DoctorRoutes];
       default:
-        return [AuthenticationRoutes, AdminRoutes];
+        return [UserRoutes, AuthenticationRoutes];
     }
   };
   const routes = getRoutesForRole(userRole);
