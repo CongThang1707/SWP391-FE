@@ -8,6 +8,7 @@ import ResponsiveAppBar from 'layout/UserLayout';
 const ParentHomePage = Loadable(lazy(() => import('views/pages/homepage/index.js')));
 const ParentBlogPage = Loadable(lazy(() => import('views/pages/blog/index.js')));
 const ParentProfilePage = Loadable(lazy(() => import('views/pages/profile/index.js')));
+const ParentContactPage = Loadable(lazy(() => import('views/pages/contact/index.js')));
 
 // ==============================|| PARENT ROUTING ||============================== //
 
@@ -16,7 +17,7 @@ const ParentRoutes = {
   element: <ResponsiveAppBar />,
   children: [
     {
-      path: '/pages/page1/homepage',
+      path: '/',
       element: <ParentHomePage />
     },
     {
@@ -26,6 +27,10 @@ const ParentRoutes = {
     {
       path: '/pages/page1/profile',
       element: <ParentProfilePage />
+    },
+    {
+      path: '/pages/page1/contact',
+      element: <ParentContactPage />
     }
   ]
 };

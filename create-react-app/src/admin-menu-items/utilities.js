@@ -34,7 +34,7 @@ const utilities = {
     },
     {
       id: 'util-shadow',
-      title: 'Shadow',
+      title: 'Children',
       type: 'item',
       url: '/utils/util-shadow',
       icon: icons.IconShadow,

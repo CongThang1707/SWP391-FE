@@ -4,47 +4,46 @@ import { ThumbUp, ChatBubbleOutline, Share, ThumbUpAlt, Send, Search } from '@mu
 import { Menu, MenuItem } from '@mui/material';
 import { Facebook, Instagram, Twitter, LinkedIn } from '@mui/icons-material';
 import { Pagination } from '@mui/material';
-import  getAllBlog  from '../../../service/blog_services/get_blog.js';
+import getAllBlog from '../../../service/blog_services/get_blog.js';
 
 const BlogPage = () => {
   const [posts, setPosts] = useState([]);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [commentInputs, setCommentInputs] = useState(Array(posts.length).fill(""));
+  const [searchTerm, setSearchTerm] = useState('');
+  const [commentInputs, setCommentInputs] = useState(Array(posts.length).fill(''));
   const [showComments, setShowComments] = useState(Array(posts.length).fill(false));
 
   useEffect(() => {
     const fetchBlogs = async () => {
       try {
         const blogData = await getAllBlog(); // Gọi API lấy danh sách blog
-        const formattedPosts = blogData.map(post => ({
-          avatar: post.avatar || "https://randomuser.me/api/portraits/men/4.jpg", // Avatar người đăng
-          fullName : post.fullName,
+        const formattedPosts = blogData.map((post) => ({
+          avatar: post.avatar || 'https://randomuser.me/api/portraits/men/4.jpg', // Avatar người đăng
+          fullName: post.fullName,
           date: post.date || new Date().toLocaleDateString(), // Ngày đăng
-          title: post.title || "Untitled Post", // Tiêu đề bài viết
-          description: post.description || "No description available", // Mô tả ngắn
-          content: post.content || "No content available", // Nội dung bài viết
+          title: post.title || 'Untitled Post', // Tiêu đề bài viết
+          description: post.description || 'No description available', // Mô tả ngắn
+          content: post.content || 'No content available', // Nội dung bài viết
           likes: post.likes || 0, // Số lượt thích
           comments: post.comments || [], // Danh sách bình luận
-          shares: post.shares || 0, // Số lần chia sẻ
+          shares: post.shares || 0 // Số lần chia sẻ
         }));
-  
+
         setPosts(formattedPosts); // Cập nhật state posts
-        setCommentInputs(Array(formattedPosts.length).fill("")); // Khởi tạo input cho comment
+        setCommentInputs(Array(formattedPosts.length).fill('')); // Khởi tạo input cho comment
         setShowComments(Array(formattedPosts.length).fill(false)); // Khởi tạo trạng thái hiển thị comment
       } catch (error) {
-        console.error("Error fetching blogs:", error);
+        console.error('Error fetching blogs:', error);
       }
     };
-  
+
     fetchBlogs();
   }, []);
-  
 
   const filteredPosts = searchTerm
-    ? posts.filter(post =>
-      post.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      post.content.toLowerCase().includes(searchTerm.toLowerCase())
-    )
+    ? posts.filter(
+        (post) =>
+          post.title.toLowerCase().includes(searchTerm.toLowerCase()) || post.content.toLowerCase().includes(searchTerm.toLowerCase())
+      )
     : posts;
 
   const handleLike = (index) => {
@@ -66,7 +65,7 @@ const BlogPage = () => {
   };
 
   const handleCommentSubmit = (index) => {
-    if (commentInputs[index].trim() === "") return;
+    if (commentInputs[index].trim() === '') return;
 
     const newComment = {
       text: commentInputs[index],
@@ -80,9 +79,8 @@ const BlogPage = () => {
     const newPosts = [...posts];
     newPosts[index].comments.push(newComment); // Lưu bình luận vào danh sách
     setPosts(newPosts);
-    handleCommentChange(index, ""); // Xóa nội dung input sau khi gửi
+    handleCommentChange(index, ''); // Xóa nội dung input sau khi gửi
   };
-
 
   const [anchorEl, setAnchorEl] = useState(null);
   const [selectedPost, setSelectedPost] = useState(null);
@@ -107,31 +105,31 @@ const BlogPage = () => {
       const url = encodeURIComponent(`https://myblog.com/posts/${selectedPost}`);
       const text = encodeURIComponent(`${post.title} - ${post.description}`);
 
-      let shareUrl = "";
+      let shareUrl = '';
       switch (platform) {
-        case "facebook":
+        case 'facebook':
           shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${url}`;
           break;
-        case "twitter":
+        case 'twitter':
           shareUrl = `https://twitter.com/intent/tweet?url=${url}&text=${text}`;
           break;
-        case "linkedin":
+        case 'linkedin':
           shareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${url}`;
           break;
-        case "instagram":
-          alert("Instagram không hỗ trợ chia sẻ qua web, bạn có thể copy link và chia sẻ thủ công!");
+        case 'instagram':
+          alert('Instagram không hỗ trợ chia sẻ qua web, bạn có thể copy link và chia sẻ thủ công!');
           return;
         default:
           return;
       }
 
-      window.open(shareUrl, "_blank");
+      window.open(shareUrl, '_blank');
     }
     handleClose();
   };
 
-  const userAvatar = "https://randomuser.me/api/portraits/men/4.jpg"; // Avatar của người bình luận
-  const userName = "John Doe"; // Tên người dùng giả lập
+  const userAvatar = 'https://randomuser.me/api/portraits/men/4.jpg'; // Avatar của người bình luận
+  const userName = 'John Doe'; // Tên người dùng giả lập
 
   const [page, setPage] = useState(1);
   const postsPerPage = 2; // Số bài viết mỗi trang
@@ -159,7 +157,7 @@ const BlogPage = () => {
           color: 'white',
           textAlign: 'center',
           p: 4,
-          boxShadow: 3,
+          boxShadow: 3
         }}
       >
         <Typography variant="h3" fontWeight={700} sx={{ textShadow: '2px 2px 4px rgba(0,0,0,0.3)' }}>
@@ -180,7 +178,7 @@ const BlogPage = () => {
               <InputAdornment position="start">
                 <Search />
               </InputAdornment>
-            ),
+            )
           }}
         />
       </Box>
@@ -193,8 +191,12 @@ const BlogPage = () => {
               <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
                 <Avatar src={post.avatar} sx={{ width: 40, height: 40, mr: 2 }} />
                 <Box>
-                  <Typography variant="body1" fontWeight={600}>{post.fullName}</Typography>
-                  <Typography variant="body2" color="text.secondary">{post.date}</Typography>
+                  <Typography variant="body1" fontWeight={600}>
+                    {post.fullName}
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary">
+                    {post.date}
+                  </Typography>
                 </Box>
               </Box>
               <Typography variant="h4" fontWeight={600} color="primary">
@@ -211,16 +213,26 @@ const BlogPage = () => {
               <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mt: 2, color: '#555' }}>
                 <Box sx={{ display: 'flex', alignItems: 'center' }}>
                   <ThumbUpAlt sx={{ color: '#1877F2' }} />
-                  <Typography variant="body2" sx={{ ml: 1 }}>{post.likes} Likes</Typography>
+                  <Typography variant="body2" sx={{ ml: 1 }}>
+                    {post.likes} Likes
+                  </Typography>
                 </Box>
 
-                <Typography variant="body2">{post.comments.length} Comments · {post.shares} Shares</Typography>
+                <Typography variant="body2">
+                  {post.comments.length} Comments · {post.shares} Shares
+                </Typography>
               </Box>
 
               <Stack direction="row" justifyContent="space-around" sx={{ mt: 1, borderTop: '1px solid #ddd', pt: 1 }}>
-                <Button startIcon={<ThumbUp />} onClick={() => handleLike(index)}>Like</Button>
-                <Button startIcon={<ChatBubbleOutline />} onClick={() => handleCommentToggle(index)}>Comment</Button>
-                <Button startIcon={<Share />} onClick={(event) => handleShareClick(event, index)}>Share</Button>
+                <Button startIcon={<ThumbUp />} onClick={() => handleLike(index)}>
+                  Like
+                </Button>
+                <Button startIcon={<ChatBubbleOutline />} onClick={() => handleCommentToggle(index)}>
+                  Comment
+                </Button>
+                <Button startIcon={<Share />} onClick={(event) => handleShareClick(event, index)}>
+                  Share
+                </Button>
               </Stack>
 
               {/* Comment Section */}
@@ -243,44 +255,41 @@ const BlogPage = () => {
                     <Box key={cIndex} sx={{ display: 'flex', alignItems: 'center', mt: 2, p: 1, background: '#f0f2f5', borderRadius: 2 }}>
                       <Avatar src={comment.avatar} sx={{ width: 32, height: 32, mr: 1 }} />
                       <Box>
-                        <Typography variant="body2" fontWeight={600}>{comment.name}</Typography>
-                        <Typography variant="body2" color="text.secondary">{comment.date}</Typography>
+                        <Typography variant="body2" fontWeight={600}>
+                          {comment.name}
+                        </Typography>
+                        <Typography variant="body2" color="text.secondary">
+                          {comment.date}
+                        </Typography>
                         <Typography variant="body1">{comment.text}</Typography>
                       </Box>
                     </Box>
                   ))}
                 </Box>
               )}
-
             </CardContent>
           </Card>
         ))}
         {/* Thanh chuyển trang */}
         <Box sx={{ display: 'flex', justifyContent: 'center', mt: 3 }}>
-          <Pagination
-            count={Math.ceil(filteredPosts.length / postsPerPage)}
-            page={page}
-            onChange={handlePageChange}
-            color="primary"
-          />
+          <Pagination count={Math.ceil(filteredPosts.length / postsPerPage)} page={page} onChange={handlePageChange} color="primary" />
         </Box>
       </Container>
 
       <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleClose}>
-        <MenuItem onClick={() => handleShare("facebook")}>
-          <Facebook sx={{ color: "#1877F2", mr: 1 }} /> Facebook
+        <MenuItem onClick={() => handleShare('facebook')}>
+          <Facebook sx={{ color: '#1877F2', mr: 1 }} /> Facebook
         </MenuItem>
-        <MenuItem onClick={() => handleShare("twitter")}>
-          <Twitter sx={{ color: "#1DA1F2", mr: 1 }} /> Twitter
+        <MenuItem onClick={() => handleShare('twitter')}>
+          <Twitter sx={{ color: '#1DA1F2', mr: 1 }} /> Twitter
         </MenuItem>
-        <MenuItem onClick={() => handleShare("linkedin")}>
-          <LinkedIn sx={{ color: "#0A66C2", mr: 1 }} /> LinkedIn
+        <MenuItem onClick={() => handleShare('linkedin')}>
+          <LinkedIn sx={{ color: '#0A66C2', mr: 1 }} /> LinkedIn
         </MenuItem>
-        <MenuItem onClick={() => handleShare("instagram")}>
-          <Instagram sx={{ color: "#E1306C", mr: 1 }} /> Instagram
+        <MenuItem onClick={() => handleShare('instagram')}>
+          <Instagram sx={{ color: '#E1306C', mr: 1 }} /> Instagram
         </MenuItem>
       </Menu>
-
 
       {/* Footer */}
       <Box sx={{ background: '#f5f5f5', py: 3, textAlign: 'center', mt: 4, borderTop: '1px solid #ddd' }}>

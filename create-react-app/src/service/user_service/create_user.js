@@ -1,9 +1,9 @@
 import axios from 'axios';
 import API_URL from '../api_service.js';
 
-const createUser = async (userData) => {
+const createUser = async (roleId, userData) => {
   try {
-    const response = await axios.post(`${API_URL}api/register/2`, userData, {
+    const response = await axios.post(`${API_URL}api/register/${roleId}`, userData, {
       headers: {
         'Content-Type': 'application/json'
       }

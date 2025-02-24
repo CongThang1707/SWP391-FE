@@ -15,6 +15,7 @@ const UtilsMaterialIcons = Loadable(lazy(() => import('views/utilities/MaterialI
 const UtilsTablerIcons = Loadable(lazy(() => import('views/utilities/TablerIcons')));
 const DoctorDetail = Loadable(lazy(() => import('views/sample-page/doctor_detail')));
 const ParentDetail = Loadable(lazy(() => import('views/sample-page/parent_detail')));
+const ChildrenDetail = Loadable(lazy(() => import('views/sample-page/children_detail')));
 
 // ==============================|| MAIN ROUTING ||============================== //
 
@@ -87,6 +88,10 @@ const AdminRoutes = {
     {
       path: 'parent-detail/:id',
       element: <ParentDetail />
+    },
+    {
+      path: 'children-detail/:id',
+      element: <ChildrenDetail />
     }
   ]
 };
