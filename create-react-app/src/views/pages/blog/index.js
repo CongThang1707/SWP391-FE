@@ -1,57 +1,51 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Avatar, Typography, Container, Card, CardContent, Box, Button, Stack, TextField, InputAdornment } from '@mui/material';
 import { ThumbUp, ChatBubbleOutline, Share, ThumbUpAlt, Send, Search } from '@mui/icons-material';
 import { Menu, MenuItem } from '@mui/material';
 import { Facebook, Instagram, Twitter, LinkedIn } from '@mui/icons-material';
 import { Pagination } from '@mui/material';
-
-
-const blogPosts = [
-  {
-    title: 'How to Improve Your Coding Skills',
-    description: 'Learn the best practices to become a better programmer and write cleaner code.',
-    content: 'Coding is an essential skill in the digital age. To improve your skills, practice daily, read code from experienced developers, and work on real projects.',
-    avatar: 'https://randomuser.me/api/portraits/men/1.jpg', // Avatar
-    date: 'February 20, 2025', // Ngày đăng
-    likes: 120,
-    comments: [],
-    shares: 10
-  },
-  {
-    title: 'Top 10 JavaScript Frameworks in 2025',
-    description: 'Explore the most popular JavaScript frameworks and libraries to stay ahead.',
-    content: 'JavaScript frameworks evolve quickly. In 2025, the top frameworks include React, Vue, Svelte, and more, each offering unique advantages.',
-    avatar: 'https://randomuser.me/api/portraits/women/2.jpg',
-    date: 'February 18, 2025',
-    likes: 250,
-    comments: [],
-    shares: 25
-  },
-  {
-    title: 'Why UI/UX Design Matters',
-    description: 'Discover how good design improves user experience and engagement.',
-    content: 'A well-designed UI/UX improves usability, retention, and customer satisfaction, making it crucial for any product.',
-    avatar: 'https://randomuser.me/api/portraits/men/3.jpg',
-    date: 'February 15, 2025',
-    likes: 180,
-    comments: [],
-    shares: 15
-  }
-];
-
+import  getAllBlog  from '../../../service/blog_services/get_blog.js';
 
 const BlogPage = () => {
-  const [posts, setPosts] = useState(blogPosts);
+  const [posts, setPosts] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [commentInputs, setCommentInputs] = useState(Array(posts.length).fill(""));
   const [showComments, setShowComments] = useState(Array(posts.length).fill(false));
 
+  useEffect(() => {
+    const fetchBlogs = async () => {
+      try {
+        const blogData = await getAllBlog(); // Gọi API lấy danh sách blog
+        const formattedPosts = blogData.map(post => ({
+          avatar: post.avatar || "https://randomuser.me/api/portraits/men/4.jpg", // Avatar người đăng
+          fullName : post.fullName,
+          date: post.date || new Date().toLocaleDateString(), // Ngày đăng
+          title: post.title || "Untitled Post", // Tiêu đề bài viết
+          description: post.description || "No description available", // Mô tả ngắn
+          content: post.content || "No content available", // Nội dung bài viết
+          likes: post.likes || 0, // Số lượt thích
+          comments: post.comments || [], // Danh sách bình luận
+          shares: post.shares || 0, // Số lần chia sẻ
+        }));
+  
+        setPosts(formattedPosts); // Cập nhật state posts
+        setCommentInputs(Array(formattedPosts.length).fill("")); // Khởi tạo input cho comment
+        setShowComments(Array(formattedPosts.length).fill(false)); // Khởi tạo trạng thái hiển thị comment
+      } catch (error) {
+        console.error("Error fetching blogs:", error);
+      }
+    };
+  
+    fetchBlogs();
+  }, []);
+  
+
   const filteredPosts = searchTerm
-  ? posts.filter(post =>
+    ? posts.filter(post =>
       post.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
       post.content.toLowerCase().includes(searchTerm.toLowerCase())
     )
-  : posts;
+    : posts;
 
   const handleLike = (index) => {
     const newPosts = [...posts];
@@ -199,7 +193,7 @@ const BlogPage = () => {
               <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
                 <Avatar src={post.avatar} sx={{ width: 40, height: 40, mr: 2 }} />
                 <Box>
-                  <Typography variant="body1" fontWeight={600}>Author Name</Typography>
+                  <Typography variant="body1" fontWeight={600}>{post.fullName}</Typography>
                   <Typography variant="body2" color="text.secondary">{post.date}</Typography>
                 </Box>
               </Box>
@@ -262,14 +256,14 @@ const BlogPage = () => {
           </Card>
         ))}
         {/* Thanh chuyển trang */}
-      <Box sx={{ display: 'flex', justifyContent: 'center', mt: 3 }}>
-        <Pagination 
-          count={Math.ceil(filteredPosts.length / postsPerPage)}
-          page={page}
-          onChange={handlePageChange}
-          color="primary"
-        />
-      </Box>
+        <Box sx={{ display: 'flex', justifyContent: 'center', mt: 3 }}>
+          <Pagination
+            count={Math.ceil(filteredPosts.length / postsPerPage)}
+            page={page}
+            onChange={handlePageChange}
+            color="primary"
+          />
+        </Box>
       </Container>
 
       <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleClose}>
