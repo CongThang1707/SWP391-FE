@@ -75,9 +75,9 @@ const FirebaseLogin = ({ ...others }) => {
               if (response.data.roleName === 'Admin') {
                 navigate('/dashboard/default', { replace: true });
               } else if (response.data.roleName === 'Parent') {
-                navigate('/pages/page1/homepage', { replace: true });
+                navigate('/', { replace: true });
               } else if (response.data.roleName === 'Doctor') {
-                navigate('/pages/page2/homepage', { replace: true });
+                navigate('/', { replace: true });
               }
             }
           } catch (error) {

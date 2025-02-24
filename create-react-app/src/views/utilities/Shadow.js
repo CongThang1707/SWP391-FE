@@ -1,125 +1,111 @@
-import PropTypes from 'prop-types';
-
-// material-ui
-import { Box, Card, Grid } from '@mui/material';
-
-// project imports
-import SubCard from 'ui-component/cards/SubCard';
+import { Grid, Button } from '@mui/material';
 import MainCard from 'ui-component/cards/MainCard';
-import SecondaryAction from 'ui-component/cards/CardSecondaryAction';
-import { gridSpacing } from 'store/constant';
+import React, { useState, useEffect } from 'react';
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TableSortLabel, TablePagination, Paper } from '@mui/material';
+import { getAllChildren } from '../../service/children-services/get_children.js';
+import { useNavigate } from 'react-router-dom';
 
-// ===============================|| SHADOW BOX ||=============================== //
+const EnhancedTable = () => {
+  const [childrenData, setChildrenData] = useState([]);
+  const [order, setOrder] = useState('asc');
+  const [orderBy, setOrderBy] = useState('fullName');
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const navigate = useNavigate();
 
-const ShadowBox = ({ shadow }) => (
-  <Card sx={{ mb: 3, boxShadow: shadow }}>
-    <Box
-      sx={{
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        py: 4.5,
-        bgcolor: 'primary.light',
-        color: 'grey.800'
-      }}
-    >
-      <Box sx={{ color: 'inherit' }}>boxShadow: {shadow}</Box>
-    </Box>
-  </Card>
-);
+  useEffect(() => {
+    const fetchChildrenData = async () => {
+      const data = await getAllChildren();
+      setChildrenData(data);
+    };
+    fetchChildrenData();
+  }, []);
 
-ShadowBox.propTypes = {
-  shadow: PropTypes.string.isRequired
+  const handleRequestSort = (event, property) => {
+    const isAsc = orderBy === property && order === 'asc';
+    setOrder(isAsc ? 'desc' : 'asc');
+    setOrderBy(property);
+    setParentData((prevData) =>
+      [...prevData].sort((a, b) => {
+        if (property === 'phone') {
+          return isAsc ? a[property] - b[property] : b[property] - a[property];
+        }
+        if (a[property] < b[property]) return isAsc ? -1 : 1;
+        if (a[property] > b[property]) return isAsc ? 1 : -1;
+        return 0;
+      })
+    );
+  };
+
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
+
+  return (
+    <MainCard title="Children" content={false}>
+      <Grid container>
+        <TableContainer component={Paper}>
+          <Table sx={{ minWidth: 650 }}>
+            <TableHead>
+              <TableRow>
+                {[
+                  { id: 'childrenName', label: 'Children Name' },
+                  { id: 'age', label: 'Age' },
+                  { id: 'gender', label: 'Gender' },
+                  { id: 'username', label: 'Parent Name' },
+                  { id: 'action', label: 'Action' }
+                ].map((head) => (
+                  <TableCell key={head.id}>
+                    <TableSortLabel
+                      active={orderBy === head.id}
+                      direction={orderBy === head.id ? order : 'asc'}
+                      onClick={(event) => handleRequestSort(event, head.id)}
+                    >
+                      {head.label}
+                    </TableSortLabel>
+                  </TableCell>
+                ))}
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {childrenData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((children) => (
+                <TableRow key={children.childrenId}>
+                  <TableCell>{children.childrenName}</TableCell>
+                  <TableCell>{children.age}</TableCell>
+                  <TableCell>{children.gender}</TableCell>
+                  <TableCell>{children.parentId.fullName}</TableCell>
+                  <TableCell>
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      size="small"
+                      onClick={() => navigate(`/children-detail/${children.childrenId}`)}
+                    >
+                      Detail
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+        <TablePagination
+          rowsPerPageOptions={[5, 10, 25]}
+          component="div"
+          count={childrenData.length}
+          rowsPerPage={rowsPerPage}
+          page={page}
+          onPageChange={handleChangePage}
+          onRowsPerPageChange={handleChangeRowsPerPage}
+        />
+      </Grid>
+    </MainCard>
+  );
 };
 
-// ============================|| UTILITIES SHADOW ||============================ //
-
-const UtilitiesShadow = () => (
-  <MainCard title="Basic Shadow" secondary={<SecondaryAction link="https://next.material-ui.com/system/shadows/" />}>
-    <Grid container spacing={gridSpacing}>
-      <Grid item xs={12}>
-        <SubCard title="Basic Shadow">
-          <Grid container spacing={gridSpacing}>
-            <Grid item xs={12} sm={6} md={4} lg={3}>
-              <ShadowBox shadow="0" />
-            </Grid>
-            <Grid item xs={12} sm={6} md={4} lg={3}>
-              <ShadowBox shadow="1" />
-            </Grid>
-            <Grid item xs={12} sm={6} md={4} lg={3}>
-              <ShadowBox shadow="2" />
-            </Grid>
-            <Grid item xs={12} sm={6} md={4} lg={3}>
-              <ShadowBox shadow="3" />
-            </Grid>
-            <Grid item xs={12} sm={6} md={4} lg={3}>
-              <ShadowBox shadow="4" />
-            </Grid>
-            <Grid item xs={12} sm={6} md={4} lg={3}>
-              <ShadowBox shadow="5" />
-            </Grid>
-            <Grid item xs={12} sm={6} md={4} lg={3}>
-              <ShadowBox shadow="6" />
-            </Grid>
-            <Grid item xs={12} sm={6} md={4} lg={3}>
-              <ShadowBox shadow="7" />
-            </Grid>
-            <Grid item xs={12} sm={6} md={4} lg={3}>
-              <ShadowBox shadow="8" />
-            </Grid>
-            <Grid item xs={12} sm={6} md={4} lg={3}>
-              <ShadowBox shadow="9" />
-            </Grid>
-            <Grid item xs={12} sm={6} md={4} lg={3}>
-              <ShadowBox shadow="10" />
-            </Grid>
-            <Grid item xs={12} sm={6} md={4} lg={3}>
-              <ShadowBox shadow="11" />
-            </Grid>
-            <Grid item xs={12} sm={6} md={4} lg={3}>
-              <ShadowBox shadow="12" />
-            </Grid>
-            <Grid item xs={12} sm={6} md={4} lg={3}>
-              <ShadowBox shadow="13" />
-            </Grid>
-            <Grid item xs={12} sm={6} md={4} lg={3}>
-              <ShadowBox shadow="14" />
-            </Grid>
-            <Grid item xs={12} sm={6} md={4} lg={3}>
-              <ShadowBox shadow="15" />
-            </Grid>
-            <Grid item xs={12} sm={6} md={4} lg={3}>
-              <ShadowBox shadow="16" />
-            </Grid>
-            <Grid item xs={12} sm={6} md={4} lg={3}>
-              <ShadowBox shadow="17" />
-            </Grid>
-            <Grid item xs={12} sm={6} md={4} lg={3}>
-              <ShadowBox shadow="18" />
-            </Grid>
-            <Grid item xs={12} sm={6} md={4} lg={3}>
-              <ShadowBox shadow="19" />
-            </Grid>
-            <Grid item xs={12} sm={6} md={4} lg={3}>
-              <ShadowBox shadow="20" />
-            </Grid>
-            <Grid item xs={12} sm={6} md={4} lg={3}>
-              <ShadowBox shadow="21" />
-            </Grid>
-            <Grid item xs={12} sm={6} md={4} lg={3}>
-              <ShadowBox shadow="22" />
-            </Grid>
-            <Grid item xs={12} sm={6} md={4} lg={3}>
-              <ShadowBox shadow="23" />
-            </Grid>
-            <Grid item xs={12} sm={6} md={4} lg={3}>
-              <ShadowBox shadow="24" />
-            </Grid>
-          </Grid>
-        </SubCard>
-      </Grid>
-    </Grid>
-  </MainCard>
-);
-
-export default UtilitiesShadow;
+export default EnhancedTable;

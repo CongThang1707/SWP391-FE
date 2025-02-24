@@ -90,7 +90,7 @@ const EnhancedTable = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
-      await createUser(newUser); // Gọi API để tạo user mới
+      await createUser(2, newUser); // Gọi API để tạo user mới
       const updatedData = await getUserByRoleId(2); // Lấy lại danh sách user mới nhất
       setParentData(updatedData); // Cập nhật danh sách hiển thị ngay lập tức
       handleCloseDialog();
