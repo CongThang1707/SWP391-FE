@@ -12,9 +12,14 @@ const getUserByRoleId = async (roleId) => {
 
 export { getUserByRoleId };
 
-export const getUserById = async (userId) => {
+export const getUserById = async () => {
   try {
-    const response = await axios.get(`${API_URL}api/getUserById/${userId}`);
+    const userId = localStorage.getItem('userId'); // Lấy userId từ localStorage
+    if (!userId) {
+      throw new Error('User ID not found in localStorage');
+    }
+
+    const response = await axios.get(`${API_URL}api/user/${userId}`);
     return response.data;
   } catch (error) {
     console.error('Error fetching user by ID:', error);
