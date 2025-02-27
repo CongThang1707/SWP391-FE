@@ -53,17 +53,17 @@ const FirebaseLogin = ({ ...others }) => {
 
       <Formik
         initialValues={{
-          username: '',
+          usernameOrEmail: '',
           password: '',
           submit: null
         }}
         validationSchema={Yup.object().shape({
-          username: Yup.string().required('Username can not be empty'),
+          usernameOrEmail: Yup.string().required('Username or email can not be empty'),
           password: Yup.string().required('Password can not be empty')
         })}
         onSubmit={async (values, { setStatus, setSubmitting }) => {
           try {
-            const response = await axios.post(`http://localhost:8080/auth/login?username=${values.username}&password=${values.password}`);
+            const response = await axios.post(`http://localhost:8080/auth/login`, values);
 
             if (response.status === 200) {
               // Successful login (handle token/session storage, etc.)
@@ -105,13 +105,17 @@ const FirebaseLogin = ({ ...others }) => {
       >
         {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values }) => (
           <form noValidate onSubmit={handleSubmit} {...others}>
-            <FormControl fullWidth error={Boolean(touched.username && errors.username)} sx={{ ...theme.typography.customInput }}>
+            <FormControl
+              fullWidth
+              error={Boolean(touched.usernameOrEmail && errors.usernameOrEmail)}
+              sx={{ ...theme.typography.customInput }}
+            >
               <InputLabel htmlFor="outlined-adornment-email-login">Email Address / Username</InputLabel>
               <OutlinedInput
                 id="outlined-adornment-email-login"
                 type="email"
-                value={values.username}
-                name="username"
+                value={values.usernameOrEmail}
+                name="usernameOrEmail"
                 onBlur={handleBlur}
                 onChange={handleChange}
                 label="Email Address / Username"

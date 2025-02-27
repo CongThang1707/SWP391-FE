@@ -8,7 +8,7 @@ export const getChildrenByParentId = async () => {
       throw new Error('Parent ID not found in localStorage');
     }
 
-    const response = await axios.get(`${API_URL}children/children/${parentId}`);
+    const response = await axios.get(`${API_URL}childrenAPI/childrenByParentId?parentId=${parentId}`);
     return response.data;
   } catch (error) {
     console.error('Error fetching children by parent ID:', error);
