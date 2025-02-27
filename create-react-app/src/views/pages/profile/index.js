@@ -80,7 +80,7 @@ const Profile = () => {
           {children.length > 0 ? (
             <Stack spacing={1} sx={{ mt: 1 }}>
               {children.map((child) => (
-                <Box key={child.id} sx={{ p: 1, border: '1px solid #ccc', borderRadius: 2 }}>
+                <Box key={child.childrenId} sx={{ p: 1, border: '1px solid #ccc', borderRadius: 2 }}>
                   <Typography variant="body2" fontWeight="bold" color="primary">
                     Name: {child.childrenName || 'N/A'}
                   </Typography>

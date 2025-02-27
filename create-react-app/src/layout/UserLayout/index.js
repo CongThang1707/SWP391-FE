@@ -5,13 +5,13 @@ import { Outlet, useNavigate } from 'react-router-dom';
 
 const pages = [
   { name: 'Home', path: '/' },
-  { name: 'Appointments', path: '/appointments' },
-  { name: 'Blog', path: '/pages/page1/blog' },
-  { name: 'Contact', path: '/pages/page1/contact' }
+  { name: 'Appointments', path: '/appointment' },
+  { name: 'Blog', path: '/blog' },
+  { name: 'Contact', path: '/contact' }
 ];
 
 const settings = [
-  { name: 'Profile', path: '/pages/page1/profile' },
+  { name: 'Profile', path: '/profile' },
   { name: 'Account', path: '/account' },
   { name: 'Dashboard', path: '/dashboard' },
   { name: 'Logout', path: '/logout' }

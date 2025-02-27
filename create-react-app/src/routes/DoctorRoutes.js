@@ -2,22 +2,36 @@ import { lazy } from 'react';
 
 // project imports
 import Loadable from 'ui-component/Loadable';
-import MinimalLayout from 'layout/MinimalLayout';
+import ResponsiveAppBar from 'layout/UserLayout';
 
 // login option 3 routing
 const DoctorHomePage = Loadable(lazy(() => import('views/pages/homepage/index.js')));
-
+const DoctorProfilePage = Loadable(lazy(() => import('views/pages/profile/index.js')));
+const DoctorContactPage = Loadable(lazy(() => import('views/pages/contact/index.js')));
+const DoctorBlogPage = Loadable(lazy(() => import('views/pages/blog/index.js')));
 // ==============================|| PARENT ROUTING ||============================== //
 
-const ParentRoutes = {
+const DoctorRoutes = {
   path: '/',
-  element: <MinimalLayout />,
+  element: <ResponsiveAppBar />,
   children: [
     {
-      path: '/pages/page2/homepage',
+      path: '/',
       element: <DoctorHomePage />
+    },
+    {
+      path: '/profile',
+      element: <DoctorProfilePage />
+    },
+    {
+      path: '/contact',
+      element: <DoctorContactPage />
+    },
+    {
+      path: '/blog',
+      element: <DoctorBlogPage />
     }
   ]
 };
 
-export default ParentRoutes;
+export default DoctorRoutes;
