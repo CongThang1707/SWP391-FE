@@ -1,5 +1,5 @@
 import { lazy } from 'react';
-
+//ParentRoutes.js
 // project imports
 import Loadable from 'ui-component/Loadable';
 import ResponsiveAppBar from 'layout/UserLayout';
@@ -10,6 +10,7 @@ const ParentBlogPage = Loadable(lazy(() => import('views/pages/blog/index.js')))
 const ParentProfilePage = Loadable(lazy(() => import('views/pages/profile/index.js')));
 const ParentContactPage = Loadable(lazy(() => import('views/pages/contact/index.js')));
 const ParentAppointmentPage = Loadable(lazy(() => import('views/pages/appointment/ParentAppointment.js')));
+const ChildrenDetailPage = Loadable(lazy(() => import('views/sample-page/parent_child_detail.js')));
 
 // ==============================|| PARENT ROUTING ||============================== //
 
@@ -36,6 +37,10 @@ const ParentRoutes = {
     {
       path: '/appointment',
       element: <ParentAppointmentPage />
+    },
+    {
+      path: '/children/:id', // Định nghĩa đúng tham số động :id
+      element: <ChildrenDetailPage />
     }
   ]
 };
