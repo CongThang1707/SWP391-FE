@@ -41,6 +41,22 @@ const utilities = {
       breadcrumbs: false
     },
     {
+      id: 'util-blog',
+      title: 'Blog',
+      type: 'item',
+      url: '/utils/util-blog',
+      icon: icons.IconShadow,
+      breadcrumbs: false
+    },
+    {
+      id: 'util-booking',
+      title: 'Booking',
+      type: 'item',
+      url: '/utils/util-booking',
+      icon: icons.IconShadow,
+      breadcrumbs: false
+    },
+    {
       id: 'icons',
       title: 'Icons',
       type: 'collapse',

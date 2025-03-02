@@ -1,36 +1,32 @@
-import { Grid, Button } from '@mui/material';
+import { Grid, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TableSortLabel, TablePagination, Paper, Button } from '@mui/material';
 import MainCard from 'ui-component/cards/MainCard';
 import React, { useState, useEffect } from 'react';
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TableSortLabel, TablePagination, Paper } from '@mui/material';
-import { getUserByRoleId } from '../../service/user_service/get_user.js';
-import { deleteUserById } from '../../service/user_service/delete_user.js';
+import getAllBlog from '../../service/blog_services/get_blog.js';
 import { useNavigate } from 'react-router-dom';
+import { deleteBlog } from '../../service/blog_services/get_blog.js';
 
 const EnhancedTable = () => {
-  const [parentData, setParentData] = useState([]);
+  const [blogData, setBlogData] = useState([]);
   const [order, setOrder] = useState('asc');
-  const [orderBy, setOrderBy] = useState('fullName');
+  const [orderBy, setOrderBy] = useState('date');
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchUserData = async () => {
-      const data = await getUserByRoleId(3);
-      setParentData(data);
+    const fetchBlogData = async () => {
+      const data = await getAllBlog();
+      setBlogData(data);
     };
-    fetchUserData();
+    fetchBlogData();
   }, []);
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
     setOrder(isAsc ? 'desc' : 'asc');
     setOrderBy(property);
-    setParentData((prevData) =>
+    setBlogData((prevData) =>
       [...prevData].sort((a, b) => {
-        if (property === 'phone') {
-          return isAsc ? a[property] - b[property] : b[property] - a[property];
-        }
         if (a[property] < b[property]) return isAsc ? -1 : 1;
         if (a[property] > b[property]) return isAsc ? 1 : -1;
         return 0;
@@ -47,34 +43,34 @@ const EnhancedTable = () => {
     setPage(0);
   };
 
-  const handleDeleteUser = async (userId) => {
-    if (window.confirm('Are you sure you want to delete this user?')) {
+  const handleDeleteBlog = async (blogId) => {
+    if (window.confirm('Are you sure you want to delete this blog?')) {
       try {
-        await deleteUserById(userId);
+        await deleteBlog(blogId);
 
         // Cập nhật danh sách sau khi xóa thành công
-        setParentData((prevData) => prevData.filter((user) => user.user_id !== userId));
+        setBlogData((prevData) => prevData.filter((blog) => blog.blogId !== blogId));
 
-        console.log(`User ${userId} deleted successfully!`);
+        console.log(`Blog ${blogId} deleted successfully!`);
       } catch (error) {
-        console.error('Failed to delete user:', error.response ? error.response.data : error.message);
-        alert('Error deleting user. Please try again.');
+        console.error('Failed to delete blog:', error.response ? error.response.data : error.message);
+        alert('Error deleting blog. Please try again.');
       }
     }
   };
 
   return (
-    <MainCard title="Parent" content={false}>
+    <MainCard title="Blog List" content={false}>
       <Grid container>
         <TableContainer component={Paper}>
           <Table sx={{ minWidth: 650 }}>
             <TableHead>
               <TableRow>
                 {[
-                  { id: 'username', label: 'Username' },
-                  { id: 'fullName', label: 'Full Name' },
-                  { id: 'email', label: 'Email' },
-                  { id: 'phone', label: 'Phone' },
+                  { id: 'fullName', label: 'Author' },
+                  { id: 'title', label: 'Title' },
+                  { id: 'description', label: 'Description' },
+                  { id: 'date', label: 'Date' },
                   { id: 'action', label: 'Action' }
                 ].map((head) => (
                   <TableCell key={head.id}>
@@ -88,16 +84,16 @@ const EnhancedTable = () => {
                   </TableCell>
                 ))}
               </TableRow>
-            </TableHead>  
+            </TableHead>
             <TableBody>
-              {parentData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((parent) => (
-                <TableRow key={parent.user_id}>
-                  <TableCell>{parent.username}</TableCell>
-                  <TableCell>{parent.fullName}</TableCell>
-                  <TableCell>{parent.email}</TableCell>
-                  <TableCell>{parent.phone}</TableCell>
+              {blogData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((blog, index) => (
+                <TableRow key={blog.blogId || `blog-${index}`}>
+                  <TableCell>{blog.fullName}</TableCell>
+                  <TableCell>{blog.title}</TableCell>
+                  <TableCell>{blog.description}</TableCell>
+                  <TableCell>{blog.date}</TableCell>
                   <TableCell>
-                    <Button variant="contained" color="primary" size="small" onClick={() => navigate(`/parent-detail/${parent.user_id}`)}>
+                    <Button variant="contained" color="primary" size="small" onClick={() => navigate(`/blog-detail/${blog.blogId}`)}>
                       Detail
                     </Button>
                     <Button
@@ -105,10 +101,11 @@ const EnhancedTable = () => {
                       color="secondary"
                       size="small"
                       style={{ marginLeft: 8 }}
-                      onClick={() => handleDeleteUser(parent.user_id)}
+                      onClick={() => handleDeleteBlog(blog.blogId)}
                     >
                       Delete
                     </Button>
+
                   </TableCell>
                 </TableRow>
               ))}
@@ -118,7 +115,7 @@ const EnhancedTable = () => {
         <TablePagination
           rowsPerPageOptions={[5, 10, 25]}
           component="div"
-          count={parentData.length}
+          count={blogData.length}
           rowsPerPage={rowsPerPage}
           page={page}
           onPageChange={handleChangePage}
