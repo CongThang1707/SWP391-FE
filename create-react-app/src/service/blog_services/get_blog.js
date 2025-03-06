@@ -24,7 +24,7 @@ const getBlogById = async (Blog_id) => {
 const deleteBlog = async (Blog_id) => {
   try {
     const response = await axios.delete(`${API_URL}blogAPI/deleteBlog/${Blog_id}`);
-    return response.data;
+    return response.data;    
   } catch (error) {
     console.error(`Error deleting blog with ID ${Blog_id}:`, error);
     return null;

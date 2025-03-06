@@ -69,13 +69,14 @@ const FirebaseRegister = ({ ...others }) => {
           validationSchema={Yup.object().shape({
             username: Yup.string().max(255).required('User Name is required'),
             password: Yup.string().max(255).required('Password is required'),
+            email: Yup.string().max(255).required('Email is required'),
             fullName: Yup.string().max(255).required('Full Name is required'),
             gender: Yup.string().max(255).required('Gender is required'),
             phone: Yup.string().max(255).required('Phone is required')
           })}
           onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
             try {
-              const response = await createUser(1, values);
+              const response = await createUser(3, values);
               console.log('Register Success:', response.data);
               navigate('/pages/login/login3');
               if (scriptedRef.current) {
@@ -133,6 +134,20 @@ const FirebaseRegister = ({ ...others }) => {
                   }
                 />
                 {touched.password && errors.password && <FormHelperText error>{errors.password}</FormHelperText>}
+              </FormControl>
+                  
+              <FormControl fullWidth error={Boolean(touched.email && errors.email)} sx={{ mb: 2 }}>
+                <InputLabel htmlFor="outlined-adornment-email-register">Email</InputLabel>
+                <OutlinedInput
+                  id="outlined-adornment-email-register"
+                  type="email"
+                  value={values.email}
+                  name="email"
+                  label="Email"
+                  onBlur={handleBlur}
+                  onChange={handleChange}
+                />
+                {touched.email && errors.email && <FormHelperText error>{errors.email}</FormHelperText>}
               </FormControl>
 
               <FormControl fullWidth error={Boolean(touched.fullName && errors.fullName)} sx={{ mb: 2 }}>
@@ -247,121 +262,3 @@ const FirebaseRegister = ({ ...others }) => {
 };
 
 export default FirebaseRegister;
-
-// import { useState } from 'react';
-// import { useNavigate } from 'react-router-dom';
-// import { useTheme } from '@mui/material/styles';
-// import { Button, FormControl, FormHelperText, Grid, IconButton, InputAdornment, InputLabel, OutlinedInput } from '@mui/material';
-// import * as Yup from 'yup';
-// import { Formik } from 'formik';
-// import Visibility from '@mui/icons-material/Visibility';
-// import VisibilityOff from '@mui/icons-material/VisibilityOff';
-// import { createUser } from '../../../../service/user_service/create_user.js';
-
-// const FirebaseRegister = () => {
-//   const theme = useTheme();
-//   const navigate = useNavigate();
-//   const [showPassword, setShowPassword] = useState(false);
-
-//   const handleClickShowPassword = () => setShowPassword(!showPassword);
-//   const handleMouseDownPassword = (event) => event.preventDefault();
-
-//   return (
-//     <Grid container direction="column" justifyContent="center">
-//       <Formik
-//         initialValues={{
-//           username: '',
-//           password: '',
-//           fullName: '',
-//           gender: '',
-//           phone: ''
-//         }}
-//         validationSchema={Yup.object().shape({
-//           username: Yup.string().required('User Name is required'),
-//           password: Yup.string().min(6, 'Password must be at least 6 characters').required('Password is required'),
-//           fullName: Yup.string().required('Full Name is required'),
-//           gender: Yup.string().required('Gender is required'),
-//           phone: Yup.string().required('Phone is required')
-//         })}
-//         onSubmit={async (values, { setErrors, setSubmitting }) => {
-//           try {
-//             const response = await createUser(1, values);
-//             console.log('Register Success:', response.data);
-
-//             // Chuyển hướng sau khi đăng ký thành công
-//             navigate('/login');
-//           } catch (error) {
-//             console.error('Register Error:', error);
-//             setErrors({ submit: error.response?.data?.message || 'Registration failed' });
-//           }
-//           setSubmitting(false);
-//         }}
-//       >
-//         {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values }) => (
-//           <form noValidate onSubmit={handleSubmit}>
-//             <FormControl fullWidth error={Boolean(touched.username && errors.username)} sx={{ mb: 2, ...theme.typography.customInput }}>
-//               <InputLabel>User Name</InputLabel>
-//               <OutlinedInput type="text" value={values.username} name="username" onBlur={handleBlur} onChange={handleChange} />
-//               {touched.username && errors.username && <FormHelperText error>{errors.username}</FormHelperText>}
-//             </FormControl>
-
-//             <FormControl fullWidth error={Boolean(touched.password && errors.password)} sx={{ mb: 2, ...theme.typography.customInput }}>
-//               <InputLabel>Password</InputLabel>
-//               <OutlinedInput
-//                 type={showPassword ? 'text' : 'password'}
-//                 value={values.password}
-//                 name="password"
-//                 onBlur={handleBlur}
-//                 onChange={handleChange}
-//                 endAdornment={
-//                   <InputAdornment position="end">
-//                     <IconButton onClick={handleClickShowPassword} onMouseDown={handleMouseDownPassword} edge="end">
-//                       {showPassword ? <Visibility /> : <VisibilityOff />}
-//                     </IconButton>
-//                   </InputAdornment>
-//                 }
-//               />
-//               {touched.password && errors.password && <FormHelperText error>{errors.password}</FormHelperText>}
-//             </FormControl>
-
-//             <FormControl fullWidth error={Boolean(touched.fullName && errors.fullName)} sx={{ mb: 2, ...theme.typography.customInput }}>
-//               <InputLabel>Full Name</InputLabel>
-//               <OutlinedInput type="text" value={values.fullName} name="fullName" onBlur={handleBlur} onChange={handleChange} />
-//               {touched.fullName && errors.fullName && <FormHelperText error>{errors.fullName}</FormHelperText>}
-//             </FormControl>
-
-//             <Grid container spacing={2}>
-//               <Grid item xs={12} sm={6}>
-//                 <FormControl fullWidth error={Boolean(touched.gender && errors.gender)} sx={{ mb: 2, ...theme.typography.customInput }}>
-//                   <InputLabel>Gender</InputLabel>
-//                   <OutlinedInput type="text" value={values.gender} name="gender" onBlur={handleBlur} onChange={handleChange} />
-//                   {touched.gender && errors.gender && <FormHelperText error>{errors.gender}</FormHelperText>}
-//                 </FormControl>
-//               </Grid>
-
-//               <Grid item xs={12} sm={6}>
-//                 <FormControl fullWidth error={Boolean(touched.phone && errors.phone)} sx={{ mb: 2, ...theme.typography.customInput }}>
-//                   <InputLabel>Phone</InputLabel>
-//                   <OutlinedInput type="text" value={values.phone} name="phone" onBlur={handleBlur} onChange={handleChange} />
-//                   {touched.phone && errors.phone && <FormHelperText error>{errors.phone}</FormHelperText>}
-//                 </FormControl>
-//               </Grid>
-//             </Grid>
-
-//             {errors.submit && (
-//               <FormHelperText error sx={{ textAlign: 'center', mb: 2 }}>
-//                 {errors.submit}
-//               </FormHelperText>
-//             )}
-
-//             <Button type="submit" variant="contained" color="secondary" fullWidth disabled={isSubmitting}>
-//               {isSubmitting ? 'Registering...' : 'Sign Up'}
-//             </Button>
-//           </form>
-//         )}
-//       </Formik>
-//     </Grid>
-//   );
-// };
-
-// export default FirebaseRegister;
