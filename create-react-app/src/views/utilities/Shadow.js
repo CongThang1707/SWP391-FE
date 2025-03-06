@@ -2,7 +2,7 @@ import { Grid, Button } from '@mui/material';
 import MainCard from 'ui-component/cards/MainCard';
 import React, { useState, useEffect } from 'react';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TableSortLabel, TablePagination, Paper } from '@mui/material';
-import { getAllChildren } from '../../service/children-services/get_children.js';
+import { getAllChildren } from '../../service/children_services/get_children.js';
 import { useNavigate } from 'react-router-dom';
 
 const EnhancedTable = () => {

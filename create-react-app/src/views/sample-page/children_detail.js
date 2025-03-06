@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { getChildrenById } from '../../service/children-services/get_children.js';
+import { getChildrenById } from '../../service/children_services/get_children.js';
 
 const ChildrenDetail = () => {
   const { id } = useParams();

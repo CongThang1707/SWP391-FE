@@ -5,6 +5,7 @@ import { Menu, MenuItem } from '@mui/material';
 import { Facebook, Instagram, Twitter, LinkedIn } from '@mui/icons-material';
 import { Pagination } from '@mui/material';
 import getAllBlog from '../../../service/blog_services/get_blog.js';
+import CreateBlog from './components/CreateBlog.js';
 
 const BlogPage = () => {
   const [posts, setPosts] = useState([]);
@@ -182,7 +183,7 @@ const BlogPage = () => {
           }}
         />
       </Box>
-
+      <CreateBlog />
       <Container maxWidth="md" sx={{ mt: 4 }}>
         {currentPosts.map((post, index) => (
           <Card key={index} sx={{ mb: 4, boxShadow: 4, transition: '0.3s', '&:hover': { boxShadow: 8 } }}>

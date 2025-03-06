@@ -19,7 +19,7 @@ const UserRoutes = {
       element: <HomePage />
     },
     {
-      path: '/pages/page1/blog',
+      path: '/blog',
       element: <BlogPage />
     }
   ]
