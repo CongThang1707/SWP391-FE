@@ -69,6 +69,7 @@ const FirebaseLogin = ({ ...others }) => {
               // Successful login (handle token/session storage, etc.)
               localStorage.setItem('role', response.data.roleName);
               localStorage.setItem('userId', response.data.user_id);
+              localStorage.setItem('membership', response.data.membership);
               console.log(response.data.roleName);
               setStatus({ success: true });
               setSubmitting(false);
