@@ -3,25 +3,35 @@ import { Container, Box, Typography, Avatar, Button, TextField, Paper, Stack, Me
 import { getUserById } from '../../../service/user_service/get_user.js';
 import { updateUserById } from '../../../service/user_service/update_user.js';
 import { getChildrenByParentId } from '../../../service/children_services/get_children.js';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate
 
 const Profile = () => {
   const [user, setUser] = useState({});
   const [children, setChildren] = useState([]); // Lưu danh sách con cái
   const [editMode, setEditMode] = useState(false);
   const [formData, setFormData] = useState({});
+  const navigate = useNavigate(); // Hook điều hướng
+
+  const handleNavigateToChildDetail = (childId) => {
+    if (!childId) {
+      console.log("Error: childId is undefined or null.");
+      return;
+    }
+    navigate(`/children/${childId}`); // Chỉ điều hướng nếu childId hợp lệ
+  };
 
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const data = await getUserById(); // Lấy dữ liệu user từ API
+        const data = await getUserById(); 
         setUser(data);
         setFormData(data);
-
-        // Gọi API lấy danh sách con cái theo parentId (giả sử user có user.id là parentId)
+  
         const childrenData = await getChildrenByParentId();
+        console.log("Children data:", childrenData); // Debug xem dữ liệu trả về
         setChildren(childrenData);
       } catch (error) {
-        console.error('Error fetching data:', error);
+        console.error("Error fetching data:", error);
       }
     };
     fetchUserData();
@@ -50,51 +60,55 @@ const Profile = () => {
       <Paper elevation={4} sx={{ p: 4, mt: 4, textAlign: 'center', borderRadius: '12px' }}>
         <Avatar src={user.avatar} sx={{ width: 120, height: 120, margin: 'auto', mb: 2, border: '4px solid #3f51b5' }} />
         <Typography variant="h5" fontWeight="bold" color="primary">
-          {user.username || 'N/A'}
+          {user.username || "N/A"}
         </Typography>
-        <Typography variant="body1" color="text.secondary" sx={{ fontWeight: 'bold' }}>
-          Email: {user.email || 'N/A'}
+        <Typography variant="body1" color="text.secondary" sx={{ fontWeight: "bold" }}>
+          Email: {user.email || "N/A"}
         </Typography>
-        <Typography variant="body1" color="text.secondary" sx={{ fontWeight: 'bold' }}>
-          Full Name: {user.fullName || 'N/A'}
+        <Typography variant="body1" color="text.secondary" sx={{ fontWeight: "bold" }}>
+          Full Name: {user.fullName || "N/A"}
         </Typography>
-        <Typography variant="body1" color="text.secondary" sx={{ fontWeight: 'bold' }}>
-          Phone: {user.phone || 'N/A'}
+        <Typography variant="body1" color="text.secondary" sx={{ fontWeight: "bold" }}>
+          Phone: {user.phone || "N/A"}
         </Typography>
-        <Typography variant="body1" color="text.secondary" sx={{ fontWeight: 'bold' }}>
-          Gender: {user.gender || 'N/A'}
+        <Typography variant="body1" color="text.secondary" sx={{ fontWeight: "bold" }}>
+          Gender: {user.gender || "N/A"}
         </Typography>
-        <Typography variant="body1" color="text.secondary" sx={{ fontWeight: 'bold' }}>
-          Address: {user.address || 'N/A'}
+        <Typography variant="body1" color="text.secondary" sx={{ fontWeight: "bold" }}>
+          Address: {user.address || "N/A"}
         </Typography>
-        <Typography variant="body2" sx={{ mt: 1, fontStyle: 'italic', color: 'gray' }}>
-          Role: Parent
+        <Typography variant="body2" sx={{ mt: 1, fontStyle: "italic", color: "gray" }}>
+          Role: {user.roleName || "N/A"}
         </Typography>
 
         {/* Box chứa thông tin Children */}
-        <Box sx={{ mt: 2, p: 2, backgroundColor: '#f5f5f5', borderRadius: 2, textAlign: 'center' }}>
-          {/* <Typography variant="body1" fontWeight="bold" color="primary">
-            Role: Children
-          </Typography> */}
-
+        <Box sx={{ mt: 2, p: 2, backgroundColor: "#f5f5f5", borderRadius: 2, textAlign: "center" }}>
           {children.length > 0 ? (
             <Stack spacing={1} sx={{ mt: 1 }}>
               {children.map((child) => (
-                <Box key={child.childrenId} sx={{ p: 1, border: '1px solid #ccc', borderRadius: 2 }}>
+                <Box
+                  key={child.childrenId || Math.random()} // Tránh lỗi nếu id bị undefined
+                  sx={{ p: 1, border: "1px solid #ccc", borderRadius: 2, cursor: "pointer" }}
+                  onClick={() => handleNavigateToChildDetail(child.childrenId)} // Đảm bảo child.id hợp lệ
+                >
                   <Typography variant="body2" fontWeight="bold" color="primary">
-                    Name: {child.childrenName || 'N/A'}
+                    Name: {child.childrenName || "N/A"}
                   </Typography>
-                  <Typography variant="body2">Age: {child.age ? `${child.age} years old` : 'N/A'}</Typography>
-                  <Typography variant="body2">Gender: {child.gender || 'N/A'}</Typography>
+                  <Typography variant="body2">
+                    Age: {child.age ? `${child.age} years old` : "N/A"}
+                  </Typography>
+                  <Typography variant="body2">
+                    Gender: {child.gender || "N/A"}
+                  </Typography>
                 </Box>
               ))}
             </Stack>
           ) : (
-            <Typography variant="body2" sx={{ mt: 1, fontStyle: 'italic', color: 'gray' }}>
+            <Typography variant="body2" sx={{ mt: 1, fontStyle: "italic", color: "gray" }}>
               No children data available
             </Typography>
           )}
-          <Typography variant="body2" sx={{ mt: 1, fontStyle: 'italic', color: 'gray' }}>
+          <Typography variant="body2" sx={{ mt: 1, fontStyle: "italic", color: "gray" }}>
             Role: Children
           </Typography>
         </Box>
@@ -105,15 +119,7 @@ const Profile = () => {
             <TextField fullWidth label="Full Name" name="fullName" value={formData.fullName} onChange={handleChange} margin="dense" />
             <TextField fullWidth label="Phone" name="phone" value={formData.phone} onChange={handleChange} margin="dense" />
 
-            <TextField
-              fullWidth
-              select
-              label="Gender"
-              name="gender"
-              value={formData.gender ? formData.gender.charAt(0).toUpperCase() + formData.gender.slice(1) : ''}
-              onChange={handleChange}
-              margin="dense"
-            >
+            <TextField fullWidth select label="Gender" name="gender" value={formData.gender ? formData.gender.charAt(0).toUpperCase() + formData.gender.slice(1) : ''} onChange={handleChange} margin="dense">
               <MenuItem value="Male">male</MenuItem>
               <MenuItem value="Female">female</MenuItem>
             </TextField>
