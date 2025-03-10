@@ -9,7 +9,7 @@ const ParentHomePage = Loadable(lazy(() => import('views/pages/homepage/index.js
 const ParentBlogPage = Loadable(lazy(() => import('views/pages/blog/index.js')));
 const ParentProfilePage = Loadable(lazy(() => import('views/pages/profile/index.js')));
 const ParentContactPage = Loadable(lazy(() => import('views/pages/contact/index.js')));
-const ParentAppointmentPage = Loadable(lazy(() => import('views/pages/appointment/ParentAppointment.js')));
+const ParentAppointmentPage = Loadable(lazy(() => import('views/pages/appointment/AppointmentPage.js')));
 const ChildrenDetailPage = Loadable(lazy(() => import('views/sample-page/parent_child_detail.js')));
 
 // ==============================|| PARENT ROUTING ||============================== //

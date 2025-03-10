@@ -38,8 +38,7 @@ function ResponsiveAppBar() {
   const handleCloseUserMenu = () => setAnchorElUser(null);
 
   const handleLogout = () => {
-    localStorage.removeItem('userId'); // Xóa userId để đăng xuất
-    localStorage.removeItem('role'); // Xóa avatar nếu có
+    localStorage.clear();
     setIsLoggedIn(false);
     navigate('/');
   };

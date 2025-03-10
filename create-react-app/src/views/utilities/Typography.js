@@ -88,7 +88,7 @@ const EnhancedTable = () => {
                   </TableCell>
                 ))}
               </TableRow>
-            </TableHead>  
+            </TableHead>
             <TableBody>
               {parentData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((parent) => (
                 <TableRow key={parent.user_id}>

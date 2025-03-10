@@ -113,7 +113,7 @@ const ParentLandingPage = () => {
             {
               title: 'Basic',
               price: '$0.00',
-              features: ['Feature 1', 'Feature 2', 'Feature 3'],
+              features: ['Feature 1', 'Feature 2', 'Feature 3', 'Feature 4'],
               buttonText: 'Register',
               onClick: handleRegister
             },
