@@ -48,7 +48,7 @@ function ResponsiveAppBar() {
       <AppBar
         position="static"
         sx={{
-          background: 'linear-gradient(90deg, #1e3c72 0%, #2a5298 100%)',
+          backgroundColor: '#007bff',  
           boxShadow: '0px 4px 10px rgba(0,0,0,0.2)'
         }}
       >
