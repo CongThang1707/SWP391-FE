@@ -34,9 +34,7 @@ const ChildrenDetail = () => {
   if (!children) return <p>Children data not found!</p>;
 
   // Lọc dữ liệu theo năm được chọn
-  const filteredHealthRecord = healthRecord.filter(record =>
-    new Date(record.date).getFullYear() === selectedYear
-  );
+  const filteredHealthRecord = healthRecord.filter((record) => new Date(record.date).getFullYear() === selectedYear);
 
   // Điều chỉnh độ rộng của biểu đồ dựa trên số lượng dữ liệu
   const chartWidth = Math.max(500, Math.min(1100, filteredHealthRecord.length * 90));
@@ -44,23 +42,31 @@ const ChildrenDetail = () => {
   return (
     <div>
       <h2>Children Detail</h2>
-      <p><strong>Children Name:</strong> {children.childrenName}</p>
-      <p><strong>Age:</strong> {children.age}</p>
-      <p><strong>Gender:</strong> {children.gender}</p>
-      <p><strong>Parent Name:</strong> {children.parentName}</p>
+      <p>
+        <strong>Children Name:</strong> {children.childrenName}
+      </p>
+      <p>
+        <strong>Age:</strong> {children.age}
+      </p>
+      <p>
+        <strong>Gender:</strong> {children.gender}
+      </p>
+      <p>
+        <strong>Parent Name:</strong> {children.parentName}
+      </p>
 
       {/* Dropdown chọn năm */}
       <div style={{ marginBottom: '15px' }}>
-        <label htmlFor="yearSelect"><strong>Select Year:</strong> </label>
-        <select
-          id="yearSelect"
-          value={selectedYear}
-          onChange={(e) => setSelectedYear(parseInt(e.target.value))}
-        >
-          {[...new Set(healthRecord.map(record => new Date(record.date).getFullYear()))]
+        <label htmlFor="yearSelect">
+          <strong>Select Year:</strong>{' '}
+        </label>
+        <select id="yearSelect" value={selectedYear} onChange={(e) => setSelectedYear(parseInt(e.target.value))}>
+          {[...new Set(healthRecord.map((record) => new Date(record.date).getFullYear()))]
             .sort((a, b) => b - a) // Sắp xếp giảm dần
-            .map(year => (
-              <option key={year} value={year}>{year}</option>
+            .map((year) => (
+              <option key={year} value={year}>
+                {year}
+              </option>
             ))}
         </select>
       </div>
@@ -70,7 +76,7 @@ const ChildrenDetail = () => {
           <h3>Health Record ({selectedYear})</h3>
           <div style={{ display: 'flex', justifyContent: 'center' }}>
             <BarChart
-              dataset={filteredHealthRecord.map(record => ({
+              dataset={filteredHealthRecord.map((record) => ({
                 date: record.date,
                 weight: record.weight,
                 height: record.height,
@@ -88,13 +94,13 @@ const ChildrenDetail = () => {
                 {
                   label: 'Health Data',
                   min: 0,
-                  max: 160,
-                },
+                  max: 160
+                }
               ]}
               sx={{
                 [`.${axisClasses.left} .${axisClasses.label}`]: {
-                  transform: 'translate(-20px, 0)',
-                },
+                  transform: 'translate(-20px, 0)'
+                }
               }}
             />
           </div>

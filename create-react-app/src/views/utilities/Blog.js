@@ -1,4 +1,16 @@
-import { Grid, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TableSortLabel, TablePagination, Paper, Button } from '@mui/material';
+import {
+  Grid,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  TableSortLabel,
+  TablePagination,
+  Paper,
+  Button
+} from '@mui/material';
 import MainCard from 'ui-component/cards/MainCard';
 import React, { useState, useEffect } from 'react';
 import getAllBlog from '../../service/blog_services/get_blog.js';
@@ -105,7 +117,6 @@ const EnhancedTable = () => {
                     >
                       Delete
                     </Button>
-
                   </TableCell>
                 </TableRow>
               ))}

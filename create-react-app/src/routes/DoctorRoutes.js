@@ -9,6 +9,7 @@ const DoctorHomePage = Loadable(lazy(() => import('views/pages/homepage/index.js
 const DoctorProfilePage = Loadable(lazy(() => import('views/pages/profile/index.js')));
 const DoctorContactPage = Loadable(lazy(() => import('views/pages/contact/index.js')));
 const DoctorBlogPage = Loadable(lazy(() => import('views/pages/blog/index.js')));
+const ManageAppointment = Loadable(lazy(() => import('views/pages/appointment/ManageAppointment.js')));
 // ==============================|| PARENT ROUTING ||============================== //
 
 const DoctorRoutes = {
@@ -22,6 +23,10 @@ const DoctorRoutes = {
     {
       path: '/profile',
       element: <DoctorProfilePage />
+    },
+    {
+      path: '/appointment',
+      element: <ManageAppointment />
     },
     {
       path: '/contact',
