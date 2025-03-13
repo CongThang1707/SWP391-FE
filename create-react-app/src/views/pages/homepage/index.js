@@ -3,6 +3,7 @@ import { Typography, Button, Container, Box, Grid, Card, CardContent, CardAction
 import { CheckCircle } from '@mui/icons-material';
 import submitOrder from '../../../service/vnpay_services/get_vnpay.js';
 import { useNavigate } from 'react-router-dom';
+import imageSrc from '../../../assets/images/doctor_banner.jpg';
 
 const ParentLandingPage = () => {
   const navigate = useNavigate();
@@ -41,21 +42,59 @@ const ParentLandingPage = () => {
           flexDirection: 'column',
           justifyContent: 'center',
           alignItems: 'center',
-          background: 'linear-gradient(90deg, #1976D2, #42A5F5)',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
           color: 'white',
           textAlign: 'center',
-          p: 4
+          p: 4,
+          backgroundImage: `url(${imageSrc})`,
+          transition: 'background-image 0.5s ease-in-out, opacity 0.5s ease-in-out',
+          opacity: 0.9,
+          '&:hover': {
+            opacity: 1,
+          }
         }}
       >
-        <Typography variant="h3" fontWeight={700}>
-          Welcome to Our Landing Page!
-        </Typography>
-        <Typography variant="h6" sx={{ mt: 2, maxWidth: '600px' }}>
-          We provide the best services to help you grow. Join us today and experience innovation like never before.
-        </Typography>
-        <Button variant="contained" color="secondary" sx={{ mt: 3 }}>
-          Get Started
-        </Button>
+        <Box
+          sx={{
+            mt: 20, 
+            width: '100%',
+            maxWidth: '500px',
+            display: 'flex',
+            alignItems: 'center',
+            backgroundColor: '#ffffff',  
+            borderRadius: '25px',
+            padding: '5px', 
+            boxShadow: 'none', 
+            border: '2px solid black',  
+          }}
+        >
+          <input
+            type="text"
+            placeholder="Search..."
+            style={{
+              flex: 1,
+              border: 'none',
+              outline: 'none',
+              padding: '10px',
+              borderRadius: '25px',
+              backgroundColor: 'white',  
+              fontSize: '16px',  
+            }}
+          />
+          <Button
+            variant="contained"
+            color="primary"
+            sx={{
+              marginLeft: 2,
+              borderRadius: '25px',
+              backgroundColor: '#007bff',  
+              color: 'white', 
+            }}
+          >
+            Tìm Kiếm
+          </Button>
+        </Box>
       </Box>
 
       {/* Pricing Section */}
