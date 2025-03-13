@@ -76,7 +76,7 @@ const FirebaseRegister = ({ ...others }) => {
           })}
           onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
             try {
-              const response = await createUser(3, values);
+              const response = await createUser(1, values);
               console.log('Register Success:', response.data);
               navigate('/pages/login/login3');
               if (scriptedRef.current) {
@@ -135,7 +135,7 @@ const FirebaseRegister = ({ ...others }) => {
                 />
                 {touched.password && errors.password && <FormHelperText error>{errors.password}</FormHelperText>}
               </FormControl>
-                  
+
               <FormControl fullWidth error={Boolean(touched.email && errors.email)} sx={{ mb: 2 }}>
                 <InputLabel htmlFor="outlined-adornment-email-register">Email</InputLabel>
                 <OutlinedInput

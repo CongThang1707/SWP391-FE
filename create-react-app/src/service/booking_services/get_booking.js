@@ -32,7 +32,7 @@ const getBooking = async (Booking_id) => {
 
 export const getBookingByDoctorId = async () => {
   try {
-    const response = await axios.get(`${API_URL}BookingAPI/listBookingPending-doctor?doctorId=${localStorage.getItem('userId')}`);
+    const response = await axios.get(`${API_URL}BookingAPI/historyBooking-doctor?doctorId=${localStorage.getItem('userId')}`);
     return response.data;
   } catch (error) {
     console.error('Error fetching bookings:', error);

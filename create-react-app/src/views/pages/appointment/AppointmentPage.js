@@ -1,196 +1,3 @@
-// // // src/views/pages/appointment/AppointmentPage.js
-// // import React, { useState, useEffect } from 'react';
-// // import {
-// //   Button,
-// //   Dialog,
-// //   DialogActions,
-// //   DialogContent,
-// //   DialogTitle,
-// //   Table,
-// //   TableBody,
-// //   TableCell,
-// //   TableHead,
-// //   TableRow,
-// //   IconButton,
-// //   MenuItem,
-// //   Select,
-// //   InputLabel,
-// //   FormControl,
-// //   TextField
-// // } from '@mui/material';
-// // import { Edit, Delete } from '@mui/icons-material';
-// // import { getBookingByParentId } from '../../../service/booking_services/get_booking.js';
-// // import { deleteBookingById } from '../../../service/booking_services/delete_booking.js';
-// // import { createBooking } from '../../../service/booking_services/create_booking.js';
-// // import { getUserByRoleId } from '../../../service/user_service/get_user.js';
-// // import { getScheduleByDoctorId } from '../../../service/schedule_services/get_schedule.js';
-// // import { updateBooking } from '../../../service/booking_services/update_booking.js';
-
-// // const AppointmentPage = () => {
-// //   const [appointments, setAppointments] = useState([]);
-// //   const [openDialog, setOpenDialog] = useState(false);
-// //   const [currentAppointment, setCurrentAppointment] = useState(null);
-// //   const [doctors, setDoctors] = useState([]);
-// //   const [schedule, setSchedule] = useState([]);
-
-// //   useEffect(() => {
-// //     fetchAppointments();
-// //     fetchDoctors();
-// //   }, []);
-
-// //   useEffect(() => {
-// //     if (currentAppointment?.doctor) {
-// //       fetchSchedule(currentAppointment.doctor);
-// //     }
-// //   }, [currentAppointment?.doctor]);
-
-// //   const fetchAppointments = async () => {
-// //     const data = await getBookingByParentId();
-// //     setAppointments(data);
-// //   };
-
-// //   const fetchDoctors = async () => {
-// //     const data = await getUserByRoleId(2);
-// //     setDoctors(data);
-// //   };
-
-// //   const fetchSchedule = async (doctorId) => {
-// //     const data = await getScheduleByDoctorId(doctorId);
-// //     setSchedule(data);
-// //   };
-
-// //   const handleOpenDialog = (appointment = null) => {
-// //     setCurrentAppointment(appointment);
-// //     setOpenDialog(true);
-// //   };
-
-// //   const handleCloseDialog = () => {
-// //     setCurrentAppointment(null);
-// //     setOpenDialog(false);
-// //   };
-
-// //   const handleSaveAppointment = async () => {
-// //     const parentId = localStorage.getItem('userId'); // Lấy parentId từ local storage
-// //     const appointmentData = {
-// //       scheduleId: currentAppointment.schedule,
-// //       parentId: parentId,
-// //       comment: currentAppointment.comment
-// //     };
-
-// //     if (currentAppointment.bookId) {
-// //       await updateBooking({ id: currentAppointment.bookId, comment: currentAppointment.comment });
-// //     } else {
-// //       await createBooking(appointmentData);
-// //     }
-// //     fetchAppointments();
-// //     handleCloseDialog();
-// //   };
-
-// //   const handleDeleteAppointment = async (bookId) => {
-// //     await deleteBookingById(bookId);
-// //     fetchAppointments();
-// //   };
-
-// //   return (
-// //     <div>
-// //       <Button variant="contained" color="primary" onClick={() => handleOpenDialog()}>
-// //         Thêm lịch hẹn
-// //       </Button>
-// //       <Table>
-// //         <TableHead>
-// //           <TableRow>
-// //             <TableCell>Doctor</TableCell>
-// //             <TableCell>Time</TableCell>
-// //             <TableCell>Parent</TableCell>
-// //             <TableCell>Comment</TableCell>
-// //             <TableCell>Date</TableCell>
-// //             <TableCell>Status</TableCell>
-// //             <TableCell>Actions</TableCell>
-// //           </TableRow>
-// //         </TableHead>
-// //         <TableBody>
-// //           {appointments.map((appointment) => (
-// //             <TableRow key={appointment.bookId}>
-// //               <TableCell>{appointment.doctorName}</TableCell>
-// //               <TableCell>{appointment.scheduleWork}</TableCell>
-// //               <TableCell>{appointment.parentName}</TableCell>
-// //               <TableCell>{appointment.comment}</TableCell>
-// //               <TableCell>{appointment.bookDate}</TableCell>
-// //               <TableCell>{appointment.status}</TableCell>
-// //               <TableCell>
-// //                 <IconButton onClick={() => handleOpenDialog(appointment)}>
-// //                   <Edit />
-// //                 </IconButton>
-// //                 <IconButton onClick={() => handleDeleteAppointment(appointment.bookId)}>
-// //                   <Delete />
-// //                 </IconButton>
-// //               </TableCell>
-// //             </TableRow>
-// //           ))}
-// //         </TableBody>
-// //       </Table>
-// //       <Dialog open={openDialog} onClose={handleCloseDialog}>
-// //         <DialogTitle>{currentAppointment?.bookId ? 'Sửa lịch hẹn' : 'Thêm lịch hẹn'}</DialogTitle>
-// //         <DialogContent>
-// //           {!currentAppointment?.bookId && (
-// //             <>
-// //               <FormControl fullWidth margin="dense">
-// //                 <InputLabel id="demo-simple-select-label">Doctor</InputLabel>
-// //                 <Select
-// //                   label="Doctor"
-// //                   value={currentAppointment?.doctor || ''}
-// //                   onChange={(e) => setCurrentAppointment({ ...currentAppointment, doctor: e.target.value })}
-// //                   fullWidth
-// //                 >
-// //                   {doctors.map((doctor) => (
-// //                     <MenuItem key={doctor.user_id} value={doctor.user_id}>
-// //                       {doctor.fullName}
-// //                     </MenuItem>
-// //                   ))}
-// //                 </Select>
-// //               </FormControl>
-// //               <FormControl fullWidth margin="dense">
-// //                 <InputLabel id="demo-simple-select-label">Schedule</InputLabel>
-// //                 <Select
-// //                   label="Schedule"
-// //                   value={currentAppointment?.schedule || ''}
-// //                   onChange={(e) => setCurrentAppointment({ ...currentAppointment, schedule: e.target.value })}
-// //                   fullWidth
-// //                 >
-// //                   {schedule.map((schedule) => (
-// //                     <MenuItem key={schedule.scheduleId} value={schedule.scheduleId}>
-// //                       {schedule.scheduleWork}
-// //                     </MenuItem>
-// //                   ))}
-// //                 </Select>
-// //               </FormControl>
-// //             </>
-// //           )}
-// //           <TextField
-// //             label="Comment"
-// //             value={currentAppointment?.comment || ''}
-// //             onChange={(e) => setCurrentAppointment({ ...currentAppointment, comment: e.target.value })}
-// //             fullWidth
-// //             multiline
-// //             rows={4}
-// //             margin="dense"
-// //           />
-// //         </DialogContent>
-// //         <DialogActions>
-// //           <Button onClick={handleCloseDialog} color="secondary">
-// //             Hủy
-// //           </Button>
-// //           <Button onClick={handleSaveAppointment} color="primary">
-// //             Lưu
-// //           </Button>
-// //         </DialogActions>
-// //       </Dialog>
-// //     </div>
-// //   );
-// // };
-
-// // export default AppointmentPage;
-
 // import React, { useState, useEffect } from 'react';
 // import {
 //   Button,
@@ -212,13 +19,14 @@
 //   TextField,
 //   Box
 // } from '@mui/material';
-// import { Edit, Delete, EventAvailable, EventBusy, EventNote } from '@mui/icons-material';
+// import { Edit, Delete, EventAvailable, EventBusy, EventNote, DoneAll } from '@mui/icons-material';
 // import { getBookingByParentId } from '../../../service/booking_services/get_booking.js';
 // import { deleteBookingById } from '../../../service/booking_services/delete_booking.js';
 // import { createBooking } from '../../../service/booking_services/create_booking.js';
 // import { getUserByRoleId } from '../../../service/user_service/get_user.js';
 // import { getScheduleByDoctorId } from '../../../service/schedule_services/get_schedule.js';
 // import { updateBooking } from '../../../service/booking_services/update_booking.js';
+// import { getChildrenByParentId } from '../../../service/children_services/get_children.js';
 
 // const AppointmentPage = () => {
 //   const [appointments, setAppointments] = useState([]);
@@ -226,10 +34,13 @@
 //   const [currentAppointment, setCurrentAppointment] = useState(null);
 //   const [doctors, setDoctors] = useState([]);
 //   const [schedule, setSchedule] = useState([]);
+//   const [selectedDate, setSelectedDate] = useState('');
+//   const [children, setChildren] = useState([]);
 
 //   useEffect(() => {
 //     fetchAppointments();
 //     fetchDoctors();
+//     fetchChildren();
 //   }, []);
 
 //   useEffect(() => {
@@ -253,6 +64,11 @@
 //     setSchedule(data);
 //   };
 
+//   const fetchChildren = async () => {
+//     const data = await getChildrenByParentId();
+//     setChildren(data);
+//   };
+
 //   const handleOpenDialog = (appointment = null) => {
 //     setCurrentAppointment(appointment);
 //     setOpenDialog(true);
@@ -268,7 +84,8 @@
 //     const appointmentData = {
 //       scheduleId: currentAppointment.schedule,
 //       parentId: parentId,
-//       comment: currentAppointment.comment
+//       comment: currentAppointment.comment,
+//       childId: currentAppointment.childId
 //     };
 
 //     if (currentAppointment.bookId) {
@@ -289,6 +106,7 @@
 //     const statusIcon = {
 //       PENDING: <EventNote color="action" />,
 //       CONFIRMED: <EventAvailable color="success" />,
+//       COMPLETED: <DoneAll color="primary" />,
 //       CANCELLED: <EventBusy color="error" />
 //     };
 
@@ -299,6 +117,7 @@
 //           <Card sx={{ border: '1px solid #ddd', boxShadow: 3, mb: 2 }}>
 //             <CardHeader avatar={statusIcon[status]} title={appointment.doctorName} subheader={`Date: ${appointment.bookDate}`} />
 //             <CardContent>
+//               <Typography variant="body2">Date: {appointment.scheduleDate}</Typography>
 //               <Typography variant="body2">Time: {appointment.scheduleWork}</Typography>
 //               <Typography variant="body2">Parent: {appointment.parentName}</Typography>
 //               <Typography variant="body2">Comment: {appointment.comment}</Typography>
@@ -332,6 +151,10 @@
 //         </Grid>
 //         {renderAppointments('CONFIRMED')}
 //         <Grid item xs={12}>
+//           <Typography variant="h5">Completed Appointments</Typography>
+//         </Grid>
+//         {renderAppointments('COMPLETED')}
+//         <Grid item xs={12}>
 //           <Typography variant="h5">Cancelled Appointments</Typography>
 //         </Grid>
 //         {renderAppointments('CANCELLED')}
@@ -346,7 +169,10 @@
 //                 <Select
 //                   label="Doctor"
 //                   value={currentAppointment?.doctor || ''}
-//                   onChange={(e) => setCurrentAppointment({ ...currentAppointment, doctor: e.target.value })}
+//                   onChange={(e) => {
+//                     setCurrentAppointment({ ...currentAppointment, doctor: e.target.value });
+//                     setSelectedDate('');
+//                   }}
 //                   fullWidth
 //                 >
 //                   {doctors.map((doctor) => (
@@ -357,16 +183,43 @@
 //                 </Select>
 //               </FormControl>
 //               <FormControl fullWidth margin="dense">
-//                 <InputLabel id="demo-simple-select-label">Schedule</InputLabel>
+//                 <InputLabel id="demo-simple-select-label">Date</InputLabel>
+//                 <Select label="Date" value={selectedDate} onChange={(e) => setSelectedDate(e.target.value)} fullWidth>
+//                   {[...new Set(schedule.map((s) => s.scheduleDate))].map((date) => (
+//                     <MenuItem key={date} value={date}>
+//                       {date}
+//                     </MenuItem>
+//                   ))}
+//                 </Select>
+//               </FormControl>
+//               <FormControl fullWidth margin="dense">
+//                 <InputLabel id="demo-simple-select-label">Time</InputLabel>
 //                 <Select
-//                   label="Schedule"
+//                   label="Time"
 //                   value={currentAppointment?.schedule || ''}
 //                   onChange={(e) => setCurrentAppointment({ ...currentAppointment, schedule: e.target.value })}
 //                   fullWidth
 //                 >
-//                   {schedule.map((schedule) => (
-//                     <MenuItem key={schedule.scheduleId} value={schedule.scheduleId}>
-//                       {schedule.scheduleDate} - {schedule.scheduleTime}
+//                   {schedule
+//                     .filter((s) => s.scheduleDate === selectedDate)
+//                     .map((s) => (
+//                       <MenuItem key={s.scheduleId} value={s.scheduleId}>
+//                         {s.scheduleTime}
+//                       </MenuItem>
+//                     ))}
+//                 </Select>
+//               </FormControl>
+//               <FormControl fullWidth margin="dense">
+//                 <InputLabel id="demo-simple-select-label">Child</InputLabel>
+//                 <Select
+//                   label="Child"
+//                   value={currentAppointment?.childId || ''}
+//                   onChange={(e) => setCurrentAppointment({ ...currentAppointment, childId: e.target.value })}
+//                   fullWidth
+//                 >
+//                   {children.map((child) => (
+//                     <MenuItem key={child.childrenId} value={child.childrenId}>
+//                       {child.childrenName}
 //                     </MenuItem>
 //                   ))}
 //                 </Select>
@@ -420,13 +273,15 @@ import {
   TextField,
   Box
 } from '@mui/material';
-import { Edit, Delete, EventAvailable, EventBusy, EventNote } from '@mui/icons-material';
+import { Edit, Delete, EventAvailable, EventBusy, EventNote, DoneAll, Visibility } from '@mui/icons-material';
 import { getBookingByParentId } from '../../../service/booking_services/get_booking.js';
 import { deleteBookingById } from '../../../service/booking_services/delete_booking.js';
 import { createBooking } from '../../../service/booking_services/create_booking.js';
 import { getUserByRoleId } from '../../../service/user_service/get_user.js';
 import { getScheduleByDoctorId } from '../../../service/schedule_services/get_schedule.js';
 import { updateBooking } from '../../../service/booking_services/update_booking.js';
+import { getChildrenByParentId } from '../../../service/children_services/get_children.js';
+import { useNavigate } from 'react-router-dom';
 
 const AppointmentPage = () => {
   const [appointments, setAppointments] = useState([]);
@@ -435,10 +290,13 @@ const AppointmentPage = () => {
   const [doctors, setDoctors] = useState([]);
   const [schedule, setSchedule] = useState([]);
   const [selectedDate, setSelectedDate] = useState('');
+  const [children, setChildren] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchAppointments();
     fetchDoctors();
+    fetchChildren();
   }, []);
 
   useEffect(() => {
@@ -462,6 +320,11 @@ const AppointmentPage = () => {
     setSchedule(data);
   };
 
+  const fetchChildren = async () => {
+    const data = await getChildrenByParentId();
+    setChildren(data);
+  };
+
   const handleOpenDialog = (appointment = null) => {
     setCurrentAppointment(appointment);
     setOpenDialog(true);
@@ -477,7 +340,8 @@ const AppointmentPage = () => {
     const appointmentData = {
       scheduleId: currentAppointment.schedule,
       parentId: parentId,
-      comment: currentAppointment.comment
+      comment: currentAppointment.comment,
+      childId: currentAppointment.childId
     };
 
     if (currentAppointment.bookId) {
@@ -494,10 +358,18 @@ const AppointmentPage = () => {
     fetchAppointments();
   };
 
+  const handleViewAndFeedback = (appointment) => {
+    // Xử lý sự kiện khi người dùng nhấn nút View and Feedback
+    console.log('View and Feedback:', appointment);
+    navigate(`/consulting`, { state: { appointment } });
+    // Thực hiện các hành động cần thiết, ví dụ: chuyển hướng đến trang chi tiết
+  };
+
   const renderAppointments = (status) => {
     const statusIcon = {
       PENDING: <EventNote color="action" />,
       CONFIRMED: <EventAvailable color="success" />,
+      COMPLETED: <DoneAll color="primary" />,
       CANCELLED: <EventBusy color="error" />
     };
 
@@ -515,12 +387,20 @@ const AppointmentPage = () => {
               <Typography variant="body2">Status: {appointment.status}</Typography>
             </CardContent>
             <CardActions>
-              <IconButton onClick={() => handleOpenDialog(appointment)}>
-                <Edit />
-              </IconButton>
-              <IconButton onClick={() => handleDeleteAppointment(appointment.bookId)}>
-                <Delete />
-              </IconButton>
+              {status === 'COMPLETED' ? (
+                <IconButton onClick={() => handleViewAndFeedback(appointment)}>
+                  <Visibility />
+                </IconButton>
+              ) : (
+                <>
+                  <IconButton onClick={() => handleOpenDialog(appointment)}>
+                    <Edit />
+                  </IconButton>
+                  <IconButton onClick={() => handleDeleteAppointment(appointment.bookId)}>
+                    <Delete />
+                  </IconButton>
+                </>
+              )}
             </CardActions>
           </Card>
         </Grid>
@@ -541,6 +421,10 @@ const AppointmentPage = () => {
           <Typography variant="h5">Confirmed Appointments</Typography>
         </Grid>
         {renderAppointments('CONFIRMED')}
+        <Grid item xs={12}>
+          <Typography variant="h5">Completed Appointments</Typography>
+        </Grid>
+        {renderAppointments('COMPLETED')}
         <Grid item xs={12}>
           <Typography variant="h5">Cancelled Appointments</Typography>
         </Grid>
@@ -594,6 +478,21 @@ const AppointmentPage = () => {
                         {s.scheduleTime}
                       </MenuItem>
                     ))}
+                </Select>
+              </FormControl>
+              <FormControl fullWidth margin="dense">
+                <InputLabel id="demo-simple-select-label">Child</InputLabel>
+                <Select
+                  label="Child"
+                  value={currentAppointment?.childId || ''}
+                  onChange={(e) => setCurrentAppointment({ ...currentAppointment, childId: e.target.value })}
+                  fullWidth
+                >
+                  {children.map((child) => (
+                    <MenuItem key={child.childrenId} value={child.childrenId}>
+                      {child.childrenName}
+                    </MenuItem>
+                  ))}
                 </Select>
               </FormControl>
             </>

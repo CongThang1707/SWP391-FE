@@ -12,8 +12,8 @@ const updateUserById = async (updatedUserData) => {
 
     const response = await axios.put(`${API_URL}api/updateUser/${userId}`, updatedUserData, {
       headers: {
-        'Content-Type': 'application/json',
-      },
+        'Content-Type': 'application/json'
+      }
     });
 
     console.log('Update response:', response.data);
@@ -23,6 +23,5 @@ const updateUserById = async (updatedUserData) => {
     throw error;
   }
 };
-
 
 export { updateUserById };
