@@ -1,17 +1,19 @@
+//index.js
 import React, { useState, useEffect } from 'react';
-import { Avatar, Typography, Container, Card, CardContent, Box, Button, Stack, TextField, InputAdornment } from '@mui/material';
-import { ThumbUp, ChatBubbleOutline, Share, ThumbUpAlt, Send, Search } from '@mui/icons-material';
+import { Avatar, Typography, Container, Card, CardContent, Box, Button, Stack, TextField, InputAdornment, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material';
+import { ThumbUp, ChatBubbleOutline, Share, ThumbUpAlt, Send, Search, Add } from '@mui/icons-material';
 import { Menu, MenuItem } from '@mui/material';
 import { Facebook, Instagram, Twitter, LinkedIn } from '@mui/icons-material';
 import { Pagination } from '@mui/material';
 import getAllBlog from '../../../service/blog_services/get_blog.js';
-import CreateBlog from './components/CreateBlog.js';
 
 const BlogPage = () => {
   const [posts, setPosts] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [commentInputs, setCommentInputs] = useState(Array(posts.length).fill(''));
   const [showComments, setShowComments] = useState(Array(posts.length).fill(false));
+  const [openDialog, setOpenDialog] = useState(false);
+  const [newPost, setNewPost] = useState({ title: '', description: '', content: '' });
 
   useEffect(() => {
     const fetchBlogs = async () => {
@@ -42,9 +44,9 @@ const BlogPage = () => {
 
   const filteredPosts = searchTerm
     ? posts.filter(
-        (post) =>
-          post.title.toLowerCase().includes(searchTerm.toLowerCase()) || post.content.toLowerCase().includes(searchTerm.toLowerCase())
-      )
+      (post) =>
+        post.title.toLowerCase().includes(searchTerm.toLowerCase()) || post.content.toLowerCase().includes(searchTerm.toLowerCase())
+    )
     : posts;
 
   const handleLike = (index) => {
@@ -70,17 +72,17 @@ const BlogPage = () => {
 
     const newComment = {
       text: commentInputs[index],
-      avatar: userAvatar, // Avatar của người bình luận
-      name: userName, // Tên người bình luận
-      date: new Date().toLocaleString(), // Ngày đăng bình luận
-      likes: 0, // Thêm số lượt thích ban đầu là 0
-      replies: [] // Thêm mảng phản hồi rỗng
+      avatar: userAvatar, 
+      name: userName, 
+      date: new Date().toLocaleString(), 
+      likes: 0, 
+      replies: [] 
     };
 
     const newPosts = [...posts];
-    newPosts[index].comments.push(newComment); // Lưu bình luận vào danh sách
+    newPosts[index].comments.push(newComment);
     setPosts(newPosts);
-    handleCommentChange(index, ''); // Xóa nội dung input sau khi gửi
+    handleCommentChange(index, ''); 
   };
 
   const [anchorEl, setAnchorEl] = useState(null);
@@ -99,7 +101,7 @@ const BlogPage = () => {
   const handleShare = (platform) => {
     if (selectedPost !== null) {
       const newPosts = [...posts];
-      newPosts[selectedPost].shares += 1; // Tăng số lần chia sẻ
+      newPosts[selectedPost].shares += 1;
       setPosts(newPosts);
 
       const post = posts[selectedPost];
@@ -129,11 +131,11 @@ const BlogPage = () => {
     handleClose();
   };
 
-  const userAvatar = 'https://randomuser.me/api/portraits/men/4.jpg'; // Avatar của người bình luận
-  const userName = 'John Doe'; // Tên người dùng giả lập
+  const userAvatar = 'https://randomuser.me/api/portraits/men/4.jpg'; 
+  const userName = 'John Doe'; 
 
   const [page, setPage] = useState(1);
-  const postsPerPage = 2; // Số bài viết mỗi trang
+  const postsPerPage = 2; 
 
   const handlePageChange = (event, value) => {
     setPage(value);
@@ -143,6 +145,39 @@ const BlogPage = () => {
   const indexOfLastPost = page * postsPerPage;
   const indexOfFirstPost = indexOfLastPost - postsPerPage;
   const currentPosts = filteredPosts.slice(indexOfFirstPost, indexOfLastPost);
+
+  const handleOpenDialog = () => setOpenDialog(true);
+
+  const handleCloseDialog = () => {
+    setOpenDialog(false);
+    setNewPost({ title: '', description: '', content: '' });
+  };
+
+  const handleNewPostChange = (field, value) => {
+    setNewPost((prev) => ({ ...prev, [field]: value }));
+  };
+
+  const handleAddPost = () => {
+    if (!newPost.title || !newPost.content) return;
+
+    // Kiểm tra nếu bài viết đã tồn tại (tránh trùng lặp)
+    const isDuplicate = posts.some((post) => post.title === newPost.title && post.content === newPost.content);
+    if (isDuplicate) return;
+
+    const newEntry = {
+      avatar: 'https://randomuser.me/api/portraits/men/1.jpg',
+      fullName: 'John Doe',
+      date: new Date().toLocaleDateString(),
+      likes: 0,
+      comments: [],
+      shares: 0,
+      ...newPost,
+    };
+
+    setPosts([newEntry, ...posts]);
+    handleCloseDialog();
+  };
+
 
   return (
     <>
@@ -183,7 +218,31 @@ const BlogPage = () => {
           }}
         />
       </Box>
-      <CreateBlog />
+
+      {/* Add Post Section */}
+      <Container maxWidth="md" sx={{ mt: 3, mb: 4 }}>
+        <Card sx={{ display: 'flex', alignItems: 'center', p: 2, cursor: 'pointer', boxShadow: 3, '&:hover': { boxShadow: 6 } }} onClick={handleOpenDialog}>
+          <Avatar src="https://randomuser.me/api/portraits/men/1.jpg" sx={{ width: 50, height: 50, mr: 2 }} />
+          <TextField fullWidth placeholder="What's on your mind?" variant="outlined" onClick={handleOpenDialog} sx={{ background: '#f0f2f5', borderRadius: 2 }} />
+          <Button startIcon={<Add />} sx={{ ml: 2 }} variant="contained" onClick={handleOpenDialog}>Add</Button>
+        </Card>
+      </Container>
+
+      {/* Dialog for New Post */}
+      <Dialog open={openDialog} onClose={handleCloseDialog} maxWidth="sm" fullWidth>
+        <DialogTitle>Create a new post</DialogTitle>
+        <DialogContent>
+          <TextField fullWidth label="Title" margin="dense" value={newPost.title} onChange={(e) => handleNewPostChange('title', e.target.value)} />
+          <TextField fullWidth label="Description" margin="dense" value={newPost.description} onChange={(e) => handleNewPostChange('description', e.target.value)} />
+          <TextField fullWidth label="Content" multiline rows={4} margin="dense" value={newPost.content} onChange={(e) => handleNewPostChange('content', e.target.value)} />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseDialog} color="secondary">Cancel</Button>
+          <Button onClick={handleAddPost} variant="contained">Post</Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Blog Posts */}
       <Container maxWidth="md" sx={{ mt: 4 }}>
         {currentPosts.map((post, index) => (
           <Card key={index} sx={{ mb: 4, boxShadow: 4, transition: '0.3s', '&:hover': { boxShadow: 8 } }}>
