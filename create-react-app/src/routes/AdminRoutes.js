@@ -69,7 +69,7 @@ const AdminRoutes = {
     },
     {
       path: 'utils',
-      children: [ 
+      children: [
         {
           path: 'util-blog',
           element: <UtilsBlog />

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { getBookingByDoctorId } from '../../../service/booking_services/get_booking.js';
 import { getScheduleByDoctorId } from '../../../service/schedule_services/get_schedule.js';
 import { createSchedule } from '../../../service/schedule_services/create_schedule.js';
+// import { confirmBooking } from '../../../service/booking_services/update_booking.js';
 import {
   Card,
   CardContent,
@@ -27,9 +28,12 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  Paper
+  Paper,
+  Tabs,
+  Tab
 } from '@mui/material';
-import { Edit, Delete, EventNote, EventAvailable, EventBusy } from '@mui/icons-material';
+import { CheckCircle, EventNote, EventAvailable, EventBusy, DoneAll } from '@mui/icons-material';
+import { useNavigate } from 'react-router-dom';
 
 const ManageAppointment = () => {
   const [appointments, setAppointments] = useState([]);
@@ -37,6 +41,8 @@ const ManageAppointment = () => {
   const [selectedDate, setSelectedDate] = useState('');
   const [openDialog, setOpenDialog] = useState(false);
   const [newSchedule, setNewSchedule] = useState({ scheduleDate: '', scheduleWork: '' });
+  const [tabIndex, setTabIndex] = useState(0);
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchAppointments();
@@ -68,11 +74,21 @@ const ManageAppointment = () => {
     handleCloseDialog();
   };
 
+  const handleConfirmAppointment = async (appointment) => {
+    // Xử lý sự kiện khi người dùng nhấn nút Confirm
+    console.log('Confirm appointment:', appointment);
+    // await confirmBooking(appointment.bookId);
+    // fetchAppointments();
+    // Thực hiện các hành động cần thiết, ví dụ: cập nhật trạng thái cuộc hẹn
+    navigate('/consulting', { state: { appointment } });
+  };
+
   const renderAppointments = (status) => {
     const statusIcon = {
       PENDING: <EventNote color="action" />,
       CONFIRMED: <EventAvailable color="success" />,
-      CANCELLED: <EventBusy color="error" />
+      CANCELLED: <EventBusy color="error" />,
+      COMPLETED: <DoneAll color="primary" />
     };
 
     return (
@@ -90,11 +106,8 @@ const ManageAppointment = () => {
                   <Typography variant="body2">Status: {appointment.status}</Typography>
                 </CardContent>
                 <CardActions>
-                  <IconButton>
-                    <Edit />
-                  </IconButton>
-                  <IconButton>
-                    <Delete />
+                  <IconButton onClick={() => handleConfirmAppointment(appointment)}>
+                    <CheckCircle />
                   </IconButton>
                 </CardActions>
               </Card>
@@ -128,25 +141,27 @@ const ManageAppointment = () => {
     );
   };
 
+  const handleTabChange = (event, newValue) => {
+    setTabIndex(newValue);
+  };
+
   return (
     <Box p={2}>
       <Grid container spacing={2}>
         <Grid item xs={12} md={8}>
           <Typography variant="h5">Appointments</Typography>
-          <Grid container spacing={2} mt={2}>
-            <Grid item xs={12}>
-              <Typography variant="h6">Pending Appointments</Typography>
-            </Grid>
-            {renderAppointments('PENDING')}
-            <Grid item xs={12}>
-              <Typography variant="h6">Confirmed Appointments</Typography>
-            </Grid>
-            {renderAppointments('CONFIRMED')}
-            <Grid item xs={12}>
-              <Typography variant="h6">Cancelled Appointments</Typography>
-            </Grid>
-            {renderAppointments('CANCELLED')}
-          </Grid>
+          <Tabs value={tabIndex} onChange={handleTabChange} aria-label="appointment tabs">
+            <Tab label="Pending" />
+            <Tab label="Confirmed" />
+            <Tab label="Cancelled" />
+            <Tab label="Completed" />
+          </Tabs>
+          <Box mt={2}>
+            {tabIndex === 0 && renderAppointments('PENDING')}
+            {tabIndex === 1 && renderAppointments('CONFIRMED')}
+            {tabIndex === 2 && renderAppointments('CANCELLED')}
+            {tabIndex === 3 && renderAppointments('COMPLETED')}
+          </Box>
         </Grid>
         <Grid item xs={12} md={4}>
           <Typography variant="h5">Schedule</Typography>

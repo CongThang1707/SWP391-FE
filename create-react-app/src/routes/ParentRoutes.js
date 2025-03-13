@@ -11,6 +11,7 @@ const ParentProfilePage = Loadable(lazy(() => import('views/pages/profile/index.
 const ParentContactPage = Loadable(lazy(() => import('views/pages/contact/index.js')));
 const ParentAppointmentPage = Loadable(lazy(() => import('views/pages/appointment/AppointmentPage.js')));
 const ChildrenDetailPage = Loadable(lazy(() => import('views/sample-page/parent_child_detail.js')));
+const ConsultingForm = Loadable(lazy(() => import('views/sample-page/consulting.js')));
 
 // ==============================|| PARENT ROUTING ||============================== //
 
@@ -41,6 +42,10 @@ const ParentRoutes = {
     {
       path: '/children/:id', // Định nghĩa đúng tham số động :id
       element: <ChildrenDetailPage />
+    },
+    {
+      path: '/consulting',
+      element: <ConsultingForm />
     }
   ]
 };
