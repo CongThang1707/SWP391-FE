@@ -1,7 +1,7 @@
 //index.js
 import React, { useState, useEffect } from 'react';
 import { Avatar, Typography, Container, Card, CardContent, Box, Button, Stack, TextField, InputAdornment, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material';
-import { ThumbUp, ChatBubbleOutline, Share, ThumbUpAlt, Send, Search, Add } from '@mui/icons-material';
+import { ThumbUp, ChatBubbleOutline, Share, ThumbUpAlt, Send, Search } from '@mui/icons-material';
 import { Menu, MenuItem } from '@mui/material';
 import { Facebook, Instagram, Twitter, LinkedIn } from '@mui/icons-material';
 import { Pagination } from '@mui/material';
@@ -18,17 +18,17 @@ const BlogPage = () => {
   useEffect(() => {
     const fetchBlogs = async () => {
       try {
-        const blogData = await getAllBlog(); // Gọi API lấy danh sách blog
+        const blogData = await getAllBlog(); 
         const formattedPosts = blogData.map((post) => ({
-          avatar: post.avatar || 'https://randomuser.me/api/portraits/men/4.jpg', // Avatar người đăng
+          avatar: post.avatar || 'https://randomuser.me/api/portraits/men/4.jpg', 
           fullName: post.fullName,
-          date: post.date || new Date().toLocaleDateString(), // Ngày đăng
-          title: post.title || 'Untitled Post', // Tiêu đề bài viết
-          description: post.description || 'No description available', // Mô tả ngắn
-          content: post.content || 'No content available', // Nội dung bài viết
-          likes: post.likes || 0, // Số lượt thích
-          comments: post.comments || [], // Danh sách bình luận
-          shares: post.shares || 0 // Số lần chia sẻ
+          date: post.date || new Date().toLocaleDateString(), 
+          title: post.title || 'Untitled Post', 
+          description: post.description || 'No description available', 
+          content: post.content || 'No content available', 
+          likes: post.likes || 0, 
+          comments: post.comments || [], 
+          shares: post.shares || 0
         }));
 
         setPosts(formattedPosts); // Cập nhật state posts
@@ -135,7 +135,7 @@ const BlogPage = () => {
   const userName = 'John Doe'; 
 
   const [page, setPage] = useState(1);
-  const postsPerPage = 2; 
+  const postsPerPage = 10; 
 
   const handlePageChange = (event, value) => {
     setPage(value);
@@ -224,7 +224,6 @@ const BlogPage = () => {
         <Card sx={{ display: 'flex', alignItems: 'center', p: 2, cursor: 'pointer', boxShadow: 3, '&:hover': { boxShadow: 6 } }} onClick={handleOpenDialog}>
           <Avatar src="https://randomuser.me/api/portraits/men/1.jpg" sx={{ width: 50, height: 50, mr: 2 }} />
           <TextField fullWidth placeholder="What's on your mind?" variant="outlined" onClick={handleOpenDialog} sx={{ background: '#f0f2f5', borderRadius: 2 }} />
-          <Button startIcon={<Add />} sx={{ ml: 2 }} variant="contained" onClick={handleOpenDialog}>Add</Button>
         </Card>
       </Container>
 
@@ -232,9 +231,33 @@ const BlogPage = () => {
       <Dialog open={openDialog} onClose={handleCloseDialog} maxWidth="sm" fullWidth>
         <DialogTitle>Create a new post</DialogTitle>
         <DialogContent>
-          <TextField fullWidth label="Title" margin="dense" value={newPost.title} onChange={(e) => handleNewPostChange('title', e.target.value)} />
-          <TextField fullWidth label="Description" margin="dense" value={newPost.description} onChange={(e) => handleNewPostChange('description', e.target.value)} />
-          <TextField fullWidth label="Content" multiline rows={4} margin="dense" value={newPost.content} onChange={(e) => handleNewPostChange('content', e.target.value)} />
+        <TextField 
+  fullWidth 
+  label="Title" 
+  margin="dense" 
+  value={newPost.title} 
+  onChange={(e) => handleNewPostChange('title', e.target.value)}
+  onKeyDown={(e) => e.key === 'Enter' && handleAddPost()} 
+/>
+<TextField 
+  fullWidth 
+  label="Description" 
+  margin="dense" 
+  value={newPost.description} 
+  onChange={(e) => handleNewPostChange('description', e.target.value)}
+  onKeyDown={(e) => e.key === 'Enter' && handleAddPost()}  
+/>
+<TextField 
+  fullWidth 
+  label="Content" 
+  multiline 
+  rows={4} 
+  margin="dense" 
+  value={newPost.content} 
+  onChange={(e) => handleNewPostChange('content', e.target.value)}
+  onKeyDown={(e) => e.key === 'Enter' && !e.shiftKey && handleAddPost()}  
+/>
+
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCloseDialog} color="secondary">Cancel</Button>

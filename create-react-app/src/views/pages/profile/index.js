@@ -37,6 +37,7 @@ const Profile = () => {
   const [openEditDialog, setOpenEditDialog] = useState(false);
   const [editingChild, setEditingChild] = useState({ childrenId: '', childrenName: '', age: '', gender: '' });
   const navigate = useNavigate();
+  const storageRole = localStorage.getItem('role');
 
   const handleNavigateToChildDetail = (childId) => {
     if (!childId) {
@@ -179,70 +180,71 @@ const Profile = () => {
         <Divider sx={{ my: 4 }} />
 
         {/* Box chứa thông tin Children */}
-        <Box sx={{ mt: 2, p: 2, backgroundColor: '#fff', borderRadius: 2, textAlign: 'center', position: 'relative', }}>
-          {/* Nút Add ở góc trên cùng bên phải */}
-          <IconButton onClick={handleOpenAddDialog} sx={{ position: 'absolute', top: -20, right: 8, color: 'primary.main' }}>
-            <AddIcon />
-          </IconButton>
+        {storageRole !== 'Doctor' && (
+          <Box sx={{ mt: 2, p: 2, backgroundColor: '#fff', borderRadius: 2, textAlign: 'center', position: 'relative', }}>
+            {/* Nút Add ở góc trên cùng bên phải */}
+            <IconButton onClick={handleOpenAddDialog} sx={{ position: 'absolute', top: -20, right: 8, color: 'primary.main' }}>
+              <AddIcon />
+            </IconButton>
 
-          {children.length > 0 ? (
-            <Stack spacing={1} sx={{ mt: 1 }}>
-              {children.map((child) => (
-                <Box
-                  key={child.childrenId || Math.random()}
-                  sx={{
-                    p: 1,
-                    border: '1px solid #ccc',
-                    borderRadius: 2,
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                    transition: '0.3s', // Thêm transition để làm mượt hiệu ứng
-                    '&:hover': {
-                      backgroundColor: '#f5f5f5', // Thay đổi màu nền khi hover
-                      boxShadow: '0 4px 8px rgba(0,0,0,0.2)', // Thêm bóng mờ
-                    },
-
-                  }}
-                >
-                  {/* Thông tin con */}
+            {children.length > 0 ? (
+              <Stack spacing={1} sx={{ mt: 1 }}>
+                {children.map((child) => (
                   <Box
+                    key={child.childrenId || Math.random()}
                     sx={{
-                      cursor: 'pointer',
+                      p: 1,
+                      border: '1px solid #ccc',
+                      borderRadius: 2,
                       display: 'flex',
-                      flexDirection: 'column',
-                      alignItems: 'flex-start',
-                      textAlign: 'left',
-                      width: '100%',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                      transition: '0.3s', // Thêm transition để làm mượt hiệu ứng
+                      '&:hover': {
+                        backgroundColor: '#f5f5f5', // Thay đổi màu nền khi hover
+                        boxShadow: '0 4px 8px rgba(0,0,0,0.2)', // Thêm bóng mờ
+                      },
+
                     }}
-                    onClick={() => handleNavigateToChildDetail(child.childrenId)}
                   >
-                    <Typography variant="body2" fontWeight="bold" color="primary">
-                      Name: {child.childrenName || 'N/A'}
-                    </Typography>
-                    <Typography variant="body2">Age: {child.age ? `${child.age} years old` : 'N/A'}</Typography>
-                    <Typography variant="body2">Gender: {child.gender || 'N/A'}</Typography>
-                  </Box>
+                    {/* Thông tin con */}
+                    <Box
+                      sx={{
+                        cursor: 'pointer',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'flex-start',
+                        textAlign: 'left',
+                        width: '100%',
+                      }}
+                      onClick={() => handleNavigateToChildDetail(child.childrenId)}
+                    >
+                      <Typography variant="body2" fontWeight="bold" color="primary">
+                        Name: {child.childrenName || 'N/A'}
+                      </Typography>
+                      <Typography variant="body2">Age: {child.age ? `${child.age} years old` : 'N/A'}</Typography>
+                      <Typography variant="body2">Gender: {child.gender || 'N/A'}</Typography>
+                    </Box>
 
-                  {/* Nút Edit & Delete */}
-                  <Box>
-                    <IconButton color="primary" onClick={() => handleOpenEditDialog(child)}>
-                      <EditIcon />
-                    </IconButton>
-                    <IconButton color="error" onClick={() => handleDeleteChild(child.childrenId)}>
-                      <DeleteIcon />
-                    </IconButton>
+                    {/* Nút Edit & Delete */}
+                    <Box>
+                      <IconButton color="primary" onClick={() => handleOpenEditDialog(child)}>
+                        <EditIcon />
+                      </IconButton>
+                      <IconButton color="error" onClick={() => handleDeleteChild(child.childrenId)}>
+                        <DeleteIcon />
+                      </IconButton>
+                    </Box>
                   </Box>
-                </Box>
-              ))}
-            </Stack>
-          ) : (
-            <Typography variant="body2" sx={{ mt: 1, fontStyle: 'italic', color: 'gray' }}>
-              No children data available
-            </Typography>
-          )}
-        </Box>
-
+                ))}
+              </Stack>
+            ) : (
+              <Typography variant="body2" sx={{ mt: 1, fontStyle: 'italic', color: 'gray' }}>
+                No children data available
+              </Typography>
+            )}
+          </Box>
+        )}
         {/* Dialog add child */}
         <Dialog open={openAddDialog} onClose={handleCloseAddDialog} PaperProps={{ style: { borderRadius: 15, boxShadow: '0px 4px 20px rgba(0, 0, 0, 0.1)' } }}>
           <DialogTitle style={{ fontSize: '1.5rem', fontWeight: '600' }}>Add Child</DialogTitle>
