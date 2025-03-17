@@ -13,7 +13,7 @@ import {
 } from '@mui/material';
 import MainCard from 'ui-component/cards/MainCard';
 import React, { useState, useEffect } from 'react';
-import getAllBlog from '../../service/blog_services/get_blog.js';
+import getBlogs from '../../service/blog_services/get_blog.js';
 import { useNavigate } from 'react-router-dom';
 import { deleteBlog } from '../../service/blog_services/get_blog.js';
 
@@ -27,7 +27,7 @@ const EnhancedTable = () => {
 
   useEffect(() => {
     const fetchBlogData = async () => {
-      const data = await getAllBlog();
+      const data = await getBlogs();
       setBlogData(data);
     };
     fetchBlogData();
@@ -100,7 +100,7 @@ const EnhancedTable = () => {
             <TableBody>
               {blogData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((blog, index) => (
                 <TableRow key={blog.blogId || `blog-${index}`}>
-                  <TableCell>{blog.fullName}</TableCell>
+                  <TableCell>{blog.parentId.fullName}</TableCell>
                   <TableCell>{blog.title}</TableCell>
                   <TableCell>{blog.description}</TableCell>
                   <TableCell>{blog.date}</TableCell>

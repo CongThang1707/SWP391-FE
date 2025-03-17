@@ -1,3 +1,4 @@
+//Doctor.js
 import { Grid, Button, IconButton, TextField, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import MainCard from 'ui-component/cards/MainCard';
@@ -23,17 +24,34 @@ const EnhancedTable = () => {
     gender: '',
     phone: '',
     address: ''
-  });
+  });  
+
+  const [errors, setErrors] = useState({});
+  const [touchedField, setTouchedField] = useState();
 
   const navigate = useNavigate();
 
   useEffect(() => {
+    if (touchedField && Array.isArray(touchedField)) {
+      validate();
+    }
     const fetchUserData = async () => {
       const data = await getUserByRoleId(2);
       setParentData(data);
     };
     fetchUserData();
-  }, []);
+  }, [touchedField]);
+
+  const validate = () => {
+    let tempErrors = {};
+    Object.keys(newUser).forEach((key) => {
+      if (!newUser[key]?.trim()) {
+        tempErrors[key] = 'This field is required';
+      }
+    });
+    setErrors(tempErrors);
+    return Object.keys(tempErrors).length === 0;
+  };
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
@@ -80,23 +98,34 @@ const EnhancedTable = () => {
   const handleCloseDialog = () => {
     setOpenDialog(false);
     setNewUser({ username: '', password: '', email: '', fullName: '', gender: '', phone: '', address: '' });
+    setErrors({});
+    setTouchedField(null);
   };
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
     setNewUser((prev) => ({ ...prev, [name]: value }));
+    setTouchedField((prev) => (Array.isArray(prev) ? [...new Set([...prev, name])] : [name]));
   };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+
+    // Đánh dấu tất cả các field đã được chạm
+    setTouchedField(Object.keys(newUser));
+
+    if (!validate()) {
+      return; // Nếu có lỗi, không submit
+    }
+
     try {
-      await createUser(2, newUser); // Gọi API để tạo user mới
-      const updatedData = await getUserByRoleId(2); // Lấy lại danh sách user mới nhất
-      setParentData(updatedData); // Cập nhật danh sách hiển thị ngay lập tức
+      await createUser(2, newUser);
+      const updatedData = await getUserByRoleId(2);
+      setParentData(updatedData);
       handleCloseDialog();
     } catch (error) {
-      console.error('Error creating user:', error);
-      alert('Failed to create user. Please try again.');
+      console.error('Error creating user:', error.response ? error.response.data : error.message);
+      alert(`Failed to create user: ${error.response ? JSON.stringify(error.response.data) : error.message}`);
     }
   };
 
@@ -186,6 +215,9 @@ const EnhancedTable = () => {
               variant="outlined"
               value={newUser[field]}
               onChange={handleInputChange}
+              onBlur={() => setTouchedField((prev) => (Array.isArray(prev) ? [...new Set([...prev, field])] : [field]))}
+              error={touchedField?.includes(field) && !!errors[field]}
+              helperText={touchedField?.includes(field) ? errors[field] : ''}
             />
           ))}
         </DialogContent>

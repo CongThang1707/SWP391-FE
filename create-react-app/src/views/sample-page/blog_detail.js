@@ -32,9 +32,6 @@ const BlogDetail = () => {
         <strong>Content:</strong> {blog.content}
       </p>
       <p>
-        <strong>Author:</strong> {blog.fullName}
-      </p>
-      <p>
         <strong>Parent ID:</strong> {blog.parentId}
       </p>
       <p>

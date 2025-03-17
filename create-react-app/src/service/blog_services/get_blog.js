@@ -1,9 +1,24 @@
+//get_blog.js
 import axios from 'axios';
 import API_URL from '../api_service.js';
 
-const getAllBlog = async () => {
+const getBlogs = async () => {
   try {
-    const response = await axios.get(`${API_URL}blogAPI/getAll`);
+    const response = await axios.get(`${API_URL}blogAPI/blogs`);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching blogs:', error);
+    return [];
+  }
+};
+
+const getBlogByUserId = async () => {
+  try {
+    const userId = localStorage.getItem('userId');
+    if (!userId) {
+      throw new Error('User ID not found in localStorage');
+    }
+    const response = await axios.get(`${API_URL}blogAPI/getBlogsByUserId/${userId}`);
     return response.data;
   } catch (error) {
     console.error('Error fetching blogs:', error);
@@ -23,7 +38,7 @@ const getBlogById = async (Blog_id) => {
 
 const deleteBlog = async (Blog_id) => {
   try {
-    const response = await axios.delete(`${API_URL}blogAPI/deleteBlog/${Blog_id}`);
+    const response = await axios.delete(`${API_URL}blogAPI/deleteBlogByAdmin?blog_id=${Blog_id}`);
     return response.data;
   } catch (error) {
     console.error(`Error deleting blog with ID ${Blog_id}:`, error);
@@ -31,5 +46,36 @@ const deleteBlog = async (Blog_id) => {
   }
 };
 
-export default getAllBlog;
-export { getBlogById, deleteBlog };
+const deleteBlogByUser = async (blogId) => {
+  try {
+    const userId = localStorage.getItem('userId');
+    if (!userId) {
+      throw new Error('User ID not found in localStorage');
+    }
+
+    const response = await axios.delete(`${API_URL}blogAPI/deleteBlog?blog_id=${blogId}&parentId=${userId}`);
+
+    return response.data;
+  } catch (error) {
+    console.error(`Error deleting blog with ID ${blogId} by user:`, error);
+    return null;
+  }
+};
+
+const updateBlog = async (blogId, updatedData) => {
+  try {
+    const userId = localStorage.getItem('userId');
+    if (!userId) {
+      throw new Error('User ID not found in localStorage');
+    }
+    console.log('Data sent to API:', updatedData); 
+    const response = await axios.put(`${API_URL}blogAPI/updateBlog?blog_id=${blogId}&parentId=${userId}`, updatedData);
+    return response.data;
+  } catch (error) {
+    console.error(`Error updating blog with ID ${blogId}:`, error);
+    return null;
+  }
+};
+
+export default getBlogs;
+export { getBlogById, deleteBlog, deleteBlogByUser, getBlogByUserId, updateBlog };

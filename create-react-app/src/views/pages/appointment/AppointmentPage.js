@@ -410,7 +410,7 @@ const AppointmentPage = () => {
   return (
     <Box p={2}>
       <Button variant="contained" color="primary" onClick={() => handleOpenDialog()}>
-        Thêm lịch hẹn
+        Make an appointment
       </Button>
       <Grid container spacing={2} mt={2}>
         <Grid item xs={12}>
@@ -431,7 +431,7 @@ const AppointmentPage = () => {
         {renderAppointments('CANCELLED')}
       </Grid>
       <Dialog open={openDialog} onClose={handleCloseDialog}>
-        <DialogTitle>{currentAppointment?.bookId ? 'Sửa lịch hẹn' : 'Thêm lịch hẹn'}</DialogTitle>
+        <DialogTitle>{currentAppointment?.bookId ? 'Edit appointment schedule' : 'Make an appointment'}</DialogTitle>
         <DialogContent>
           {!currentAppointment?.bookId && (
             <>
@@ -510,10 +510,10 @@ const AppointmentPage = () => {
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCloseDialog} color="secondary">
-            Hủy
+            Cancel
           </Button>
           <Button onClick={handleSaveAppointment} color="primary">
-            Lưu
+            Submit
           </Button>
         </DialogActions>
       </Dialog>

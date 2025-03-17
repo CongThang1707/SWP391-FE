@@ -1,35 +1,47 @@
-import { Grid, Button } from '@mui/material';
+import {
+  Grid,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  TableSortLabel,
+  TablePagination,
+  Paper,
+  Button
+} from '@mui/material';
 import MainCard from 'ui-component/cards/MainCard';
 import React, { useState, useEffect } from 'react';
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TableSortLabel, TablePagination, Paper } from '@mui/material';
-import { getAllChildren } from '../../service/children_services/get_children.js';
+import { getAllFeedback, deleteFeedback } from '../../service/feedback_service/get_feedback.js';
 import { useNavigate } from 'react-router-dom';
 
-const EnhancedTable = () => {
-  const [childrenData, setChildrenData] = useState([]);
+const FeedbackTable = () => {
+  const [feedbackData, setFeedbackData] = useState([]);
   const [order, setOrder] = useState('asc');
-  const [orderBy, setOrderBy] = useState('fullName');
+  const [orderBy, setOrderBy] = useState('feedbackId');
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchChildrenData = async () => {
-      const data = await getAllChildren();
-      setChildrenData(data);
+    const fetchFeedbackData = async () => {
+      try {
+        const data = await getAllFeedback();
+        setFeedbackData(data);
+      } catch (error) {
+        console.error('Error fetching feedback:', error);
+      }
     };
-    fetchChildrenData();
+    fetchFeedbackData();
   }, []);
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
     setOrder(isAsc ? 'desc' : 'asc');
     setOrderBy(property);
-    setParentData((prevData) =>
+    setFeedbackData((prevData) =>
       [...prevData].sort((a, b) => {
-        if (property === 'phone') {
-          return isAsc ? a[property] - b[property] : b[property] - a[property];
-        }
         if (a[property] < b[property]) return isAsc ? -1 : 1;
         if (a[property] > b[property]) return isAsc ? 1 : -1;
         return 0;
@@ -46,18 +58,30 @@ const EnhancedTable = () => {
     setPage(0);
   };
 
+  const handleDeleteFeedback = async (feedbackId) => {
+    if (window.confirm('Are you sure you want to delete this feedback?')) {
+      try {
+        await deleteFeedback(feedbackId);
+        setFeedbackData((prevData) => prevData.filter((feedback) => feedback.feedbackId !== feedbackId));
+        alert(`Feedback ${feedbackId} deleted successfully!`);
+      } catch (error) {
+        console.error('Failed to delete feedback:', error.response ? error.response.data : error.message);
+        alert('Error deleting feedback. Please try again.');
+      }
+    }
+  };
+
   return (
-    <MainCard title="Children" content={false}>
+    <MainCard title="Feedbacks" content={false}>
       <Grid container>
         <TableContainer component={Paper}>
           <Table sx={{ minWidth: 650 }}>
             <TableHead>
               <TableRow>
                 {[
-                  { id: 'childrenName', label: 'Children Name' },
-                  { id: 'age', label: 'Age' },
-                  { id: 'gender', label: 'Gender' },
-                  { id: 'username', label: 'Parent Name' },
+                  { id: 'feedbackId', label: 'Feedback ID' },
+                  { id: 'rate', label: 'Rate' },
+                  { id: 'comment', label: 'Comment' },
                   { id: 'action', label: 'Action' }
                 ].map((head) => (
                   <TableCell key={head.id}>
@@ -73,20 +97,28 @@ const EnhancedTable = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {childrenData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((children) => (
-                <TableRow key={children.childrenId}>
-                  <TableCell>{children.childrenName}</TableCell>
-                  <TableCell>{children.age}</TableCell>
-                  <TableCell>{children.gender}</TableCell>
-                  <TableCell>{children.parentName}</TableCell>
+              {feedbackData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((feedback, index) => (
+                <TableRow key={feedback.feedbackId || `feedback-${index}`}>
+                  <TableCell>{feedback.feedbackId}</TableCell>
+                  <TableCell>{feedback.rate}</TableCell>
+                  <TableCell>{feedback.comment}</TableCell>
                   <TableCell>
                     <Button
                       variant="contained"
                       color="primary"
                       size="small"
-                      onClick={() => navigate(`/children-detail/${children.childrenId}`)}
+                      onClick={() => navigate(`/feedback-detail/${feedback.feedbackId}`)}
                     >
                       Detail
+                    </Button>
+                    <Button
+                      variant="contained"
+                      color="secondary"
+                      size="small"
+                      style={{ marginLeft: 8 }}
+                      onClick={() => handleDeleteFeedback(feedback.feedbackId)}
+                    >
+                      Delete
                     </Button>
                   </TableCell>
                 </TableRow>
@@ -97,7 +129,7 @@ const EnhancedTable = () => {
         <TablePagination
           rowsPerPageOptions={[5, 10, 25]}
           component="div"
-          count={childrenData.length}
+          count={feedbackData.length}
           rowsPerPage={rowsPerPage}
           page={page}
           onPageChange={handleChangePage}
@@ -108,4 +140,4 @@ const EnhancedTable = () => {
   );
 };
 
-export default EnhancedTable;
+export default FeedbackTable;

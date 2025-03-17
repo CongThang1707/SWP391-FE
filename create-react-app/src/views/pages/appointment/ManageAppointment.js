@@ -166,10 +166,10 @@ const ManageAppointment = () => {
         <Grid item xs={12} md={4}>
           <Typography variant="h5">Schedule</Typography>
           <Button variant="contained" color="primary" onClick={handleOpenDialog} sx={{ mt: 2 }}>
-            Tạo lịch làm việc
+            Create a work schedule
           </Button>
           <FormControl fullWidth margin="dense" sx={{ mt: 2 }}>
-            <InputLabel id="select-date-label">Chọn ngày</InputLabel>
+            <InputLabel id="select-date-label">Select date</InputLabel>
             <Select labelId="select-date-label" value={selectedDate} onChange={(e) => setSelectedDate(e.target.value)} label="Chọn ngày">
               {[...new Set(schedule.map((s) => s.scheduleDate))].map((date) => (
                 <MenuItem key={date} value={date}>
@@ -182,10 +182,11 @@ const ManageAppointment = () => {
         </Grid>
       </Grid>
       <Dialog open={openDialog} onClose={handleCloseDialog}>
-        <DialogTitle>Tạo lịch làm việc</DialogTitle>
+        <DialogTitle>Create a work schedule
+        </DialogTitle>
         <DialogContent>
           <TextField
-            label="Ngày làm việc"
+            label="Schedule date"
             type="date"
             value={newSchedule.scheduleDate}
             onChange={(e) => setNewSchedule({ ...newSchedule, scheduleDate: e.target.value })}
@@ -196,7 +197,7 @@ const ManageAppointment = () => {
             }}
           />
           <TextField
-            label="Giờ làm việc"
+            label="Schedule time"
             type="time"
             value={newSchedule.scheduleWork}
             onChange={(e) => setNewSchedule({ ...newSchedule, scheduleWork: e.target.value })}
@@ -209,10 +210,10 @@ const ManageAppointment = () => {
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCloseDialog} color="secondary">
-            Hủy
+            Cancel
           </Button>
           <Button onClick={handleSaveSchedule} color="primary">
-            Lưu
+            Submit
           </Button>
         </DialogActions>
       </Dialog>
