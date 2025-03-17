@@ -2,11 +2,11 @@ import { Grid, Button } from '@mui/material';
 import MainCard from 'ui-component/cards/MainCard';
 import React, { useState, useEffect } from 'react';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TableSortLabel, TablePagination, Paper } from '@mui/material';
-import { getAllChildren } from '../../service/children_services/get_children.js';
+import { getUserByRoleId } from '../../service/user_service/get_user.js';
 import { useNavigate } from 'react-router-dom';
 
 const EnhancedTable = () => {
-  const [childrenData, setChildrenData] = useState([]);
+  const [parentData, setParentData] = useState([]);
   const [order, setOrder] = useState('asc');
   const [orderBy, setOrderBy] = useState('fullName');
   const [page, setPage] = useState(0);
@@ -14,11 +14,12 @@ const EnhancedTable = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchChildrenData = async () => {
-      const data = await getAllChildren();
-      setChildrenData(data);
+    const fetchUserData = async () => {
+      const data = await getUserByRoleId(3);
+      const premiumMemberships = data.filter(membership => membership.membership === 'PREMIUM');
+      setParentData(premiumMemberships);
     };
-    fetchChildrenData();
+    fetchUserData();
   }, []);
 
   const handleRequestSort = (event, property) => {
@@ -47,17 +48,17 @@ const EnhancedTable = () => {
   };
 
   return (
-    <MainCard title="Children" content={false}>
+    <MainCard title="Parent" content={false}>
       <Grid container>
         <TableContainer component={Paper}>
           <Table sx={{ minWidth: 650 }}>
             <TableHead>
               <TableRow>
                 {[
-                  { id: 'childrenName', label: 'Children Name' },
-                  { id: 'age', label: 'Age' },
-                  { id: 'gender', label: 'Gender' },
-                  { id: 'username', label: 'Parent Name' },
+                  { id: 'username', label: 'Username' },
+                  { id: 'fullName', label: 'Full Name' },
+                  { id: 'email', label: 'Email' },
+                  { id: 'membership', label: 'Membership' },
                   { id: 'action', label: 'Action' }
                 ].map((head) => (
                   <TableCell key={head.id}>
@@ -73,19 +74,14 @@ const EnhancedTable = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {childrenData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((children) => (
-                <TableRow key={children.childrenId}>
-                  <TableCell>{children.childrenName}</TableCell>
-                  <TableCell>{children.age}</TableCell>
-                  <TableCell>{children.gender}</TableCell>
-                  <TableCell>{children.parentName}</TableCell>
+              {parentData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((parent) => (
+                <TableRow key={parent.user_id}>
+                  <TableCell>{parent.username}</TableCell>
+                  <TableCell>{parent.fullName}</TableCell>
+                  <TableCell>{parent.email}</TableCell>
+                  <TableCell>{parent.membership}</TableCell>
                   <TableCell>
-                    <Button
-                      variant="contained"
-                      color="primary"
-                      size="small"
-                      onClick={() => navigate(`/children-detail/${children.childrenId}`)}
-                    >
+                    <Button variant="contained" color="primary" size="small" onClick={() => navigate(`/parentpremium-detail/${parent.user_id}`)}>
                       Detail
                     </Button>
                   </TableCell>
@@ -97,7 +93,7 @@ const EnhancedTable = () => {
         <TablePagination
           rowsPerPageOptions={[5, 10, 25]}
           component="div"
-          count={childrenData.length}
+          count={parentData.length}
           rowsPerPage={rowsPerPage}
           page={page}
           onPageChange={handleChangePage}

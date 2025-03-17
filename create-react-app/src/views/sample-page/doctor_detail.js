@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { getUserById } from '../../service/user_service/get_user.js';
+import { getUser } from '../../service/user_service/get_user.js';
 
 const DoctorDetail = () => {
   const { id } = useParams();
@@ -8,7 +8,7 @@ const DoctorDetail = () => {
 
   useEffect(() => {
     const fetchDoctor = async () => {
-      const data = await getUserById(id);
+      const data = await getUser(id);
       setDoctor(data);
     };
     fetchDoctor();

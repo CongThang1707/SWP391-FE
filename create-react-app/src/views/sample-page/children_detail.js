@@ -20,7 +20,7 @@ const ChildrenDetail = () => {
     <div>
       <h2>Children Detail</h2>
       <p>
-        <strong>Children Name:</strong> {children.childrenName}
+        <strong>childrenName</strong> {children.childrenName}
       </p>
       <p>
         <strong>Age:</strong> {children.age}
