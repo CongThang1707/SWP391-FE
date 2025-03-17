@@ -1,9 +1,24 @@
+//get_blog.js
 import axios from 'axios';
 import API_URL from '../api_service.js';
 
-const getAllBlog = async () => {
+const getBlogs = async () => {
   try {
-    const response = await axios.get(`${API_URL}blogAPI/getAll`);
+    const response = await axios.get(`${API_URL}blogAPI/blogs`);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching blogs:', error);
+    return [];
+  }
+};
+
+const getBlogByUserId = async () => {
+  try {
+    const userId = localStorage.getItem('userId');
+    if (!userId) {
+      throw new Error('User ID not found in localStorage');
+    }
+    const response = await axios.get(`${API_URL}blogAPI/getBlogsByUserId/${userId}`);
     return response.data;
   } catch (error) {
     console.error('Error fetching blogs:', error);
@@ -41,5 +56,20 @@ const getBlogByParentId = async () => {
   }
 };
 
-export default getAllBlog;
-export { getBlogById, deleteBlog, getBlogByParentId };
+const updateBlog = async (blogId, updatedData) => {
+  try {
+    const userId = localStorage.getItem('userId');
+    if (!userId) {
+      throw new Error('User ID not found in localStorage');
+    }
+    console.log('Data sent to API:', updatedData);
+    const response = await axios.put(`${API_URL}blogAPI/updateBlog?blog_id=${blogId}&parentId=${userId}`, updatedData);
+    return response.data;
+  } catch (error) {
+    console.error(`Error updating blog with ID ${blogId}:`, error);
+    return null;
+  }
+};
+
+export default getBlogs;
+export { getBlogById, deleteBlog, getBlogByUserId, updateBlog, getBlogByParentId };

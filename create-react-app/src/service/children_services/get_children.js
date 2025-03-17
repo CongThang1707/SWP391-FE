@@ -19,7 +19,7 @@ export const getChildrenByParentId = async () => {
 
 export const getAllChildren = async () => {
   try {
-    const response = await axios.get(`${API_URL}childrenAPI/children-admin`);
+    const response = await axios.get(`${API_URL}childrenAPI/getChildren`);
     return response.data;
   } catch (error) {
     console.error(error);

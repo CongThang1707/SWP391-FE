@@ -76,7 +76,7 @@ const FirebaseRegister = ({ ...others }) => {
           })}
           onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
             try {
-              const response = await createUser(1, values);
+              const response = await createUser(3, values);
               console.log('Register Success:', response.data);
               navigate('/pages/login/login3');
               if (scriptedRef.current) {

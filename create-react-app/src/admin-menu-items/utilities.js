@@ -1,3 +1,4 @@
+//utilities.js
 // assets
 import { IconUserFilled, IconReportMedical, IconShadow, IconWindmill } from '@tabler/icons-react';
 
@@ -53,6 +54,38 @@ const utilities = {
       title: 'Booking',
       type: 'item',
       url: '/utils/util-booking',
+      icon: icons.IconShadow,
+      breadcrumbs: false
+    },
+    {
+      id: 'util-feedback',
+      title: 'Feedback',
+      type: 'item',
+      url: '/utils/util-feedback',
+      icon: icons.IconShadow,
+      breadcrumbs: false
+    },
+    {
+      id: 'util-consulting',
+      title: 'Consulting',
+      type: 'item',
+      url: '/utils/util-consulting',
+      icon: icons.IconShadow,
+      breadcrumbs: false
+    },
+    {
+      id: 'util-membership',
+      title: 'Membership',
+      type: 'item',
+      url: '/utils/util-membership',
+      icon: icons.IconShadow,
+      breadcrumbs: false
+    },
+    {
+      id: 'util-parentpremium',
+      title: 'Parent Premium',
+      type: 'item',
+      url: '/utils/util-parentpremium',
       icon: icons.IconShadow,
       breadcrumbs: false
     },

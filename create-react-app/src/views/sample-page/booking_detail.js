@@ -30,10 +30,16 @@ const BookingDetail = () => {
         <strong>Parent Name:</strong> {booking.parentName}
       </p>
       <p>
+        <strong>Children Name:</strong> {booking.childName}
+      </p>
+      <p>
         <strong>Schedule Work:</strong> {booking.scheduleWork}
       </p>
       <p>
         <strong>Booking Date:</strong> {booking.bookDate}
+      </p>
+      <p>
+        <strong>Schedule Date:</strong> {booking.scheduleDate}
       </p>
       <p>
         <strong>Comment:</strong> {booking.comment}
