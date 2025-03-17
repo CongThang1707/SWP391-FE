@@ -27,10 +27,6 @@ const AdminRoutes = {
   path: '/',
   element: <MainLayout />,
   children: [
-    // {
-    //   path: '/',
-    //   element: <DashboardDefault />
-    // },
     {
       path: 'dashboard',
       children: [
@@ -120,7 +116,7 @@ const AdminRoutes = {
       element: <BlogDetail />
     },
     {
-      path: '/booking-detail/:id',
+      path: 'booking-detail/:id',
       element: <BookingDetail />
     }
   ]

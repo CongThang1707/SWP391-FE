@@ -1,6 +1,21 @@
 //index.js
 import React, { useState, useEffect } from 'react';
-import { Avatar, Typography, Container, Card, CardContent, Box, Button, Stack, TextField, InputAdornment, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material';
+import {
+  Avatar,
+  Typography,
+  Container,
+  Card,
+  CardContent,
+  Box,
+  Button,
+  Stack,
+  TextField,
+  InputAdornment,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle
+} from '@mui/material';
 import { ThumbUp, ChatBubbleOutline, Share, ThumbUpAlt, Send, Search, Add } from '@mui/icons-material';
 import { Menu, MenuItem } from '@mui/material';
 import { Facebook, Instagram, Twitter, LinkedIn } from '@mui/icons-material';
@@ -44,9 +59,9 @@ const BlogPage = () => {
 
   const filteredPosts = searchTerm
     ? posts.filter(
-      (post) =>
-        post.title.toLowerCase().includes(searchTerm.toLowerCase()) || post.content.toLowerCase().includes(searchTerm.toLowerCase())
-    )
+        (post) =>
+          post.title.toLowerCase().includes(searchTerm.toLowerCase()) || post.content.toLowerCase().includes(searchTerm.toLowerCase())
+      )
     : posts;
 
   const handleLike = (index) => {
@@ -72,17 +87,17 @@ const BlogPage = () => {
 
     const newComment = {
       text: commentInputs[index],
-      avatar: userAvatar, 
-      name: userName, 
-      date: new Date().toLocaleString(), 
-      likes: 0, 
-      replies: [] 
+      avatar: userAvatar,
+      name: userName,
+      date: new Date().toLocaleString(),
+      likes: 0,
+      replies: []
     };
 
     const newPosts = [...posts];
     newPosts[index].comments.push(newComment);
     setPosts(newPosts);
-    handleCommentChange(index, ''); 
+    handleCommentChange(index, '');
   };
 
   const [anchorEl, setAnchorEl] = useState(null);
@@ -131,11 +146,11 @@ const BlogPage = () => {
     handleClose();
   };
 
-  const userAvatar = 'https://randomuser.me/api/portraits/men/4.jpg'; 
-  const userName = 'John Doe'; 
+  const userAvatar = 'https://randomuser.me/api/portraits/men/4.jpg';
+  const userName = 'John Doe';
 
   const [page, setPage] = useState(1);
-  const postsPerPage = 2; 
+  const postsPerPage = 2;
 
   const handlePageChange = (event, value) => {
     setPage(value);
@@ -171,13 +186,12 @@ const BlogPage = () => {
       likes: 0,
       comments: [],
       shares: 0,
-      ...newPost,
+      ...newPost
     };
 
     setPosts([newEntry, ...posts]);
     handleCloseDialog();
   };
-
 
   return (
     <>
@@ -221,10 +235,22 @@ const BlogPage = () => {
 
       {/* Add Post Section */}
       <Container maxWidth="md" sx={{ mt: 3, mb: 4 }}>
-        <Card sx={{ display: 'flex', alignItems: 'center', p: 2, cursor: 'pointer', boxShadow: 3, '&:hover': { boxShadow: 6 } }} onClick={handleOpenDialog}>
+        <Card
+          sx={{ display: 'flex', alignItems: 'center', p: 2, cursor: 'pointer', boxShadow: 3, '&:hover': { boxShadow: 6 } }}
+          onClick={handleOpenDialog}
+        >
           <Avatar src="https://randomuser.me/api/portraits/men/1.jpg" sx={{ width: 50, height: 50, mr: 2 }} />
-          <TextField fullWidth placeholder="What's on your mind?" variant="outlined" onClick={handleOpenDialog} sx={{ background: '#f0f2f5', borderRadius: 2 }} />
-          <Button startIcon={<Add />} sx={{ ml: 2 }} variant="contained" onClick={handleOpenDialog}>Add</Button>
+          <TextField
+            fullWidth
+            placeholder="What's on your mind?"
+            variant="outlined"
+            onClick={handleOpenDialog}
+            inputProps={{ readOnly: true }}
+            sx={{ background: '#f0f2f5', borderRadius: 2 }}
+          />
+          <Button startIcon={<Add />} sx={{ ml: 2 }} variant="contained" onClick={handleOpenDialog}>
+            Add
+          </Button>
         </Card>
       </Container>
 
@@ -232,13 +258,37 @@ const BlogPage = () => {
       <Dialog open={openDialog} onClose={handleCloseDialog} maxWidth="sm" fullWidth>
         <DialogTitle>Create a new post</DialogTitle>
         <DialogContent>
-          <TextField fullWidth label="Title" margin="dense" value={newPost.title} onChange={(e) => handleNewPostChange('title', e.target.value)} />
-          <TextField fullWidth label="Description" margin="dense" value={newPost.description} onChange={(e) => handleNewPostChange('description', e.target.value)} />
-          <TextField fullWidth label="Content" multiline rows={4} margin="dense" value={newPost.content} onChange={(e) => handleNewPostChange('content', e.target.value)} />
+          <TextField
+            fullWidth
+            label="Title"
+            margin="dense"
+            value={newPost.title}
+            onChange={(e) => handleNewPostChange('title', e.target.value)}
+          />
+          <TextField
+            fullWidth
+            label="Description"
+            margin="dense"
+            value={newPost.description}
+            onChange={(e) => handleNewPostChange('description', e.target.value)}
+          />
+          <TextField
+            fullWidth
+            label="Content"
+            multiline
+            rows={4}
+            margin="dense"
+            value={newPost.content}
+            onChange={(e) => handleNewPostChange('content', e.target.value)}
+          />
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleCloseDialog} color="secondary">Cancel</Button>
-          <Button onClick={handleAddPost} variant="contained">Post</Button>
+          <Button onClick={handleCloseDialog} color="secondary">
+            Cancel
+          </Button>
+          <Button onClick={handleAddPost} variant="contained">
+            Post
+          </Button>
         </DialogActions>
       </Dialog>
 

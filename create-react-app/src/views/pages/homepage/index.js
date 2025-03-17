@@ -51,22 +51,22 @@ const ParentLandingPage = () => {
           transition: 'background-image 0.5s ease-in-out, opacity 0.5s ease-in-out',
           opacity: 0.9,
           '&:hover': {
-            opacity: 1,
+            opacity: 1
           }
         }}
       >
         <Box
           sx={{
-            mt: 20, 
+            mt: 20,
             width: '100%',
             maxWidth: '500px',
             display: 'flex',
             alignItems: 'center',
-            backgroundColor: '#ffffff',  
+            backgroundColor: '#ffffff',
             borderRadius: '25px',
-            padding: '5px', 
-            boxShadow: 'none', 
-            border: '2px solid black',  
+            padding: '5px',
+            boxShadow: 'none',
+            border: '2px solid black'
           }}
         >
           <input
@@ -78,8 +78,8 @@ const ParentLandingPage = () => {
               outline: 'none',
               padding: '10px',
               borderRadius: '25px',
-              backgroundColor: 'white',  
-              fontSize: '16px',  
+              backgroundColor: 'white',
+              fontSize: '16px'
             }}
           />
           <Button
@@ -88,8 +88,8 @@ const ParentLandingPage = () => {
             sx={{
               marginLeft: 2,
               borderRadius: '25px',
-              backgroundColor: '#007bff',  
-              color: 'white', 
+              backgroundColor: '#007bff',
+              color: 'white'
             }}
           >
             Tìm Kiếm

@@ -1,35 +1,25 @@
-//profile
 import React, { useState, useEffect } from 'react';
-import {
-  Container,
-  Box,
-  Typography,
-  Avatar,
-  Button,
-  TextField,
-  Paper,
-  Stack,
-  MenuItem,
-  IconButton,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  Divider
-} from '@mui/material';
+import { Container, Grid } from '@mui/material';
 import { getUserById } from '../../../service/user_service/get_user.js';
 import { updateUserById } from '../../../service/user_service/update_user.js';
 import { getChildrenByParentId } from '../../../service/children_services/get_children.js';
+import { getBlogByParentId, deleteBlog } from '../../../service/blog_services/get_blog.js';
+import updateBlog from '../../../service/blog_services/update_blog.js';
+import { createBlog } from '../../../service/blog_services/post_blog.js';
 import { useNavigate } from 'react-router-dom';
-import { Add as AddIcon, Delete as DeleteIcon, Edit as EditIcon } from '@mui/icons-material';
 import { createChild, updateChild, deleteChild } from '../../../service/children_services/get_children.js';
-import InputAdornment from '@mui/material/InputAdornment';
-import PersonIcon from '@mui/icons-material/Person';
-import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
+import { getFeedbackByDoctorId } from '../../../service/feedback_service/get_feedback.js';
+import UserProfile from './components/UserProfile';
+import AddChildDialog from './components/AddChildDialog';
+import EditChildDialog from './components/EditChildDialog';
+import EditBlogDialog from './components/EditBlogDialog';
+import AddBlogDialog from './components/AddBlogDialog';
 
 const Profile = () => {
   const [user, setUser] = useState({});
   const [children, setChildren] = useState([]);
+  const [blogs, setBlogs] = useState([]);
+  const [feedbacks, setFeedbacks] = useState([]);
   const [editMode, setEditMode] = useState(false);
   const [formData, setFormData] = useState({});
   const [openAddDialog, setOpenAddDialog] = useState(false);
@@ -37,6 +27,10 @@ const Profile = () => {
   const [openEditDialog, setOpenEditDialog] = useState(false);
   const [editingChild, setEditingChild] = useState({ childrenId: '', childrenName: '', age: '', gender: '' });
   const navigate = useNavigate();
+  const [openEditBlogDialog, setOpenEditBlogDialog] = useState(false);
+  const [editingBlog, setEditingBlog] = useState({ title: '', description: '', content: '' });
+  const [openAddBlogDialog, setOpenAddBlogDialog] = useState(false);
+  const [newBlog, setNewBlog] = useState({ title: '', description: '', content: '' });
 
   const handleNavigateToChildDetail = (childId) => {
     if (!childId) {
@@ -56,6 +50,12 @@ const Profile = () => {
         const childrenData = await getChildrenByParentId();
         console.log('Children data:', childrenData);
         setChildren(childrenData);
+
+        const blogsData = await getBlogByParentId();
+        setBlogs(blogsData);
+
+        const feedbackData = await getFeedbackByDoctorId();
+        setFeedbacks(feedbackData);
       } catch (error) {
         console.error('Error fetching data:', error);
       }
@@ -149,237 +149,131 @@ const Profile = () => {
     }
   };
 
+  const handleOpenAddBlogDialog = () => {
+    setOpenAddBlogDialog(true);
+  };
+
+  const handleOpenEditBlogDialog = (blog) => {
+    setEditingBlog(blog);
+    setOpenEditBlogDialog(true);
+  };
+
+  const handleCloseEditBlogDialog = () => {
+    setOpenEditBlogDialog(false);
+    setEditingBlog({ title: '', description: '', content: '' });
+  };
+
+  const handleBlogChange = (e) => {
+    setEditingBlog({ ...editingBlog, [e.target.name]: e.target.value });
+  };
+
+  const handleUpdateBlog = async () => {
+    const blogData = {
+      title: editingBlog.title,
+      description: editingBlog.description,
+      content: editingBlog.content
+    };
+    try {
+      await updateBlog(editingBlog.blogId, blogData);
+      setBlogs(blogs.map((blog) => (blog.blogId === editingBlog.blogId ? { ...blog, ...blogData } : blog)));
+      handleCloseEditBlogDialog();
+      alert('Blog updated successfully!');
+    } catch (error) {
+      console.error('Failed to update blog:', error);
+      alert('Failed to update blog. Please try again.');
+    }
+  };
+
+  const handleDeleteBlog = async (blogId) => {
+    try {
+      await deleteBlog(blogId);
+      setBlogs(blogs.filter((blog) => blog.blogId !== blogId));
+      alert('Blog deleted successfully!');
+    } catch (error) {
+      console.error('Failed to delete blog:', error);
+      alert('Failed to delete blog. Please try again.');
+    }
+  };
+
+  const handleCloseAddBlogDialog = () => {
+    setOpenAddBlogDialog(false);
+    setNewBlog({ title: '', description: '', content: '' });
+  };
+
+  const handleNewBlogChange = (e) => {
+    setNewBlog({ ...newBlog, [e.target.name]: e.target.value });
+  };
+
+  const handleAddBlog = async () => {
+    const blogData = {
+      title: newBlog.title,
+      description: newBlog.description,
+      content: newBlog.content
+    };
+    try {
+      const createdBlog = await createBlog(blogData);
+      setBlogs([...blogs, createdBlog]);
+      handleCloseAddBlogDialog();
+      alert('Blog added successfully!');
+    } catch (error) {
+      console.error('Failed to add blog:', error);
+      alert('Failed to add blog. Please try again.');
+    }
+  };
+
   return (
-    <Container maxWidth="sm">
-      <Paper elevation={4} sx={{ p: 4, mt: 4, textAlign: 'center', borderRadius: '12px' }}>
-        <Avatar src={user.avatar} sx={{ width: 120, height: 120, margin: 'auto', mb: 2, border: '4px solid #3f51b5' }} />
-        <Typography variant="h5" fontWeight="bold" color="primary">
-          {user.username || 'N/A'}
-        </Typography>
-        <Typography variant="body1" color="text.secondary" sx={{ fontWeight: 'bold' }}>
-          Email: {user.email || 'N/A'}
-        </Typography>
-        <Typography variant="body1" color="text.secondary" sx={{ fontWeight: 'bold' }}>
-          Full Name: {user.fullName || 'N/A'}
-        </Typography>
-        <Typography variant="body1" color="text.secondary" sx={{ fontWeight: 'bold' }}>
-          Phone: {user.phone || 'N/A'}
-        </Typography>
-        <Typography variant="body1" color="text.secondary" sx={{ fontWeight: 'bold' }}>
-          Gender: {user.gender || 'N/A'}
-        </Typography>
-        <Typography variant="body1" color="text.secondary" sx={{ fontWeight: 'bold' }}>
-          Address: {user.address || 'N/A'}
-        </Typography>
-        <Typography variant="body2" sx={{ mt: 1, fontStyle: 'italic', color: 'gray' }}>
-          Role: {user.roleName || 'N/A'}
-        </Typography>
-
-        {/* Divider giữa hai phần */}
-        <Divider sx={{ my: 4 }} />
-
-        {/* Box chứa thông tin Children */}
-        <Box sx={{ mt: 2, p: 2, backgroundColor: '#fff', borderRadius: 2, textAlign: 'center', position: 'relative', }}>
-          {/* Nút Add ở góc trên cùng bên phải */}
-          <IconButton onClick={handleOpenAddDialog} sx={{ position: 'absolute', top: -20, right: 8, color: 'primary.main' }}>
-            <AddIcon />
-          </IconButton>
-
-          {children.length > 0 ? (
-            <Stack spacing={1} sx={{ mt: 1 }}>
-              {children.map((child) => (
-                <Box
-                  key={child.childrenId || Math.random()}
-                  sx={{
-                    p: 1,
-                    border: '1px solid #ccc',
-                    borderRadius: 2,
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                    transition: '0.3s', // Thêm transition để làm mượt hiệu ứng
-                    '&:hover': {
-                      backgroundColor: '#f5f5f5', // Thay đổi màu nền khi hover
-                      boxShadow: '0 4px 8px rgba(0,0,0,0.2)', // Thêm bóng mờ
-                    },
-
-                  }}
-                >
-                  {/* Thông tin con */}
-                  <Box
-                    sx={{
-                      cursor: 'pointer',
-                      display: 'flex',
-                      flexDirection: 'column',
-                      alignItems: 'flex-start',
-                      textAlign: 'left',
-                      width: '100%',
-                    }}
-                    onClick={() => handleNavigateToChildDetail(child.childrenId)}
-                  >
-                    <Typography variant="body2" fontWeight="bold" color="primary">
-                      Name: {child.childrenName || 'N/A'}
-                    </Typography>
-                    <Typography variant="body2">Age: {child.age ? `${child.age} years old` : 'N/A'}</Typography>
-                    <Typography variant="body2">Gender: {child.gender || 'N/A'}</Typography>
-                  </Box>
-
-                  {/* Nút Edit & Delete */}
-                  <Box>
-                    <IconButton color="primary" onClick={() => handleOpenEditDialog(child)}>
-                      <EditIcon />
-                    </IconButton>
-                    <IconButton color="error" onClick={() => handleDeleteChild(child.childrenId)}>
-                      <DeleteIcon />
-                    </IconButton>
-                  </Box>
-                </Box>
-              ))}
-            </Stack>
-          ) : (
-            <Typography variant="body2" sx={{ mt: 1, fontStyle: 'italic', color: 'gray' }}>
-              No children data available
-            </Typography>
-          )}
-        </Box>
-
-        {/* Dialog add child */}
-        <Dialog open={openAddDialog} onClose={handleCloseAddDialog} PaperProps={{ style: { borderRadius: 15, boxShadow: '0px 4px 20px rgba(0, 0, 0, 0.1)' } }}>
-          <DialogTitle style={{ fontSize: '1.5rem', fontWeight: '600' }}>Add Child</DialogTitle>
-          <DialogContent>
-            <TextField
-              fullWidth
-              label="Name"
-              name="childrenName"
-              value={newChild.childrenName}
-              onChange={handleNewChildChange}
-              margin="dense"
-              InputProps={{ startAdornment: <InputAdornment position="start"><PersonIcon /></InputAdornment> }}
-              variant="outlined"
-              style={{ borderRadius: 10 }}
-            />
-            <TextField
-              fullWidth
-              label="Age"
-              name="age"
-              type="number"
-              value={newChild.age}
-              onChange={handleNewChildChange}
-              margin="dense"
-              InputProps={{ startAdornment: <InputAdornment position="start"><CalendarTodayIcon /></InputAdornment> }}
-              variant="outlined"
-              style={{ borderRadius: 10 }}
-            />
-            <TextField
-              fullWidth
-              select
-              label="Gender"
-              name="gender"
-              value={newChild.gender}
-              onChange={handleNewChildChange}
-              margin="dense"
-              variant="outlined"
-              style={{ borderRadius: 10 }}
-            >
-              <MenuItem value="male">male</MenuItem>
-              <MenuItem value="female">female</MenuItem>
-            </TextField>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={handleCloseAddDialog} color="secondary" variant="outlined" style={{ borderRadius: 10 }}>
-              Cancel
-            </Button>
-            <Button onClick={handleAddChild} color="primary" variant="contained" style={{ borderRadius: 10 }}>
-              Save
-            </Button>
-          </DialogActions>
-        </Dialog>
-
-        {/* Dialog update child */}
-        <Dialog open={openEditDialog} onClose={handleCloseEditDialog}>
-          <DialogTitle>Edit Child</DialogTitle>
-          <DialogContent>
-            <TextField
-              fullWidth
-              label="Name"
-              name="childrenName"
-              value={editingChild.childrenName}
-              onChange={handleEditChildChange}
-              margin="dense"
-              InputProps={{ startAdornment: <InputAdornment position="start"><PersonIcon /></InputAdornment> }}
-              variant="outlined"
-              style={{ borderRadius: 10 }}
-            />
-            <TextField
-              fullWidth
-              label="Age"
-              name="age"
-              type="number"
-              value={editingChild.age}
-              onChange={handleEditChildChange}
-              margin="dense"
-              InputProps={{ startAdornment: <InputAdornment position="start"><CalendarTodayIcon /></InputAdornment> }}
-              variant="outlined"
-              style={{ borderRadius: 10 }}
-            />
-            <TextField
-              fullWidth
-              select
-              label="Gender"
-              name="gender"
-              value={editingChild.gender || ''}
-              onChange={(e) => setEditingChild({ ...editingChild, gender: e.target.value.toLowerCase() })}
-              margin="dense"
-              style={{ borderRadius: 10 }}
-            >
-              <MenuItem value="male">male</MenuItem>
-              <MenuItem value="female">female</MenuItem>
-            </TextField>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={handleCloseEditDialog} color="secondary">
-              Cancel
-            </Button>
-            <Button onClick={handleUpdateChild} color="primary" variant="contained">
-              Save
-            </Button>
-          </DialogActions>
-        </Dialog>
-
-        {/* edit thông tin parent */}
-        {editMode ? (
-          <Box sx={{ mt: 3 }}>
-            <TextField fullWidth label="Email" name="email" value={formData.email} onChange={handleChange} margin="dense" />
-            <TextField fullWidth label="Full Name" name="fullName" value={formData.fullName} onChange={handleChange} margin="dense" />
-            <TextField fullWidth label="Phone" name="phone" value={formData.phone} onChange={handleChange} margin="dense" />
-            <TextField
-              fullWidth
-              select
-              label="Gender"
-              name="gender"
-              value={formData.gender ? formData.gender.charAt(0).toUpperCase() + formData.gender.slice(1) : ''}
-              onChange={handleChange}
-              margin="dense"
-            >
-              <MenuItem value="male">male</MenuItem>
-              <MenuItem value="female">female</MenuItem>
-            </TextField>
-            <TextField fullWidth label="Address" name="address" value={formData.address} onChange={handleChange} margin="dense" />
-            <Stack direction="row" spacing={2} justifyContent="center" sx={{ mt: 2 }}>
-              <Button variant="contained" color="primary" onClick={handleSave}>
-                Save Changes
-              </Button>
-              <Button variant="outlined" color="secondary" onClick={() => setEditMode(false)}>
-                Cancel
-              </Button>
-            </Stack>
-          </Box>
-        ) : (
-          <Button variant="contained" sx={{ mt: 3, ':hover': { bgcolor: '#303f9f' } }} onClick={() => setEditMode(true)}>
-            Edit Profile
-          </Button>
-        )}
-      </Paper>
+    <Container maxWidth={false} sx={{ mt: 4, width: '1050px' }}>
+      <Grid container spacing={2}>
+        <Grid item xs={12}>
+          <UserProfile
+            user={user}
+            editMode={editMode}
+            formData={formData}
+            handleChange={handleChange}
+            handleSave={handleSave}
+            setEditMode={setEditMode}
+            blogs={blogs}
+            feedbacks={feedbacks}
+            handleOpenAddBlogDialog={handleOpenAddBlogDialog}
+            handleOpenEditBlogDialog={handleOpenEditBlogDialog}
+            handleDeleteBlog={handleDeleteBlog}
+            handleNavigateToChildDetail={handleNavigateToChildDetail}
+            handleOpenAddDialog={handleOpenAddDialog}
+            handleOpenEditDialog={handleOpenEditDialog}
+            handleDeleteChild={handleDeleteChild}
+          >
+            {children}
+          </UserProfile>
+        </Grid>
+      </Grid>
+      <AddChildDialog
+        open={openAddDialog}
+        handleClose={handleCloseAddDialog}
+        newChild={newChild}
+        handleNewChildChange={handleNewChildChange}
+        handleAddChild={handleAddChild}
+      />
+      <EditChildDialog
+        open={openEditDialog}
+        handleClose={handleCloseEditDialog}
+        editingChild={editingChild}
+        handleEditChildChange={handleEditChildChange}
+        handleUpdateChild={handleUpdateChild}
+      />
+      <EditBlogDialog
+        open={openEditBlogDialog}
+        handleClose={handleCloseEditBlogDialog}
+        blog={editingBlog}
+        handleBlogChange={handleBlogChange}
+        handleUpdateBlog={handleUpdateBlog}
+      />
+      <AddBlogDialog
+        open={openAddBlogDialog}
+        handleClose={handleCloseAddBlogDialog}
+        newBlog={newBlog}
+        handleBlogChange={handleNewBlogChange}
+        handleAddBlog={handleAddBlog}
+      />
     </Container>
   );
 };

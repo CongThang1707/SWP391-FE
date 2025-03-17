@@ -1,11 +1,10 @@
-import { useRoutes } from 'react-router-dom';
+import { useRoutes, Navigate } from 'react-router-dom';
 
 // routes
 import AdminRoutes from './AdminRoutes';
 import AuthenticationRoutes from './AuthenticationRoutes';
 import ParentRoutes from './ParentRoutes';
 import DoctorRoutes from './DoctorRoutes';
-import UserRoutes from './UserRoutes';
 import { Button, Typography, Container } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 
@@ -59,25 +58,29 @@ const NotFound = () => {
 
 export default function ThemeRoutes() {
   const userRole = localStorage.getItem('role');
+  const isLoggedIn = !!localStorage.getItem('userId'); // Kiểm tra xem người dùng đã đăng nhập hay chưa
 
   const getRoutesForRole = (role) => {
     switch (role) {
       case 'Admin':
-        return [UserRoutes, AuthenticationRoutes, AdminRoutes];
+        return [AdminRoutes];
       case 'Parent':
-        return [UserRoutes, AuthenticationRoutes, ParentRoutes];
+        return [ParentRoutes];
       case 'Doctor':
-        return [UserRoutes, AuthenticationRoutes, DoctorRoutes];
+        return [DoctorRoutes];
       default:
-        return [UserRoutes, AuthenticationRoutes];
+        return [];
     }
   };
-  const routes = getRoutesForRole(userRole);
 
-  routes.push({
-    path: '*',
-    element: <NotFound />
-  });
+  const routes = [
+    ...AuthenticationRoutes,
+    ...(isLoggedIn ? getRoutesForRole(userRole) : []),
+    {
+      path: '*',
+      element: isLoggedIn ? <NotFound /> : <Navigate to="/pages/login/login3" />
+    }
+  ];
 
   // Return the routes with the 404 fallback
   return useRoutes(routes);
