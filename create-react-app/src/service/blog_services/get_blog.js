@@ -46,19 +46,13 @@ const deleteBlog = async (Blog_id) => {
   }
 };
 
-const deleteBlogByUser = async (blogId) => {
+const getBlogByParentId = async () => {
   try {
-    const userId = localStorage.getItem('userId');
-    if (!userId) {
-      throw new Error('User ID not found in localStorage');
-    }
-
-    const response = await axios.delete(`${API_URL}blogAPI/deleteBlog?blog_id=${blogId}&parentId=${userId}`);
-
+    const response = await axios.get(`${API_URL}blogAPI/getBlogsByUserId/${localStorage.getItem('userId')}`);
     return response.data;
   } catch (error) {
-    console.error(`Error deleting blog with ID ${blogId} by user:`, error);
-    return null;
+    console.error('Error fetching blogs:', error);
+    return [];
   }
 };
 
@@ -68,7 +62,7 @@ const updateBlog = async (blogId, updatedData) => {
     if (!userId) {
       throw new Error('User ID not found in localStorage');
     }
-    console.log('Data sent to API:', updatedData); 
+    console.log('Data sent to API:', updatedData);
     const response = await axios.put(`${API_URL}blogAPI/updateBlog?blog_id=${blogId}&parentId=${userId}`, updatedData);
     return response.data;
   } catch (error) {
@@ -78,4 +72,4 @@ const updateBlog = async (blogId, updatedData) => {
 };
 
 export default getBlogs;
-export { getBlogById, deleteBlog, deleteBlogByUser, getBlogByUserId, updateBlog };
+export { getBlogById, deleteBlog, getBlogByUserId, updateBlog, getBlogByParentId };

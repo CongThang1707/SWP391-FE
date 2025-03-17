@@ -39,7 +39,7 @@ function ResponsiveAppBar() {
 
   const handleLogout = () => {
     localStorage.clear();
-    setIsLoggedIn(false);
+    setIsLoggedIn(false); //
     navigate('/');
   };
 
@@ -48,7 +48,7 @@ function ResponsiveAppBar() {
       <AppBar
         position="static"
         sx={{
-          backgroundColor: '#007bff',  
+          backgroundColor: '#007bff',
           boxShadow: '0px 4px 10px rgba(0,0,0,0.2)'
         }}
       >
