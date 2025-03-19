@@ -16,6 +16,7 @@ import {
   OutlinedInput,
   useMediaQuery
 } from '@mui/material';
+import { Select, MenuItem } from '@mui/material';
 
 // third party
 import * as Yup from 'yup';
@@ -23,7 +24,6 @@ import { Formik } from 'formik';
 
 // project imports
 import useScriptRef from 'hooks/useScriptRef';
-import Google from 'assets/images/icons/social-google.svg';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 
 // assets
@@ -39,10 +39,6 @@ const FirebaseRegister = ({ ...others }) => {
   const matchDownSM = useMediaQuery(theme.breakpoints.down('md'));
   const customization = useSelector((state) => state.customization);
   const [showPassword, setShowPassword] = useState(false);
-
-  const googleHandler = async () => {
-    console.error('Register');
-  };
 
   const handleClickShowPassword = () => {
     setShowPassword(!showPassword);
@@ -166,18 +162,20 @@ const FirebaseRegister = ({ ...others }) => {
               <Grid container spacing={matchDownSM ? 0 : 2}>
                 <Grid item xs={12} sm={6}>
                   <FormControl fullWidth error={Boolean(touched.gender && errors.gender)} sx={{ mb: 2 }}>
-                    <InputLabel htmlFor="outlined-adornment-gender-register">Gender</InputLabel>
-                    <OutlinedInput
-                      id="outlined-adornment-gender-register"
-                      type="gender"
+                    <InputLabel>Gender</InputLabel>
+                    <Select
                       value={values.gender}
                       name="gender"
                       label="Gender"
                       onBlur={handleBlur}
                       onChange={handleChange}
-                    />
+                    >
+                      <MenuItem value="Male">Male</MenuItem>
+                      <MenuItem value="Female">Female</MenuItem>
+                    </Select>
                     {touched.gender && errors.gender && <FormHelperText error>{errors.gender}</FormHelperText>}
                   </FormControl>
+
                 </Grid>
                 <Grid item xs={12} sm={6}>
                   <FormControl fullWidth error={Boolean(touched.phone && errors.phone)} sx={{ mb: 2 }}>
@@ -204,7 +202,7 @@ const FirebaseRegister = ({ ...others }) => {
                     size="large"
                     type="submit"
                     variant="contained"
-                    color="secondary"
+                    color="primary"
                   >
                     Sign up
                   </Button>
@@ -237,24 +235,6 @@ const FirebaseRegister = ({ ...others }) => {
           </Box>
         </Grid>
         <Grid item xs={12}>
-          <AnimateButton>
-            <Button
-              variant="outlined"
-              fullWidth
-              onClick={googleHandler}
-              size="large"
-              sx={{
-                color: 'grey.700',
-                backgroundColor: theme.palette.grey[50],
-                borderColor: theme.palette.grey[100]
-              }}
-            >
-              <Box sx={{ mr: { xs: 1, sm: 2, width: 20 } }}>
-                <img src={Google} alt="google" width={16} height={16} style={{ marginRight: matchDownSM ? 8 : 16 }} />
-              </Box>
-              Sign up with Google
-            </Button>
-          </AnimateButton>
         </Grid>
       </Grid>
     </>

@@ -38,15 +38,15 @@ export const deleteMembership = async (type) => {
 
 export const createMembership = async (type, price) => {
     try {
-      const response = await axios.post(`${API_URL}createMembership?type=${type}&price=${price}`);
-      return response.data;
+        const response = await axios.post(`${API_URL}createMembership?type=${type}&price=${price}`);
+        return response.data;
     } catch (error) {
-      console.error('Error creating membership:', error);
-      throw error;
+        console.error('Error creating membership:', error);
+        throw error;
     }
-  };
+};
 
-  export const updateMembership = async (membershipId, updatedData) => {
+export const updateMembership = async (membershipId, updatedData) => {
     if (!membershipId || !updatedData) {
         console.error("Error: Membership ID or updated data is missing");
         return null;
