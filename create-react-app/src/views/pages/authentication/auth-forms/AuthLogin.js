@@ -46,7 +46,7 @@ const FirebaseLogin = ({ ...others }) => {
       <Grid container direction="column" justifyContent="center" spacing={2}>
         <Grid item xs={12} container alignItems="center" justifyContent="center">
           <Box sx={{ mb: 2 }}>
-            <Typography variant="subtitle1">Sign in with Email address or User name</Typography>
+            <Typography variant="subtitle1">Sign in with User name</Typography>
           </Box>
         </Grid>
       </Grid>
@@ -58,7 +58,7 @@ const FirebaseLogin = ({ ...others }) => {
           submit: null
         }}
         validationSchema={Yup.object().shape({
-          usernameOrEmail: Yup.string().required('Username or email can not be empty'),
+          usernameOrEmail: Yup.string().required('Username can not be empty'),
           password: Yup.string().required('Password can not be empty')
         })}
         onSubmit={async (values, { setStatus, setSubmitting }) => {
@@ -111,7 +111,7 @@ const FirebaseLogin = ({ ...others }) => {
               error={Boolean(touched.usernameOrEmail && errors.usernameOrEmail)}
               sx={{ ...theme.typography.customInput }}
             >
-              <InputLabel htmlFor="outlined-adornment-email-login">Email Address / Username</InputLabel>
+              <InputLabel htmlFor="outlined-adornment-email-login">Username</InputLabel>
               <OutlinedInput
                 id="outlined-adornment-email-login"
                 type="email"
@@ -165,7 +165,7 @@ const FirebaseLogin = ({ ...others }) => {
 
             <Box sx={{ mt: 2 }}>
               <AnimateButton>
-                <Button disableElevation disabled={isSubmitting} fullWidth size="large" type="submit" variant="contained" color="secondary">
+                <Button disableElevation disabled={isSubmitting} fullWidth size="large" type="submit" variant="contained" color="primary">
                   Sign in
                 </Button>
               </AnimateButton>

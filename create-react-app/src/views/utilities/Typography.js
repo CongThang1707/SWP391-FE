@@ -16,7 +16,7 @@ const EnhancedTable = () => {
 
   useEffect(() => {
     const fetchUserData = async () => {
-      const data = await getUserByRoleId(3);
+      const data = await getUserByRoleId(1);
       setParentData(data);
     };
     fetchUserData();
@@ -56,6 +56,7 @@ const EnhancedTable = () => {
         setParentData((prevData) => prevData.filter((user) => user.user_id !== userId));
 
         console.log(`User ${userId} deleted successfully!`);
+        alert('Delete success!'); // Thông báo khi xóa thành công
       } catch (error) {
         console.error('Failed to delete user:', error.response ? error.response.data : error.message);
         alert('Error deleting user. Please try again.');
