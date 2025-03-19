@@ -12,6 +12,7 @@ const ParentContactPage = Loadable(lazy(() => import('views/pages/contact/index.
 const ParentAppointmentPage = Loadable(lazy(() => import('views/pages/appointment/AppointmentPage.js')));
 const ChildrenDetailPage = Loadable(lazy(() => import('views/sample-page/parent_child_detail.js')));
 const ConsultingForm = Loadable(lazy(() => import('views/sample-page/consulting.js')));
+const News = Loadable(lazy(() => import('views/pages/news/index.js')));
 
 // ==============================|| PARENT ROUTING ||============================== //
 
@@ -30,6 +31,10 @@ const ParentRoutes = {
     {
       path: '/profile',
       element: <ParentProfilePage />
+    },
+    {
+      path: '/news',
+      element: <News />
     },
     {
       path: '/contact',
