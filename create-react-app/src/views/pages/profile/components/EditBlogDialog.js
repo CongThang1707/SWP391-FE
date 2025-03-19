@@ -7,7 +7,7 @@ const EditBlogDialog = ({ open, handleClose, blog, handleBlogChange, handleUpdat
       <DialogTitle>Edit Blog</DialogTitle>
       <DialogContent>
         <TextField margin="dense" label="Title" name="title" value={blog.title} onChange={handleBlogChange} fullWidth />
-        <TextField margin="dense" label="Description" name="description" value={blog.description} onChange={handleBlogChange} fullWidth />
+        <TextField margin="dense" label="Hashtag" name="hashtag" value={blog.hashtag} onChange={handleBlogChange} fullWidth />
         <TextField
           margin="dense"
           label="Content"

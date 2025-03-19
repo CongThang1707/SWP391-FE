@@ -24,7 +24,7 @@ const EnhancedTable = () => {
     gender: '',
     phone: '',
     address: ''
-  });  
+  });
 
   const [errors, setErrors] = useState({});
   const [touchedField, setTouchedField] = useState();

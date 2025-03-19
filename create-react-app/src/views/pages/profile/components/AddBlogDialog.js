@@ -7,14 +7,7 @@ const AddBlogDialog = ({ open, handleClose, newBlog, handleBlogChange, handleAdd
       <DialogTitle>Add New Blog</DialogTitle>
       <DialogContent>
         <TextField margin="dense" label="Title" name="title" value={newBlog.title} onChange={handleBlogChange} fullWidth />
-        <TextField
-          margin="dense"
-          label="Description"
-          name="description"
-          value={newBlog.description}
-          onChange={handleBlogChange}
-          fullWidth
-        />
+        <TextField margin="dense" label="Hashtag" name="hashtag" value={newBlog.hashtag} onChange={handleBlogChange} fullWidth />
         <TextField
           margin="dense"
           label="Content"

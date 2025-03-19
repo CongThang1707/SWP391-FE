@@ -8,7 +8,8 @@ import {
   getHealthRecordByChildId,
   deleteRecord_Admin,
   createRecord,
-  updateRecord
+  updateRecord,
+  getGrowthStatusChange
 } from '../../service/healthrecord_services/get_healthrecord.js';
 import { IconButton, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
 import { AddCircleOutline, Edit, Delete } from '@mui/icons-material';
@@ -23,27 +24,45 @@ const ChildrenDetail = () => {
   const [openDialog, setOpenDialog] = useState(false);
   const [editRecord, setEditRecord] = useState(null);
   const [formData, setFormData] = useState({ weight: '', height: '', date: '' });
+  const [growthStatusChange, setGrowthStatusChange] = useState('');
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const childrenData = await getChildrenById(id);
-        setChildren(childrenData);
-        const healthData = await getHealthRecordByChildId(id);
-        setHealthRecord(healthData || []);
-      } catch (error) {
-        console.error('Failed to fetch data:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
     fetchData();
   }, [id]);
+  const fetchData = async () => {
+    try {
+      const childrenData = await getChildrenById(id);
+      setChildren(childrenData);
+      const healthData = await getHealthRecordByChildId(id);
+      setHealthRecord(healthData || []);
+    } catch (error) {
+      console.error('Failed to fetch data:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (healthRecord.length > 1) {
+      const lastRecord = healthRecord[healthRecord.length - 2];
+      const currentRecord = healthRecord[healthRecord.length - 1];
+      getGrowthStatusChange(id, lastRecord.bmi, currentRecord.bmi).then((response) => {
+        setGrowthStatusChange(response);
+      });
+    } else if (healthRecord.length === 1) {
+      setGrowthStatusChange('No previous record to compare.');
+    } else if (healthRecord.length === 0) {
+      setGrowthStatusChange('No records found.');
+    }
+  }, [healthRecord]);
 
   if (loading) return <p>Loading...</p>;
   if (!children) return <p>Children data not found!</p>;
 
   const filteredHealthRecord = healthRecord.filter((record) => new Date(record.date).getFullYear() === selectedYear);
+
+  const chartData = [...filteredHealthRecord].sort((a, b) => new Date(a.date) - new Date(b.date)); // Sắp xếp theo ngày từ cũ đến mới
+  const tableData = [...filteredHealthRecord].sort((a, b) => new Date(b.date) - new Date(a.date)); // Sắp xếp theo ngày từ mới đến cũ
 
   const chartWidth = Math.max(500, Math.min(1100, filteredHealthRecord.length * 90));
 
@@ -104,16 +123,17 @@ const ChildrenDetail = () => {
 
       if (editRecord) {
         await updateRecord(editRecord.recordId, editData);
-        setHealthRecord((prevRecords) => prevRecords.map((rec) => (rec.recordId === editRecord.recordId ? { ...rec, ...editData } : rec)));
+        // setHealthRecord((prevRecords) => prevRecords.map((rec) => (rec.recordId === editRecord.recordId ? { ...rec, ...editData } : rec)));
+        await fetchData();
       } else {
         const parentId = localStorage.getItem('userId');
-        const newRecord = await createRecord(parentId, id, updatedData);
-
-        if (newRecord && newRecord.recordId) {
-          setHealthRecord((prevRecords) => [...prevRecords, { ...newRecord }]);
-        } else {
-          console.error('API did not return expected data:', newRecord);
-        }
+        await createRecord(parentId, id, updatedData);
+        await fetchData();
+        // if (newRecord && newRecord.recordId) {
+        //   setHealthRecord((prevRecords) => [...prevRecords, { ...newRecord }]);
+        // } else {
+        //   console.error('API did not return expected data:', newRecord);
+        // }
       }
 
       setOpenDialog(false);
@@ -191,7 +211,9 @@ const ChildrenDetail = () => {
           </IconButton>
         </div>
 
-        {filteredHealthRecord.length > 0 ? (
+        {growthStatusChange && <p style={{ color: 'green' }}>{growthStatusChange}</p>}
+
+        {chartData.length > 0 ? (
           <div style={{ textAlign: 'center' }}>
             <div
               style={{
@@ -259,7 +281,7 @@ const ChildrenDetail = () => {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {filteredHealthRecord.map((record, index) => (
+                  {tableData.map((record, index) => (
                     <TableRow key={record.recordId || record.date || index} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
                       <TableCell component="th" scope="row">
                         {record.date}

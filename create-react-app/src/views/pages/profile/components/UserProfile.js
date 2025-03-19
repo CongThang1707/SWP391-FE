@@ -53,12 +53,14 @@ const UserProfile = ({
             <Typography variant="body2" sx={{ mt: 1, fontStyle: 'italic', color: 'gray' }}>
               {user.roleName || 'N/A'}
             </Typography>
-            <Box sx={{ display: 'flex', alignItems: 'center', mt: 1, width: 'fit-content' }}>
-              <Rating value={averageRating} readOnly precision={0.5} />
-              <Typography variant="body2" sx={{ ml: 1 }}>
-                {averageRating.toFixed(1)} / 5
-              </Typography>
-            </Box>
+            {role === 'Doctor' && (
+              <Box sx={{ display: 'flex', alignItems: 'center', mt: 1, width: 'fit-content' }}>
+                <Rating value={averageRating} readOnly precision={0.5} />
+                <Typography variant="body2" sx={{ ml: 1 }}>
+                  {averageRating.toFixed(1)} / 5
+                </Typography>
+              </Box>
+            )}
           </Box>
         </Box>
         {!editMode && (

@@ -28,9 +28,9 @@ const Profile = () => {
   const [editingChild, setEditingChild] = useState({ childrenId: '', childrenName: '', age: '', gender: '' });
   const navigate = useNavigate();
   const [openEditBlogDialog, setOpenEditBlogDialog] = useState(false);
-  const [editingBlog, setEditingBlog] = useState({ title: '', description: '', content: '' });
+  const [editingBlog, setEditingBlog] = useState({ title: '', hashtag: '', content: '' });
   const [openAddBlogDialog, setOpenAddBlogDialog] = useState(false);
-  const [newBlog, setNewBlog] = useState({ title: '', description: '', content: '' });
+  const [newBlog, setNewBlog] = useState({ title: '', hashtag: '', content: '' });
 
   const handleNavigateToChildDetail = (childId) => {
     if (!childId) {
@@ -41,27 +41,27 @@ const Profile = () => {
   };
 
   useEffect(() => {
-    const fetchUserData = async () => {
-      try {
-        const data = await getUserById();
-        setUser(data);
-        setFormData(data);
-
-        const childrenData = await getChildrenByParentId();
-        console.log('Children data:', childrenData);
-        setChildren(childrenData);
-
-        const blogsData = await getBlogByParentId();
-        setBlogs(blogsData);
-
-        const feedbackData = await getFeedbackByDoctorId();
-        setFeedbacks(feedbackData);
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      }
-    };
     fetchUserData();
   }, []);
+  const fetchUserData = async () => {
+    try {
+      const data = await getUserById();
+      setUser(data);
+      setFormData(data);
+
+      const childrenData = await getChildrenByParentId();
+      console.log('Children data:', childrenData);
+      setChildren(childrenData);
+
+      const blogsData = await getBlogByParentId();
+      setBlogs(blogsData);
+
+      const feedbackData = await getFeedbackByDoctorId();
+      setFeedbacks(feedbackData);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -97,8 +97,8 @@ const Profile = () => {
 
   const handleAddChild = async () => {
     try {
-      const createdChild = await createChild(newChild);
-      setChildren([...children, createdChild]); // Cập nhật danh sách con
+      await createChild(newChild);
+      await fetchUserData();
       handleCloseAddDialog();
       alert('Child added successfully!');
     } catch (error) {
@@ -160,7 +160,7 @@ const Profile = () => {
 
   const handleCloseEditBlogDialog = () => {
     setOpenEditBlogDialog(false);
-    setEditingBlog({ title: '', description: '', content: '' });
+    setEditingBlog({ title: '', hashtag: '', content: '' });
   };
 
   const handleBlogChange = (e) => {
@@ -170,7 +170,7 @@ const Profile = () => {
   const handleUpdateBlog = async () => {
     const blogData = {
       title: editingBlog.title,
-      description: editingBlog.description,
+      hashtag: editingBlog.hashtag,
       content: editingBlog.content
     };
     try {
@@ -197,7 +197,7 @@ const Profile = () => {
 
   const handleCloseAddBlogDialog = () => {
     setOpenAddBlogDialog(false);
-    setNewBlog({ title: '', description: '', content: '' });
+    setNewBlog({ title: '', hashtag: '', content: '' });
   };
 
   const handleNewBlogChange = (e) => {
@@ -207,7 +207,7 @@ const Profile = () => {
   const handleAddBlog = async () => {
     const blogData = {
       title: newBlog.title,
-      description: newBlog.description,
+      hashtag: newBlog.hashtag,
       content: newBlog.content
     };
     try {
