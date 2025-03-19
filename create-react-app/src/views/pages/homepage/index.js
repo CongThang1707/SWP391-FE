@@ -69,6 +69,7 @@ const ParentLandingPage = () => {
       {/* Hero Section */}
       <Box
         sx={{
+          position: 'relative',
           height: '60vh',
           display: 'flex',
           flexDirection: 'column',
@@ -89,6 +90,19 @@ const ParentLandingPage = () => {
       >
         <Box
           sx={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            width: '100%',
+            height: '100%',
+            backgroundColor: 'rgba(0, 0, 0, 0.5)',
+            zIndex: 1
+          }}
+        />
+        <Box
+          sx={{
+            position: 'relative',
+            zIndex: 2,
             mt: 20,
             width: '100%',
             maxWidth: '500px',

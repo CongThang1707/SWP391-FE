@@ -42,3 +42,14 @@ export const createRecord = async (parentId, childId, updatedData) => {
     throw error;
   }
 };
+
+export const getGrowthStatusChange = async (childId, bmiLastRecord, bmiCurrentRecord) => {
+  try {
+    const response = await axios.get(
+      `${API_URL}healthRecord/getGrowthStatusChange/childId/${childId}?bmiLastRecord=${bmiLastRecord}&bmiCurrentRecord=${bmiCurrentRecord}`
+    );
+    return response.data;
+  } catch (error) {
+    console.error(error);
+  }
+};

@@ -37,7 +37,7 @@ const BlogList = ({ blogs, handleOpenAddBlogDialog, handleOpenEditBlogDialog, ha
                   {blog.title || 'Untitled Post'}
                 </Typography>
                 <Typography variant="body2" color="text.secondary" sx={{ mt: 1, fontStyle: 'italic' }}>
-                  {blog.description || 'No description available'}
+                  #{blog.hashtag || 'No hashtag available'}
                 </Typography>
                 <Typography variant="body1" sx={{ mt: 2, color: '#444' }}>
                   {blog.content || 'No content available'}

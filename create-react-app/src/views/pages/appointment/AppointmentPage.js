@@ -17,9 +17,11 @@ import {
   InputLabel,
   FormControl,
   TextField,
-  Box
+  Box,
+  Tabs,
+  Tab
 } from '@mui/material';
-import { Edit, Delete, EventAvailable, EventBusy, EventNote, DoneAll, Visibility } from '@mui/icons-material';
+import { Edit, Delete, EventBusy, EventNote, DoneAll, Visibility } from '@mui/icons-material';
 import { getBookingByParentId } from '../../../service/booking_services/get_booking.js';
 import { deleteBookingById } from '../../../service/booking_services/delete_booking.js';
 import { createBooking } from '../../../service/booking_services/create_booking.js';
@@ -37,6 +39,8 @@ const AppointmentPage = () => {
   const [schedule, setSchedule] = useState([]);
   const [selectedDate, setSelectedDate] = useState('');
   const [children, setChildren] = useState([]);
+  const [selectedDoctor, setSelectedDoctor] = useState(null);
+  const [tabIndex, setTabIndex] = useState(0);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -111,10 +115,15 @@ const AppointmentPage = () => {
     // Thực hiện các hành động cần thiết, ví dụ: chuyển hướng đến trang chi tiết
   };
 
+  const handleSelectDoctor = (doctor) => {
+    setCurrentAppointment({ ...currentAppointment, doctor: doctor.user_id });
+    setSelectedDoctor(doctor);
+    setSelectedDate('');
+  };
+
   const renderAppointments = (status) => {
     const statusIcon = {
       PENDING: <EventNote color="action" />,
-      CONFIRMED: <EventAvailable color="success" />,
       COMPLETED: <DoneAll color="primary" />,
       CANCELLED: <EventBusy color="error" />
     };
@@ -153,94 +162,99 @@ const AppointmentPage = () => {
       ));
   };
 
+  const handleTabChange = (event, newValue) => {
+    setTabIndex(newValue);
+  };
+
   return (
-    <Box p={2}>
+    <Box p={2} sx={{ maxWidth: 1050, margin: 'auto' }}>
       <Button variant="contained" color="primary" onClick={() => handleOpenDialog()}>
         Make an appointment
       </Button>
+      <Tabs value={tabIndex} onChange={handleTabChange} aria-label="appointment tabs" sx={{ mt: 2 }}>
+        <Tab label="Pending" />
+        <Tab label="Completed" />
+        <Tab label="Cancelled" />
+      </Tabs>
       <Grid container spacing={2} mt={2}>
-        <Grid item xs={12}>
-          <Typography variant="h5">Pending Appointments</Typography>
-        </Grid>
-        {renderAppointments('PENDING')}
-        <Grid item xs={12}>
-          <Typography variant="h5">Confirmed Appointments</Typography>
-        </Grid>
-        {renderAppointments('CONFIRMED')}
-        <Grid item xs={12}>
-          <Typography variant="h5">Completed Appointments</Typography>
-        </Grid>
-        {renderAppointments('COMPLETED')}
-        <Grid item xs={12}>
-          <Typography variant="h5">Cancelled Appointments</Typography>
-        </Grid>
-        {renderAppointments('CANCELLED')}
+        {tabIndex === 0 && renderAppointments('PENDING')}
+        {tabIndex === 1 && renderAppointments('COMPLETED')}
+        {tabIndex === 2 && renderAppointments('CANCELLED')}
       </Grid>
       <Dialog open={openDialog} onClose={handleCloseDialog}>
         <DialogTitle>{currentAppointment?.bookId ? 'Edit appointment schedule' : 'Make an appointment'}</DialogTitle>
         <DialogContent>
           {!currentAppointment?.bookId && (
             <>
-              <FormControl fullWidth margin="dense">
-                <InputLabel id="demo-simple-select-label">Doctor</InputLabel>
-                <Select
-                  label="Doctor"
-                  value={currentAppointment?.doctor || ''}
-                  onChange={(e) => {
-                    setCurrentAppointment({ ...currentAppointment, doctor: e.target.value });
-                    setSelectedDate('');
-                  }}
-                  fullWidth
-                >
-                  {doctors.map((doctor) => (
-                    <MenuItem key={doctor.user_id} value={doctor.user_id}>
-                      {doctor.fullName}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-              <FormControl fullWidth margin="dense">
-                <InputLabel id="demo-simple-select-label">Date</InputLabel>
-                <Select label="Date" value={selectedDate} onChange={(e) => setSelectedDate(e.target.value)} fullWidth>
-                  {[...new Set(schedule.map((s) => s.scheduleDate))].map((date) => (
-                    <MenuItem key={date} value={date}>
-                      {date}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-              <FormControl fullWidth margin="dense">
-                <InputLabel id="demo-simple-select-label">Time</InputLabel>
-                <Select
-                  label="Time"
-                  value={currentAppointment?.schedule || ''}
-                  onChange={(e) => setCurrentAppointment({ ...currentAppointment, schedule: e.target.value })}
-                  fullWidth
-                >
-                  {schedule
-                    .filter((s) => s.scheduleDate === selectedDate)
-                    .map((s) => (
-                      <MenuItem key={s.scheduleId} value={s.scheduleId} disabled={s.book}>
-                        {s.scheduleTime}
-                      </MenuItem>
-                    ))}
-                </Select>
-              </FormControl>
-              <FormControl fullWidth margin="dense">
-                <InputLabel id="demo-simple-select-label">Child</InputLabel>
-                <Select
-                  label="Child"
-                  value={currentAppointment?.childId || ''}
-                  onChange={(e) => setCurrentAppointment({ ...currentAppointment, childId: e.target.value })}
-                  fullWidth
-                >
-                  {children.map((child) => (
-                    <MenuItem key={child.childrenId} value={child.childrenId}>
-                      {child.childrenName}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
+              <Typography variant="h6">Select a Doctor</Typography>
+              <Box sx={{ display: 'flex', overflowX: 'auto', p: 1 }}>
+                {doctors.map((doctor) => (
+                  <Box
+                    key={doctor.user_id}
+                    sx={{
+                      border: selectedDoctor?.user_id === doctor.user_id ? '2px solid blue' : '1px solid #ddd',
+                      boxShadow: 3,
+                      p: 2,
+                      m: 1,
+                      cursor: 'pointer',
+                      minWidth: 200,
+                      '&:hover': {
+                        boxShadow: 6
+                      }
+                    }}
+                    onClick={() => handleSelectDoctor(doctor)}
+                  >
+                    <Typography variant="h6">{doctor.fullName}</Typography>
+                    <Typography variant="body2">{doctor.specialty}</Typography>
+                  </Box>
+                ))}
+              </Box>
+              {selectedDoctor && (
+                <>
+                  <FormControl fullWidth margin="dense">
+                    <InputLabel id="demo-simple-select-label">Date</InputLabel>
+                    <Select label="Date" value={selectedDate} onChange={(e) => setSelectedDate(e.target.value)} fullWidth>
+                      {[...new Set(schedule.map((s) => s.scheduleDate))].map((date) => (
+                        <MenuItem key={date} value={date}>
+                          {date}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                  <FormControl fullWidth margin="dense">
+                    <InputLabel id="demo-simple-select-label">Time</InputLabel>
+                    <Select
+                      label="Time"
+                      value={currentAppointment?.schedule || ''}
+                      onChange={(e) => setCurrentAppointment({ ...currentAppointment, schedule: e.target.value })}
+                      fullWidth
+                    >
+                      {schedule
+                        .filter((s) => s.scheduleDate === selectedDate)
+                        .map((s) => (
+                          <MenuItem key={s.scheduleId} value={s.scheduleId} disabled={s.book}>
+                            {s.scheduleTime}
+                          </MenuItem>
+                        ))}
+                    </Select>
+                  </FormControl>
+                  <FormControl fullWidth margin="dense">
+                    <InputLabel id="demo-simple-select-label">Child</InputLabel>
+                    <Select
+                      label="Child"
+                      value={currentAppointment?.childId || ''}
+                      onChange={(e) => setCurrentAppointment({ ...currentAppointment, childId: e.target.value })}
+                      fullWidth
+                    >
+                      {children.map((child) => (
+                        <MenuItem key={child.childrenId} value={child.childrenId}>
+                          {child.childrenName}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                </>
+              )}
             </>
           )}
           <TextField
