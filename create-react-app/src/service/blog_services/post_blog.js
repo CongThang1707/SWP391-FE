@@ -4,6 +4,7 @@ import API_URL from '../api_service.js';
 
 export const createBlog = async (blogData) => {
   try {
+    console.log('Sending blogData:', blogData); // Xem dữ liệu gửi đi
     const response = await axios.post(`${API_URL}blogAPI/createBlog?userId=${localStorage.getItem('userId')}`, blogData);
     return response.data;
   } catch (error) {

@@ -8,7 +8,8 @@ import { completeBooking } from 'service/booking_services/update_booking.js';
 import { getFeedbackByConsultingId } from '../../service/feedback_service/get_feedback.js';
 import { createFeedback } from '../../service/feedback_service/create_feedback.js';
 import { BarChart } from '@mui/x-charts/BarChart';
-import { axisClasses } from '@mui/x-charts/ChartsAxis';
+// import { axisClasses } from '@mui/x-charts/ChartsAxis';
+import { Card, CardHeader, CardContent, Divider, Rating, MenuItem } from '@mui/material';
 
 const ConsultingForm = () => {
   const location = useLocation();
@@ -119,35 +120,64 @@ const ConsultingForm = () => {
   const role = localStorage.getItem('role');
 
   return (
-    <Box p={2}>
-      <Typography variant="h5">Consulting Form</Typography>
-      <Grid container spacing={2}>
-        <Grid item xs={12} md={6}>
+    <Box p={3} sx={{ backgroundColor: '#f0f2f5', minHeight: '100vh' }}>
+      <Typography variant="h4" gutterBottom fontWeight="bold" fontSize={28} color="primary">Consulting Form</Typography>
+
+      <Grid container spacing={3}>
+        <Grid item xs={12} md={4}>
           {appointment && (
-            <Box mb={2}>
-              <Typography variant="h6">Appointment Details</Typography>
-              <Typography variant="body1">Parent Name: {appointment.parentName}</Typography>
-              <Typography variant="body1">Date: {appointment.bookDate}</Typography>
-              <Typography variant="body1">Time: {appointment.scheduleWork}</Typography>
-              <Typography variant="body1">Comment: {appointment.comment}</Typography>
-            </Box>
+            <Card sx={{ mb: 3, boxShadow: 4, borderRadius: 3 }}>
+              <CardHeader
+                title="Appointment Details"
+                sx={{
+                  background: 'linear-gradient(90deg, #1976d2 0%, #42a5f5 100%)',
+                  color: '#fff'
+                }}
+              />
+              <Divider />
+              <CardContent>
+                <Typography><strong>Parent Name:</strong> {appointment.parentName}</Typography>
+                <Typography><strong>Date:</strong> {appointment.bookDate}</Typography>
+                <Typography><strong>Time:</strong> {appointment.scheduleWork}</Typography>
+                <Typography><strong>Comment:</strong> {appointment.comment}</Typography>
+              </CardContent>
+            </Card>
           )}
           {consulting && (
-            <Box>
-              <Typography variant="h6">Consulting Details</Typography>
-              <Typography variant="body1">Title: {consulting.title}</Typography>
-              <Typography variant="body1">Comment: {consulting.comment}</Typography>
-            </Box>
+            <Card sx={{ mb: 3, boxShadow: 4, borderRadius: 3 }}>
+              <CardHeader
+                title="Consulting Details"
+                sx={{
+                  background: 'linear-gradient(90deg, #388E3C 0%, #66BB6A 100%)',
+                  color: '#fff'
+                }}
+              />              <Divider />
+              <CardContent>
+                <Typography><strong>Title:</strong> {consulting.title}</Typography>
+                <Typography><strong>Comment:</strong> {consulting.comment}</Typography>
+              </CardContent>
+            </Card>
           )}
+
           {feedback && (
-            <Box>
-              <Typography variant="h6">Feedback</Typography>
-              <Typography variant="body1">Rating: {feedback.rate}</Typography>
-              <Typography variant="body1">Comment: {feedback.comment}</Typography>
-            </Box>
+            <Card sx={{ mb: 3, boxShadow: 4, borderRadius: 3 }}>
+              <CardHeader
+                title="Feedback"
+                sx={{
+                  background: 'linear-gradient(90deg, #F9A825 0%, #FFD54F 100%)',
+                  color: '#fff'
+                }}
+              />
+              <Divider />
+              <CardContent>
+                <Typography><strong>Rating:</strong></Typography>
+                <Rating value={feedback.rate} readOnly />
+                <Typography sx={{ mt: 1 }}><strong>Comment:</strong> {feedback.comment}</Typography>
+              </CardContent>
+            </Card>
           )}
           {!feedback && role === 'Parent' && (
-            <Box mt={4}>
+            <Box border={1} borderRadius={2} p={2} mb={3}>
               <Typography variant="h6">Submit Feedback</Typography>
               <form onSubmit={handleSubmitFeedback}>
                 <TextField
@@ -169,88 +199,112 @@ const ConsultingForm = () => {
                   multiline
                   rows={4}
                 />
-                <Button type="submit" variant="contained" color="primary" sx={{ mt: 2 }}>
-                  Submit
-                </Button>
+                <Button type="submit" variant="contained" sx={{ mt: 2 }}>Submit</Button>
               </form>
             </Box>
           )}
         </Grid>
-        <Grid item xs={12} md={6}>
+        <Grid item xs={12} md={8}>
           {healthRecords.length > 0 && (
-            <Box>
-              <Typography variant="h6">Health Records</Typography>
-              <div style={{ marginBottom: '15px' }}>
-                <label htmlFor="yearSelect">
-                  <strong>Select Year:</strong>{' '}
-                </label>
-                <select id="yearSelect" value={selectedYear} onChange={(e) => setSelectedYear(parseInt(e.target.value))}>
+            <Box
+              sx={{
+                backgroundColor: '#f9f9f9',
+                borderRadius: 2,
+                boxShadow: 3,
+                p: 3,
+                mb: 3
+              }}
+            >
+              <Typography variant="h6" fontWeight="bold" color="primary" fontSize={18}>Health Records</Typography>
+              <Box mb={2}>
+                <Typography>Select Year:</Typography>
+                <TextField
+                  select
+                  value={selectedYear}
+                  onChange={(e) => setSelectedYear(parseInt(e.target.value))}
+                  variant="outlined"
+                  sx={{
+                    mt: 2,
+                    borderRadius: 2,
+                    backgroundColor: '#fff',
+                    boxShadow: 2
+                  }}
+                >
                   {[...new Set(healthRecords.map((record) => new Date(record.date).getFullYear()))]
-                    .sort((a, b) => b - a) // Sắp xếp giảm dần
+                    .sort((a, b) => b - a)
                     .map((year) => (
-                      <option key={year} value={year}>
+                      <MenuItem key={year} value={year}>
                         {year}
-                      </option>
+                      </MenuItem>
                     ))}
-                </select>
-              </div>
+                </TextField>
+              </Box>
               {filteredHealthRecord.length > 0 ? (
-                <div style={{ textAlign: 'center' }}>
-                  <div style={{ display: 'flex', justifyContent: 'center' }}>
-                    <BarChart
-                      dataset={filteredHealthRecord.map((record) => ({
-                        date: record.date,
-                        weight: record.weight,
-                        height: record.height,
-                        bmi: record.bmi
-                      }))}
-                      xAxis={[{ scaleType: 'band', dataKey: 'date' }]}
-                      series={[
-                        { dataKey: 'weight', label: 'Weight (kg)' },
-                        { dataKey: 'height', label: 'Height (cm)' },
-                        { dataKey: 'bmi', label: 'BMI' }
-                      ]}
-                      width={chartWidth} // Cập nhật width động
-                      height={450}
-                      yAxis={[
-                        {
-                          label: 'Health Data',
-                          min: 0,
-                          max: 160
-                        }
-                      ]}
-                      sx={{
-                        [`.${axisClasses.left} .${axisClasses.label}`]: {
-                          transform: 'translate(-20px, 0)'
-                        }
-                      }}
-                    />
-                  </div>
-                </div>
+                <BarChart
+                  dataset={filteredHealthRecord.map((record) => ({
+                    date: record.date,
+                    weight: record.weight,
+                    height: record.height,
+                    bmi: record.bmi
+                  }))}
+                  xAxis={[{ scaleType: 'band', dataKey: 'date' }]}
+                  series={[
+                    { dataKey: 'weight', label: 'Weight (kg)' },
+                    { dataKey: 'height', label: 'Height (cm)' },
+                    { dataKey: 'bmi', label: 'BMI' }
+                  ]}
+                  width={chartWidth}
+                  height={450}
+                />
               ) : (
-                <p>No health record found for {selectedYear}.</p>
+                <Typography>No health record found for {selectedYear}.</Typography>
               )}
             </Box>
           )}
         </Grid>
       </Grid>
       {showForm && (
-        <form onSubmit={handleSubmitConsulting}>
-          <TextField label="Title" value={title} onChange={(e) => setTitle(e.target.value)} fullWidth margin="dense" required />
-          <TextField
-            label="Comment"
-            value={comment}
-            onChange={(e) => setComment(e.target.value)}
-            fullWidth
-            margin="dense"
-            required
-            multiline
-            rows={4}
-          />
-          <Button type="submit" variant="contained" color="primary" sx={{ mt: 2 }}>
-            Submit
-          </Button>
-        </form>
+        <Box
+          sx={{
+            backgroundColor: '#f0f7ff',
+            borderRadius: 2,
+            boxShadow: 3,
+            p: 3,
+            mb: 3
+          }}
+        >
+          <Typography variant="h6" fontWeight="bold" color="primary" fontSize={18}>Submit Consulting</Typography>
+          <form onSubmit={handleSubmitConsulting}>
+            <TextField
+              label="Title"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              fullWidth
+              margin="dense"
+              required
+              sx={{ borderRadius: 2, backgroundColor: '#fff' }}
+            />
+            <TextField
+              label="Comment"
+              value={comment}
+              onChange={(e) => setComment(e.target.value)}
+              fullWidth
+              margin="dense"
+              required
+              multiline
+              rows={4}
+            />
+            <Button
+              type="submit"
+              variant="contained"
+              color="primary"
+              fullWidth
+              sx={{ mt: 2, borderRadius: 3, py: 1.5, fontWeight: 'bold', boxShadow: 3 }}
+            >
+              Submit Consulting
+            </Button>
+          </form>
+        </Box>
       )}
     </Box>
   );
