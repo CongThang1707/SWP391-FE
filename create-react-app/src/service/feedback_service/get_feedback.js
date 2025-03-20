@@ -51,3 +51,14 @@ export const deleteFeedback = async (feedbackId) => {
     throw error;
   }
 };
+
+export const getRatingByDoctorId = async (doctorId) => {
+  console.log('Doctor ID:', doctorId);
+  try {
+    const response = await axios.get(`${API_URL}feedbackAPI/getRatingByDoctorId?doctorId=${doctorId}`);
+    return response.data;
+  } catch (error) {
+    console.error('Error creating feedback:', error);
+    throw error;
+  }
+};
