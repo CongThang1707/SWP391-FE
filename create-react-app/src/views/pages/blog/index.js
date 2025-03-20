@@ -14,13 +14,20 @@ import {
   Dialog,
   DialogActions,
   DialogContent,
-  DialogTitle
+  DialogTitle,
+  Grid,
+  Divider
 } from '@mui/material';
-import { ThumbUp, ChatBubbleOutline, Share, ThumbUpAlt, Send, Search, Add } from '@mui/icons-material';
-import { Menu, MenuItem } from '@mui/material';
-import { Facebook, Instagram, Twitter, LinkedIn } from '@mui/icons-material';
+import { ChatBubbleOutline, Send, Search, Add } from '@mui/icons-material';
 import { Pagination } from '@mui/material';
-import getAllBlog from '../../../service/blog_services/get_blog.js';
+import getBlogs from '../../../service/blog_services/get_blog.js';
+import { createBlog } from '../../../service/blog_services/post_blog.js';
+import { createComment } from '../../../service/comment_services/get_comment.js';
+import { getCommentByBlogId } from '../../../service/comment_services/get_comment.js';
+import EmailOutlinedIcon from '@mui/icons-material/EmailOutlined';
+import LocalPhoneOutlinedIcon from '@mui/icons-material/LocalPhoneOutlined';
+import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
+import { Facebook, Twitter, Instagram } from '@mui/icons-material';
 
 const BlogPage = () => {
   const [posts, setPosts] = useState([]);
@@ -28,22 +35,22 @@ const BlogPage = () => {
   const [commentInputs, setCommentInputs] = useState(Array(posts.length).fill(''));
   const [showComments, setShowComments] = useState(Array(posts.length).fill(false));
   const [openDialog, setOpenDialog] = useState(false);
-  const [newPost, setNewPost] = useState({ title: '', description: '', content: '' });
+  const [newPost, setNewPost] = useState({ title: '', hashtag: '', content: '' });
+  const [commentsData, setCommentsData] = useState(Array(posts.length).fill([]));
 
   useEffect(() => {
     const fetchBlogs = async () => {
       try {
-        const blogData = await getAllBlog(); // Gọi API lấy danh sách blog
+        const blogData = await getBlogs(); // Gọi API lấy danh sách blog
         const formattedPosts = blogData.map((post) => ({
+          blogId: post.blogId,
           avatar: post.avatar || 'https://randomuser.me/api/portraits/men/4.jpg', // Avatar người đăng
-          fullName: post.fullName,
+          fullName: post.parentId.fullName,
           date: post.date || new Date().toLocaleDateString(), // Ngày đăng
           title: post.title || 'Untitled Post', // Tiêu đề bài viết
-          description: post.description || 'No description available', // Mô tả ngắn
+          hashtag: post.hashtag || 'No hashtag available', // Mô tả ngắn
           content: post.content || 'No content available', // Nội dung bài viết
-          likes: post.likes || 0, // Số lượt thích
           comments: post.comments || [], // Danh sách bình luận
-          shares: post.shares || 0 // Số lần chia sẻ
         }));
 
         setPosts(formattedPosts); // Cập nhật state posts
@@ -59,21 +66,28 @@ const BlogPage = () => {
 
   const filteredPosts = searchTerm
     ? posts.filter(
-        (post) =>
-          post.title.toLowerCase().includes(searchTerm.toLowerCase()) || post.content.toLowerCase().includes(searchTerm.toLowerCase())
-      )
+      (post) =>
+        post.title.toLowerCase().includes(searchTerm.toLowerCase()) || post.content.toLowerCase().includes(searchTerm.toLowerCase())
+    )
     : posts;
 
-  const handleLike = (index) => {
-    const newPosts = [...posts];
-    newPosts[index].likes += 1;
-    setPosts(newPosts);
-  };
-
-  const handleCommentToggle = (index) => {
+  const handleCommentToggle = async (index) => {
     const newShowComments = [...showComments];
     newShowComments[index] = !newShowComments[index];
     setShowComments(newShowComments);
+
+    if (newShowComments[index]) { // Luôn fetch mỗi khi mở comment (hoặc thêm flag đã fetch cũng được)
+      try {
+        const blogId = posts[index].blogId;
+        const fetchedComments = await getCommentByBlogId(blogId);
+        console.log('Fetched Comments:', fetchedComments);
+        const newCommentsData = [...commentsData];
+        newCommentsData[index] = fetchedComments;
+        setCommentsData(newCommentsData);
+      } catch (error) {
+        console.error('Failed to fetch comments:', error);
+      }
+    }
   };
 
   const handleCommentChange = (index, value) => {
@@ -82,75 +96,36 @@ const BlogPage = () => {
     setCommentInputs(newCommentInputs);
   };
 
-  const handleCommentSubmit = (index) => {
+  const handleCommentSubmit = async (index) => {
     if (commentInputs[index].trim() === '') return;
 
-    const newComment = {
-      text: commentInputs[index],
+    const commentData = {
+      comment: commentInputs[index],
       avatar: userAvatar,
       name: userName,
       date: new Date().toLocaleString(),
-      likes: 0,
       replies: []
     };
 
-    const newPosts = [...posts];
-    newPosts[index].comments.push(newComment);
-    setPosts(newPosts);
-    handleCommentChange(index, '');
-  };
+    try {
+      const blogId = posts[index].blogId;
+      const createdComment = await createComment(blogId, commentData);
 
-  const [anchorEl, setAnchorEl] = useState(null);
-  const [selectedPost, setSelectedPost] = useState(null);
-
-  const handleShareClick = (event, index) => {
-    setAnchorEl(event.currentTarget);
-    setSelectedPost(index);
-  };
-
-  const handleClose = () => {
-    setAnchorEl(null);
-    setSelectedPost(null);
-  };
-
-  const handleShare = (platform) => {
-    if (selectedPost !== null) {
-      const newPosts = [...posts];
-      newPosts[selectedPost].shares += 1;
-      setPosts(newPosts);
-
-      const post = posts[selectedPost];
-      const url = encodeURIComponent(`https://myblog.com/posts/${selectedPost}`);
-      const text = encodeURIComponent(`${post.title} - ${post.description}`);
-
-      let shareUrl = '';
-      switch (platform) {
-        case 'facebook':
-          shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${url}`;
-          break;
-        case 'twitter':
-          shareUrl = `https://twitter.com/intent/tweet?url=${url}&text=${text}`;
-          break;
-        case 'linkedin':
-          shareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${url}`;
-          break;
-        case 'instagram':
-          alert('Instagram không hỗ trợ chia sẻ qua web, bạn có thể copy link và chia sẻ thủ công!');
-          return;
-        default:
-          return;
-      }
-
-      window.open(shareUrl, '_blank');
+      const newCommentsData = [...commentsData];
+      newCommentsData[index] = [...newCommentsData[index], createdComment];
+      setCommentsData(newCommentsData);
+      handleCommentChange(index, '');
+    } catch (error) {
+      console.error('Failed to post comment:', error);
     }
-    handleClose();
   };
+
 
   const userAvatar = 'https://randomuser.me/api/portraits/men/4.jpg';
   const userName = 'John Doe';
 
   const [page, setPage] = useState(1);
-  const postsPerPage = 2;
+  const postsPerPage = 10;
 
   const handlePageChange = (event, value) => {
     setPage(value);
@@ -165,32 +140,32 @@ const BlogPage = () => {
 
   const handleCloseDialog = () => {
     setOpenDialog(false);
-    setNewPost({ title: '', description: '', content: '' });
+    setNewPost({ title: '', hashtag: '', content: '' });
   };
 
   const handleNewPostChange = (field, value) => {
     setNewPost((prev) => ({ ...prev, [field]: value }));
   };
 
-  const handleAddPost = () => {
+  const handleAddPost = async () => {
     if (!newPost.title || !newPost.content) return;
 
-    // Kiểm tra nếu bài viết đã tồn tại (tránh trùng lặp)
-    const isDuplicate = posts.some((post) => post.title === newPost.title && post.content === newPost.content);
-    if (isDuplicate) return;
+    try {
+      const createdBlog = await createBlog(newPost);
 
-    const newEntry = {
-      avatar: 'https://randomuser.me/api/portraits/men/1.jpg',
-      fullName: 'John Doe',
-      date: new Date().toLocaleDateString(),
-      likes: 0,
-      comments: [],
-      shares: 0,
-      ...newPost
-    };
+      const newEntry = {
+        avatar: 'https://randomuser.me/api/portraits/men/1.jpg',
+        fullName: 'John Doe',
+        date: new Date().toLocaleDateString(),
+        comments: [],
+        ...createdBlog,
+      };
 
-    setPosts([newEntry, ...posts]);
-    handleCloseDialog();
+      setPosts([newEntry, ...posts]);
+      handleCloseDialog();
+    } catch (error) {
+      console.error('Failed to create blog:', error);
+    }
   };
 
   return (
@@ -267,10 +242,10 @@ const BlogPage = () => {
           />
           <TextField
             fullWidth
-            label="Description"
+            label="Hashtag"
             margin="dense"
-            value={newPost.description}
-            onChange={(e) => handleNewPostChange('description', e.target.value)}
+            value={newPost.hashtag}
+            onChange={(e) => handleNewPostChange('hashtag', e.target.value)}
           />
           <TextField
             fullWidth
@@ -295,7 +270,7 @@ const BlogPage = () => {
       {/* Blog Posts */}
       <Container maxWidth="md" sx={{ mt: 4 }}>
         {currentPosts.map((post, index) => (
-          <Card key={index} sx={{ mb: 4, boxShadow: 4, transition: '0.3s', '&:hover': { boxShadow: 8 } }}>
+          <Card key={post.blogId} sx={{ mb: 4, boxShadow: 4, transition: '0.3s', '&:hover': { boxShadow: 8 } }}>
             <CardContent>
               {/* Avatar + Author Info */}
               <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
@@ -313,68 +288,56 @@ const BlogPage = () => {
                 {post.title}
               </Typography>
               <Typography variant="body2" color="text.secondary" sx={{ mt: 1, fontStyle: 'italic' }}>
-                {post.description}
+                {post.hashtag}
               </Typography>
               <Typography variant="body1" sx={{ mt: 2, color: '#444' }}>
                 {post.content}
               </Typography>
 
-              {/* Like, Comment, Share Section */}
               <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mt: 2, color: '#555' }}>
-                <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                  <ThumbUpAlt sx={{ color: '#1877F2' }} />
-                  <Typography variant="body2" sx={{ ml: 1 }}>
-                    {post.likes} Likes
-                  </Typography>
-                </Box>
-
                 <Typography variant="body2">
-                  {post.comments.length} Comments · {post.shares} Shares
+                  {commentsData[index]?.length || 0} Comments
                 </Typography>
               </Box>
 
               <Stack direction="row" justifyContent="space-around" sx={{ mt: 1, borderTop: '1px solid #ddd', pt: 1 }}>
-                <Button startIcon={<ThumbUp />} onClick={() => handleLike(index)}>
-                  Like
-                </Button>
                 <Button startIcon={<ChatBubbleOutline />} onClick={() => handleCommentToggle(index)}>
                   Comment
-                </Button>
-                <Button startIcon={<Share />} onClick={(event) => handleShareClick(event, index)}>
-                  Share
                 </Button>
               </Stack>
 
               {/* Comment Section */}
               {showComments[index] && (
                 <Box sx={{ mt: 2, p: 2, borderTop: '1px solid #ddd' }}>
+
+                  {/* 1️⃣ - Danh sách comment từ API */}
+                  {commentsData[index] && commentsData[index].length > 0 ? (
+                    commentsData[index].map((comment, cIndex) => (
+                      <Box key={cIndex} sx={{ display: 'flex', alignItems: 'center', mt: 2, p: 1, background: '#f0f2f5', borderRadius: 2 }}>
+                        <Avatar src={comment.avatar} sx={{ width: 32, height: 32, mr: 1 }} />
+                        <Box>
+                          <Typography variant="body2" fontWeight={600}>{comment.name}</Typography>
+                          <Typography variant="body2" color="text.secondary">{comment.date}</Typography>
+                          <Typography variant="body1">{comment.comment}</Typography>
+                        </Box>
+                      </Box>
+                    ))
+                  ) : (
+                    <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>No comments yet.</Typography>
+                  )}
+
+                  {/* 2️⃣ - Ô viết comment mới */}
                   <TextField
                     fullWidth
                     variant="outlined"
                     placeholder="Write a comment..."
                     value={commentInputs[index]}
                     onChange={(e) => handleCommentChange(index, e.target.value)}
-                    sx={{ mb: 1 }}
+                    sx={{ mt: 2 }}
                   />
-                  <Button startIcon={<Send />} onClick={() => handleCommentSubmit(index)} variant="contained" size="small">
+                  <Button startIcon={<Send />} onClick={() => handleCommentSubmit(index)} variant="contained" size="small" sx={{ mt: 1 }}>
                     Post
                   </Button>
-
-                  {/* Danh sách bình luận */}
-                  {post.comments.map((comment, cIndex) => (
-                    <Box key={cIndex} sx={{ display: 'flex', alignItems: 'center', mt: 2, p: 1, background: '#f0f2f5', borderRadius: 2 }}>
-                      <Avatar src={comment.avatar} sx={{ width: 32, height: 32, mr: 1 }} />
-                      <Box>
-                        <Typography variant="body2" fontWeight={600}>
-                          {comment.name}
-                        </Typography>
-                        <Typography variant="body2" color="text.secondary">
-                          {comment.date}
-                        </Typography>
-                        <Typography variant="body1">{comment.text}</Typography>
-                      </Box>
-                    </Box>
-                  ))}
                 </Box>
               )}
             </CardContent>
@@ -386,26 +349,112 @@ const BlogPage = () => {
         </Box>
       </Container>
 
-      <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleClose}>
-        <MenuItem onClick={() => handleShare('facebook')}>
-          <Facebook sx={{ color: '#1877F2', mr: 1 }} /> Facebook
-        </MenuItem>
-        <MenuItem onClick={() => handleShare('twitter')}>
-          <Twitter sx={{ color: '#1DA1F2', mr: 1 }} /> Twitter
-        </MenuItem>
-        <MenuItem onClick={() => handleShare('linkedin')}>
-          <LinkedIn sx={{ color: '#0A66C2', mr: 1 }} /> LinkedIn
-        </MenuItem>
-        <MenuItem onClick={() => handleShare('instagram')}>
-          <Instagram sx={{ color: '#E1306C', mr: 1 }} /> Instagram
-        </MenuItem>
-      </Menu>
+       {/* Footer */}
+       <Box sx={{ background: '#333', py: 4, color: 'white', padding: '3rem' }}>
+        <Container>
+          <Grid container spacing={4}>
+            <Grid item xs={12} md={4}>
+              <Typography variant="h6" fontWeight={700} mb={2} color={'white'} fontSize={20}>
+                About Us
+              </Typography>
+              <Typography variant="body2" color={'white'} fontSize={15}>
+                We are a system dedicated to tracking child growth and development. Our platform helps parents and healthcare professionals monitor important growth metrics, ensuring children grow up healthy and strong.
+              </Typography>
+            </Grid>
 
-      {/* Footer */}
-      <Box sx={{ background: '#f5f5f5', py: 3, textAlign: 'center', mt: 4, borderTop: '1px solid #ddd' }}>
-        <Typography variant="body2" color="text.secondary">
-          © 2025 My Blog. All rights reserved.
-        </Typography>
+            <Grid item xs={12} md={4}>
+              <Typography variant="h6" fontWeight={700} mb={2} color={'white'} fontSize={20}>
+                Contact
+              </Typography>
+              <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
+                <EmailOutlinedIcon sx={{ mr: 1, fontSize: 20 }} />
+                <Typography variant="body2" color={'white'} fontSize={15}>Email: tienvnse183132@gmail.com</Typography>
+              </Box>
+              <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
+                <LocalPhoneOutlinedIcon sx={{ mr: 1, fontSize: 20 }} />
+                <Typography variant="body2" color={'white'} fontSize={15}>Phone: 094-424-6472</Typography>
+              </Box>
+              <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                <HomeOutlinedIcon sx={{ mr: 1, fontSize: 20 }} />
+                <Typography variant="body2" color={'white'} fontSize={15}>Address: Thu Duc City, Ho Chi Minh City, Vietnam</Typography>
+              </Box>
+            </Grid>
+            <Grid item xs={12} md={4}>
+              <Typography variant="h6" fontWeight={700} mb={2} color={'white'} fontSize={20}>
+                Follow Us
+              </Typography>
+              <Box sx={{ display: 'flex', flexDirection: 'row', gap: 2 }}>
+                <Box
+                  sx={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    cursor: 'pointer',
+                    transition: '0.3s',
+                    textDecoration: 'none',
+                    color: 'white',
+                    '&:hover': { color: '#3b5998' }
+                  }}
+                  component="a"
+                  href="https://www.facebook.com/yourpage"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <Facebook sx={{ mr: 1, fontSize: 20 }} />
+                  <Typography variant="body2" fontSize={15} color={'white'}>
+                    Facebook
+                  </Typography>
+                </Box>
+
+                <Box
+                  sx={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    cursor: 'pointer',
+                    transition: '0.3s',
+                    textDecoration: 'none',
+                    color: 'white',
+                    '&:hover': { color: '#1DA1F2' }
+                  }}
+                  component="a"
+                  href="https://www.twitter.com/yourpage"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <Twitter sx={{ mr: 1, fontSize: 20 }} />
+                  <Typography variant="body2" fontSize={15} color={'white'}>
+                    Twitter
+                  </Typography>
+                </Box>
+
+                <Box
+                  sx={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    cursor: 'pointer',
+                    transition: '0.3s',
+                    textDecoration: 'none',
+                    color: 'white',
+                    '&:hover': { color: '#C13584' }
+                  }}
+                  component="a"
+                  href="https://www.instagram.com/yourpage"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <Instagram sx={{ mr: 1, fontSize: 20 }} />
+                  <Typography variant="body2" fontSize={15} color={'white'}>
+                    Instagram
+                  </Typography>
+                </Box>
+              </Box>
+            </Grid>
+          </Grid>
+        </Container>
+      </Box>
+      <Divider sx={{ borderColor: '#424242' }} />
+      {/* Copyright footer */}
+      <Box sx={{ background: '#333', py: 2, textAlign: 'center', color: 'white', padding: '2rem' }}>
+        <Typography variant="body2" color={'white'} fontSize={15}>© 2025 CHILDGROWTH. CHILD DEVELOPMENT IS A TOP PRIORITY.</Typography>
       </Box>
     </>
   );

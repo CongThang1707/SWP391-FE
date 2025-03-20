@@ -23,7 +23,7 @@ const NewsPage = () => {
             <Box
                 sx={{
                     height: '60vh',
-                    width: '100%', // Chiếm toàn bộ chiều ngang
+                    width: '100%', 
                     display: 'flex',
                     flexDirection: 'column',
                     justifyContent: 'center',
@@ -32,7 +32,7 @@ const NewsPage = () => {
                     backgroundImage: `url(https://i.pinimg.com/474x/7d/e1/43/7de143dd7f288afaca032c161c4680a5.jpg)`,
                     backgroundRepeat: 'no-repeat',
                     backgroundSize: 'cover',
-                    backgroundPosition: 'center', // Canh giữa
+                    backgroundPosition: 'center', 
                     color: 'white',
                     textAlign: 'center',
                     p: 4,

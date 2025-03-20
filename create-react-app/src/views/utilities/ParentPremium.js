@@ -15,7 +15,7 @@ const EnhancedTable = () => {
 
   useEffect(() => {
     const fetchUserData = async () => {
-      const data = await getUserByRoleId(3);
+      const data = await getUserByRoleId(1);
       const premiumMemberships = data.filter(membership => membership.membership === 'PREMIUM');
       setParentData(premiumMemberships);
     };
