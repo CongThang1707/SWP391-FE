@@ -94,13 +94,18 @@ const ChildrenDetail = () => {
     event.preventDefault();
 
     if (!window.confirm(editRecord ? 'Are you sure you want to update this record?' : 'Are you sure you want to create a new record?')) {
-      return; // Nếu người dùng bấm "Cancel" thì dừng lại
+      return;
     }
 
     try {
       console.log('Form Data:', formData);
       const weight = parseFloat(formData.weight);
       const height = parseFloat(formData.height);
+
+      if (!formData.date) {
+        alert('Please select a date.');
+        return;
+      }
 
       if (isNaN(weight) || isNaN(height) || weight <= 0 || height <= 0) {
         alert('Please enter valid values for weight and height.');
@@ -123,17 +128,11 @@ const ChildrenDetail = () => {
 
       if (editRecord) {
         await updateRecord(editRecord.recordId, editData);
-        // setHealthRecord((prevRecords) => prevRecords.map((rec) => (rec.recordId === editRecord.recordId ? { ...rec, ...editData } : rec)));
         await fetchData();
       } else {
         const parentId = localStorage.getItem('userId');
         await createRecord(parentId, id, updatedData);
         await fetchData();
-        // if (newRecord && newRecord.recordId) {
-        //   setHealthRecord((prevRecords) => [...prevRecords, { ...newRecord }]);
-        // } else {
-        //   console.error('API did not return expected data:', newRecord);
-        // }
       }
 
       setOpenDialog(false);
@@ -141,6 +140,7 @@ const ChildrenDetail = () => {
       console.error('Failed to save record:', error);
     }
   };
+
 
   const handleDelete = async (recordId) => {
     if (window.confirm('Are you sure you want to delete this record?')) {
