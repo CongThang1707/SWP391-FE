@@ -32,7 +32,7 @@ import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import { createUser } from '../../../../service/user_service/create_user.js';
 import { useNavigate } from 'react-router-dom';
 
-const FirebaseRegister = ({ ...others }) => {
+const EmailRegisterForm = ({ ...others }) => {
   const theme = useTheme();
   const navigate = useNavigate();
   const scriptedRef = useScriptRef();
@@ -63,9 +63,9 @@ const FirebaseRegister = ({ ...others }) => {
             address: ''
           }}
           validationSchema={Yup.object().shape({
-            username: Yup.string().max(255).required('User Name is required'),
-            password: Yup.string().max(255).required('Password is required'),
+            // username: Yup.string().max(255).required('User Name is required'),
             email: Yup.string().max(255).required('Email is required'),
+            password: Yup.string().max(255).required('Password is required'),
             fullName: Yup.string().max(255).required('Full Name is required'),
             gender: Yup.string().max(255).required('Gender is required'),
             phone: Yup.string().max(255).required('Phone is required')
@@ -93,7 +93,7 @@ const FirebaseRegister = ({ ...others }) => {
         >
           {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values }) => (
             <form noValidate onSubmit={handleSubmit} {...others}>
-              <FormControl fullWidth error={Boolean(touched.username && errors.username)} sx={{ mb: 2 }}>
+              {/* <FormControl fullWidth error={Boolean(touched.username && errors.username)} sx={{ mb: 2 }}>
                 <InputLabel htmlFor="outlined-adornment-username-register">User Name</InputLabel>
                 <OutlinedInput
                   id="outlined-adornment-username-register"
@@ -105,6 +105,19 @@ const FirebaseRegister = ({ ...others }) => {
                   onChange={handleChange}
                 />
                 {touched.username && errors.username && <FormHelperText error>{errors.username}</FormHelperText>}
+              </FormControl> */}
+              <FormControl fullWidth error={Boolean(touched.email && errors.email)} sx={{ mb: 2 }}>
+                <InputLabel htmlFor="outlined-adornment-email-register">Email</InputLabel>
+                <OutlinedInput
+                  id="outlined-adornment-email-register"
+                  type="email"
+                  value={values.email}
+                  name="email"
+                  label="Email"
+                  onBlur={handleBlur}
+                  onChange={handleChange}
+                />
+                {touched.email && errors.email && <FormHelperText error>{errors.email}</FormHelperText>}
               </FormControl>
               <FormControl fullWidth error={Boolean(touched.password && errors.password)} sx={{ mb: 2 }}>
                 <InputLabel htmlFor="outlined-adornment-password-register">Password</InputLabel>
@@ -131,21 +144,6 @@ const FirebaseRegister = ({ ...others }) => {
                 />
                 {touched.password && errors.password && <FormHelperText error>{errors.password}</FormHelperText>}
               </FormControl>
-
-              <FormControl fullWidth error={Boolean(touched.email && errors.email)} sx={{ mb: 2 }}>
-                <InputLabel htmlFor="outlined-adornment-email-register">Email</InputLabel>
-                <OutlinedInput
-                  id="outlined-adornment-email-register"
-                  type="email"
-                  value={values.email}
-                  name="email"
-                  label="Email"
-                  onBlur={handleBlur}
-                  onChange={handleChange}
-                />
-                {touched.email && errors.email && <FormHelperText error>{errors.email}</FormHelperText>}
-              </FormControl>
-
               <FormControl fullWidth error={Boolean(touched.fullName && errors.fullName)} sx={{ mb: 2 }}>
                 <InputLabel htmlFor="outlined-adornment-email-register">Full Name</InputLabel>
                 <OutlinedInput
@@ -218,25 +216,25 @@ const FirebaseRegister = ({ ...others }) => {
             </Button>
             <Divider sx={{ flexGrow: 1 }} orientation="horizontal" />
           </Box>
-          <Grid item xs={12}>
-            <AnimateButton>
-              <Button
-                variant="outlined"
-                fullWidth
-                onClick={() => {
-                  navigate('/pages/register/email-register');
-                }}
-                size="large"
-                sx={{
-                  color: 'grey.700',
-                  backgroundColor: theme.palette.grey[50],
-                  borderColor: theme.palette.grey[100]
-                }}
-              >
-                Sign up with Gmail
-              </Button>
-            </AnimateButton>
-          </Grid>
+        </Grid>
+        <Grid item xs={12}>
+          <AnimateButton>
+            <Button
+              variant="outlined"
+              fullWidth
+              onClick={() => {
+                navigate('/pages/register/register3');
+              }}
+              size="large"
+              sx={{
+                color: 'grey.700',
+                backgroundColor: theme.palette.grey[50],
+                borderColor: theme.palette.grey[100]
+              }}
+            >
+              Sign up with Username
+            </Button>
+          </AnimateButton>
         </Grid>
         <Grid item xs={12}></Grid>
       </Grid>
@@ -244,4 +242,4 @@ const FirebaseRegister = ({ ...others }) => {
   );
 };
 
-export default FirebaseRegister;
+export default EmailRegisterForm;

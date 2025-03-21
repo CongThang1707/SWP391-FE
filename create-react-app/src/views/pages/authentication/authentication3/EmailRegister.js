@@ -7,14 +7,14 @@ import { Grid, Stack, Typography, useMediaQuery, Box } from '@mui/material';
 // project imports
 import AuthWrapper1 from '../AuthWrapper1';
 import AuthCardWrapper from '../AuthCardWrapper';
-import AuthRegister from '../auth-forms/AuthRegister';
+import AuthEmailRegister from '../auth-forms/AuthEmailRegister';
 import imageLogo from '../../../../../src/assets/images/logo.jpg';
 
 // assets
 
 // ===============================|| AUTH3 - REGISTER ||=============================== //
 
-const Register = () => {
+const EmailRegister = () => {
   const theme = useTheme();
   const matchDownSM = useMediaQuery(theme.breakpoints.down('md'));
 
@@ -54,7 +54,7 @@ const Register = () => {
                     </Grid>
                   </Grid>
                   <Grid item xs={12}>
-                    <AuthRegister />
+                    <AuthEmailRegister />
                   </Grid>
                   <Grid item xs={12}>
                     <Grid item container direction="column" alignItems="center" xs={12}>
@@ -73,4 +73,4 @@ const Register = () => {
   );
 };
 
-export default Register;
+export default EmailRegister;

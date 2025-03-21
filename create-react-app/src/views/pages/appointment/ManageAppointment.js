@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { getBookingByDoctorId } from '../../../service/booking_services/get_booking.js';
 import { getScheduleByDoctorId } from '../../../service/schedule_services/get_schedule.js';
 import { createSchedule } from '../../../service/schedule_services/create_schedule.js';
+import { cancelledBooking } from '../../../service/booking_services/delete_booking.js';
 import {
   Card,
   CardContent,
@@ -32,7 +33,7 @@ import {
   Tab,
   Chip
 } from '@mui/material';
-import { CheckCircle, EventNote, EventAvailable, EventBusy, DoneAll } from '@mui/icons-material';
+import { CheckCircle, EventNote, EventAvailable, EventBusy, DoneAll, Cancel } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 
 const ManageAppointment = () => {
@@ -104,6 +105,11 @@ const ManageAppointment = () => {
     navigate('/consulting', { state: { appointment } });
   };
 
+  const handleCancelAppointment = async (bookId, parentId) => {
+    await cancelledBooking(bookId, parentId);
+    fetchAppointments();
+  };
+
   const renderAppointments = (status) => {
     const statusIcon = {
       PENDING: <EventNote color="action" />,
@@ -126,11 +132,16 @@ const ManageAppointment = () => {
                   <Typography variant="body2">Comment: {appointment.comment}</Typography>
                   <Typography variant="body2">Status: {appointment.status}</Typography>
                 </CardContent>
-                <CardActions>
-                  <IconButton onClick={() => handleConfirmAppointment(appointment)}>
-                    <CheckCircle />
-                  </IconButton>
-                </CardActions>
+                {status === 'PENDING' && (
+                  <CardActions>
+                    <IconButton onClick={() => handleConfirmAppointment(appointment)}>
+                      <CheckCircle />
+                    </IconButton>
+                    <IconButton onClick={() => handleCancelAppointment(appointment.bookId, appointment.parentId)}>
+                      <Cancel />
+                    </IconButton>
+                  </CardActions>
+                )}
               </Card>
             </Grid>
           ))}
@@ -220,11 +231,13 @@ const ManageAppointment = () => {
           <FormControl fullWidth margin="dense" sx={{ mt: 2 }}>
             <InputLabel id="select-date-label">Select date</InputLabel>
             <Select labelId="select-date-label" value={selectedDate} onChange={(e) => setSelectedDate(e.target.value)} label="Chọn ngày">
-              {[...new Set(schedule.map((s) => s.scheduleDate))].map((date) => (
-                <MenuItem key={date} value={date}>
-                  {date}
-                </MenuItem>
-              ))}
+              {[...new Set(schedule.map((s) => s.scheduleDate))]
+                .filter((date) => date >= today)
+                .map((date) => (
+                  <MenuItem key={date} value={date}>
+                    {date}
+                  </MenuItem>
+                ))}
             </Select>
           </FormControl>
           {selectedDate && renderSchedules()}

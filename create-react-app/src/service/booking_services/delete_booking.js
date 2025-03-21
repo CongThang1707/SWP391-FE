@@ -9,3 +9,12 @@ export const deleteBookingById = async (bookId) => {
     console.error('Error deleting booking:', error);
   }
 };
+
+export const cancelledBooking = async (bookId, parentId) => {
+  try {
+    const response = await axios.delete(`${API_URL}BookingAPI/cancelledBooking-user?bookId=${bookId}&parentId=${parentId}`);
+    return response.data;
+  } catch (error) {
+    console.error('Error deleting booking:', error);
+  }
+};

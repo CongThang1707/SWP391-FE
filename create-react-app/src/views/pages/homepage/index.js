@@ -1,5 +1,18 @@
 import React, { useState, useEffect } from 'react';
-import { Typography, Button, Container, Box, Grid, Card, CardContent, CardActions, Divider, CardMedia } from '@mui/material';
+import {
+  Typography,
+  Button,
+  Container,
+  Box,
+  Grid,
+  Card,
+  CardContent,
+  CardActions,
+  Divider,
+  CardMedia,
+  Snackbar,
+  Alert
+} from '@mui/material';
 import { CheckCircle, Facebook, Twitter, Instagram } from '@mui/icons-material';
 import submitOrder from '../../../service/vnpay_services/get_vnpay.js';
 import { useNavigate } from 'react-router-dom';
@@ -12,6 +25,7 @@ import { getAllMembership } from '../../../service/membership_services/get_membe
 const ParentLandingPage = () => {
   const navigate = useNavigate();
   const [memberships, setMemberships] = useState([]);
+  const [openSnackbar, setOpenSnackbar] = useState(false);
 
   useEffect(() => {
     const fetchMemberships = async () => {
@@ -25,9 +39,19 @@ const ParentLandingPage = () => {
     };
 
     fetchMemberships();
+
+    const snackbarState = localStorage.getItem('openSnackbar');
+    if (snackbarState === 'true') {
+      setOpenSnackbar(true);
+      localStorage.removeItem('openSnackbar');
+    }
   }, []);
 
-  const handleBuyNow = async () => {
+  const handleCloseSnackbar = () => {
+    setOpenSnackbar(false);
+  };
+
+  const handleBuyNow = async (price, type) => {
     const userID = localStorage.getItem('userId');
 
     if (!userID) {
@@ -35,7 +59,11 @@ const ParentLandingPage = () => {
       return;
     }
 
-    await submitOrder();
+    // You can now use price and type here
+    console.log('Buying:', type, 'plan for', price);
+
+    // ... (rest of your payment logic)
+    await submitOrder(price, type);
 
     const paymentUrl = localStorage.getItem('url');
     if (paymentUrl) {
@@ -208,7 +236,9 @@ const ParentLandingPage = () => {
                         transform: 'scale(1.05)'
                       }
                     }}
-                    onClick={plan.type === 'Default' ? handleRegister : handleBuyNow}
+                    onClick={
+                      plan.type === 'Default' ? handleRegister : () => handleBuyNow(plan.price, plan.type) // Pass price and type here
+                    }
                   >
                     {plan.type === 'Default' ? 'Register' : 'BUY NOW'}
                   </Button>
@@ -234,8 +264,8 @@ const ParentLandingPage = () => {
                 transition: 'transform 0.3s, box-shadow 0.3s',
                 '&:hover': {
                   transform: 'translateY(-10px)',
-                  boxShadow: 20,
-                },
+                  boxShadow: 20
+                }
               }}
             >
               <CardMedia
@@ -264,8 +294,8 @@ const ParentLandingPage = () => {
                 transition: 'transform 0.3s, box-shadow 0.3s',
                 '&:hover': {
                   transform: 'translateY(-10px)',
-                  boxShadow: 20,
-                },
+                  boxShadow: 20
+                }
               }}
             >
               <CardMedia
@@ -294,8 +324,8 @@ const ParentLandingPage = () => {
                 transition: 'transform 0.3s, box-shadow 0.3s',
                 '&:hover': {
                   transform: 'translateY(-10px)',
-                  boxShadow: 20,
-                },
+                  boxShadow: 20
+                }
               }}
             >
               <CardMedia
@@ -326,7 +356,8 @@ const ParentLandingPage = () => {
                 About Us
               </Typography>
               <Typography variant="body2" color={'white'} fontSize={15}>
-                We are a system dedicated to tracking child growth and development. Our platform helps parents and healthcare professionals monitor important growth metrics, ensuring children grow up healthy and strong.
+                We are a system dedicated to tracking child growth and development. Our platform helps parents and healthcare professionals
+                monitor important growth metrics, ensuring children grow up healthy and strong.
               </Typography>
             </Grid>
 
@@ -336,15 +367,21 @@ const ParentLandingPage = () => {
               </Typography>
               <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
                 <EmailOutlinedIcon sx={{ mr: 1, fontSize: 20 }} />
-                <Typography variant="body2" color={'white'} fontSize={15}>Email: tienvnse183132@gmail.com</Typography>
+                <Typography variant="body2" color={'white'} fontSize={15}>
+                  Email: tienvnse183132@gmail.com
+                </Typography>
               </Box>
               <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
                 <LocalPhoneOutlinedIcon sx={{ mr: 1, fontSize: 20 }} />
-                <Typography variant="body2" color={'white'} fontSize={15}>Phone: 094-424-6472</Typography>
+                <Typography variant="body2" color={'white'} fontSize={15}>
+                  Phone: 094-424-6472
+                </Typography>
               </Box>
               <Box sx={{ display: 'flex', alignItems: 'center' }}>
                 <HomeOutlinedIcon sx={{ mr: 1, fontSize: 20 }} />
-                <Typography variant="body2" color={'white'} fontSize={15}>Address: Thu Duc City, Ho Chi Minh City, Vietnam</Typography>
+                <Typography variant="body2" color={'white'} fontSize={15}>
+                  Address: Thu Duc City, Ho Chi Minh City, Vietnam
+                </Typography>
               </Box>
             </Grid>
             <Grid item xs={12} md={4}>
@@ -422,8 +459,15 @@ const ParentLandingPage = () => {
       <Divider sx={{ borderColor: '#424242' }} />
       {/* Copyright footer */}
       <Box sx={{ background: '#333', py: 2, textAlign: 'center', color: 'white', padding: '2rem' }}>
-        <Typography variant="body2" color={'white'} fontSize={15}>© 2025 CHILDGROWTH. CHILD DEVELOPMENT IS A TOP PRIORITY.</Typography>
+        <Typography variant="body2" color={'white'} fontSize={15}>
+          © 2025 CHILDGROWTH. CHILD DEVELOPMENT IS A TOP PRIORITY.
+        </Typography>
       </Box>
+      <Snackbar open={openSnackbar} autoHideDuration={6000} onClose={handleCloseSnackbar}>
+        <Alert onClose={handleCloseSnackbar} severity="warning" sx={{ width: '100%' }}>
+          You are not a member. Please purchase a membership package.
+        </Alert>
+      </Snackbar>
     </>
   );
 };
