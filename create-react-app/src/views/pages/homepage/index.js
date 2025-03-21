@@ -9,7 +9,6 @@ import LocalPhoneOutlinedIcon from '@mui/icons-material/LocalPhoneOutlined';
 import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
 import { getAllMembership } from '../../../service/membership_services/get_membership.js';
 
-
 const ParentLandingPage = () => {
   const navigate = useNavigate();
   const [memberships, setMemberships] = useState([]);
@@ -27,8 +26,6 @@ const ParentLandingPage = () => {
 
     fetchMemberships();
   }, []);
-
-  const defaultFeatures = ['Feature 1', 'Feature 2', 'Feature 3', 'Feature 4'];
 
   const handleBuyNow = async () => {
     const userID = localStorage.getItem('userId');
@@ -55,14 +52,13 @@ const ParentLandingPage = () => {
   };
 
   const gradients = [
-    'linear-gradient(135deg, #43cea2, #185a9d)',   // Green - Blue
-    'linear-gradient(135deg, #ff512f, #dd2476)',   // Orange - Pink
-    'linear-gradient(135deg, #00c6ff, #0072ff)',   // Light Blue - Blue
-    'linear-gradient(135deg, #f7971e, #ffd200)',   // Orange - Yellow
-    'linear-gradient(135deg, #8e2de2, #4a00e0)',   // Purple - Dark Purple
-    'linear-gradient(135deg, #00b09b, #96c93d)'    // Teal - Green
+    'linear-gradient(135deg, #43cea2, #185a9d)', 
+    'linear-gradient(135deg, #ff512f, #dd2476)',  
+    'linear-gradient(135deg, #00c6ff, #0072ff)',   
+    'linear-gradient(135deg, #f7971e, #ffd200)',  
+    'linear-gradient(135deg, #8e2de2, #4a00e0)',  
+    'linear-gradient(135deg, #00b09b, #96c93d)'  
   ];
-
 
   return (
     <>
@@ -182,12 +178,17 @@ const ParentLandingPage = () => {
                   <Typography variant="h3" fontWeight={700} sx={{ my: 2 }}>
                     ${plan.price.toFixed(0)}
                   </Typography>
-                  <Typography variant="body1" sx={{ mb: 2 }}>
-                    Per Month
-                  </Typography>
-                  {defaultFeatures.map((feature, i) => (
-                    <Typography key={i} sx={{ mt: 1, color: 'white', display: 'flex', alignItems: 'center' }}>
-                      <CheckCircle sx={{ mr: 1 }} /> {feature}
+                  {plan.description.split(',').map((desc, i) => (
+                    <Typography
+                      key={i}
+                      sx={{
+                        mt: 1,
+                        color: 'white',
+                        display: 'flex',
+                        alignItems: 'center'
+                      }}
+                    >
+                      <CheckCircle sx={{ mr: 1 }} /> {desc.trim()}
                     </Typography>
                   ))}
                 </CardContent>
