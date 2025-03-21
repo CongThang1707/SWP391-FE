@@ -1,7 +1,7 @@
 import axios from 'axios';
 import API_URL from '../api_service.js';
 
-const submitOrder = async () => {
+const submitOrder = async (amount, type) => {
   const userId = localStorage.getItem('userId');
   try {
     const response = await axios.post(
@@ -9,8 +9,8 @@ const submitOrder = async () => {
       {}, // Dữ liệu body (để trống nếu API không yêu cầu)
       {
         params: {
-          amount: 10000,
-          Status: 'PREMIUM',
+          amount: amount,
+          Status: type,
           userId: userId
         }
       }

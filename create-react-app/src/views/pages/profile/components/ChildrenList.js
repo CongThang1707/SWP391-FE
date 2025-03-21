@@ -1,15 +1,30 @@
 import React from 'react';
 import { Box, Typography, IconButton, Grid } from '@mui/material';
 import { Add as AddIcon, Delete as DeleteIcon, Edit as EditIcon } from '@mui/icons-material';
+import { useNavigate } from 'react-router-dom';
 
 const ChildrenList = ({ children, handleNavigateToChildDetail, handleOpenAddDialog, handleOpenEditDialog, handleDeleteChild }) => {
+  const navigate = useNavigate();
+
+  const handleAddChildClick = () => {
+    if (children.length >= 2) {
+      const membership = localStorage.getItem('membership');
+      if (membership === 'Default') {
+        localStorage.setItem('openSnackbar', 'true');
+        navigate('/');
+        return;
+      }
+    }
+    handleOpenAddDialog();
+  };
+
   return (
     <Box sx={{ backgroundColor: '#f5f5f5', borderRadius: 2, textAlign: 'center' }}>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
         <Typography variant="h4" fontWeight="bold" color="text.primary">
           Children List
         </Typography>
-        <IconButton onClick={handleOpenAddDialog} variant="contained" sx={{ display: 'flex', alignItems: 'center' }}>
+        <IconButton onClick={handleAddChildClick} variant="contained" sx={{ display: 'flex', alignItems: 'center' }}>
           <Typography variant="body2" sx={{ mr: 1 }}>
             Add Child
           </Typography>
