@@ -53,7 +53,7 @@ const ParentLandingPage = () => {
 
   const defaultFeatures = ['Feature 1', 'Feature 2', 'Feature 3', 'Feature 4'];
 
-  const handleBuyNow = async () => {
+  const handleBuyNow = async (price, type) => {
     const userID = localStorage.getItem('userId');
 
     if (!userID) {
@@ -61,7 +61,11 @@ const ParentLandingPage = () => {
       return;
     }
 
-    await submitOrder();
+    // You can now use price and type here
+    console.log('Buying:', type, 'plan for', price);
+
+    // ... (rest of your payment logic)
+    await submitOrder(price, type);
 
     const paymentUrl = localStorage.getItem('url');
     if (paymentUrl) {
@@ -229,7 +233,9 @@ const ParentLandingPage = () => {
                         transform: 'scale(1.05)'
                       }
                     }}
-                    onClick={plan.type === 'Default' ? handleRegister : handleBuyNow}
+                    onClick={
+                      plan.type === 'Default' ? handleRegister : () => handleBuyNow(plan.price, plan.type) // Pass price and type here
+                    }
                   >
                     {plan.type === 'Default' ? 'Register' : 'BUY NOW'}
                   </Button>
