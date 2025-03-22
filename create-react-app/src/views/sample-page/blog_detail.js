@@ -59,13 +59,27 @@ const BlogDetail = () => {
   return (
     <div>
       <h2>Blog Detail</h2>
-      <p><strong>Blog ID:</strong> {blog.blogId}</p>
-      <p><strong>Title:</strong> {blog.title}</p>
-      <p><strong>Hashtag:</strong> {blog.hashtag}</p>
-      <p><strong>Content:</strong> {blog.content}</p>
-      <p><strong>Parent ID:</strong> {blog.parentId?.fullName}</p>
-      <p><strong>Date:</strong> {blog.date}</p>
-      <p><strong>Status:</strong> {blog.status}</p>
+      <p>
+        <strong>Blog ID:</strong> {blog.blogId}
+      </p>
+      <p>
+        <strong>Title:</strong> {blog.title}
+      </p>
+      <p>
+        <strong>Hashtag:</strong> {blog.hashtag}
+      </p>
+      <p>
+        <strong>Content:</strong> {blog.content}
+      </p>
+      <p>
+        <strong>Parent ID:</strong> {blog.parentId?.fullName}
+      </p>
+      <p>
+        <strong>Date:</strong> {blog.date}
+      </p>
+      <p>
+        <strong>Status:</strong> {blog.status}
+      </p>
 
       {/* Nút Approve */}
       <Button
@@ -94,7 +108,7 @@ const BlogDetail = () => {
         variant="contained"
         color="warning"
         onClick={handleReport}
-        disabled={blog.status === 'CANCELLED'||blog.status === 'PENDING'}
+        disabled={blog.status === 'CANCELLED' || blog.status === 'PENDING'}
       >
         Report
       </Button>

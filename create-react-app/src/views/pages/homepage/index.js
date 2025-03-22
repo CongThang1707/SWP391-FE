@@ -464,7 +464,7 @@ const ParentLandingPage = () => {
         </Typography>
       </Box>
       <Snackbar open={openSnackbar} autoHideDuration={6000} onClose={handleCloseSnackbar}>
-        <Alert onClose={handleCloseSnackbar} severity="error" sx={{ width: '100%', color: 'red'}}>
+        <Alert onClose={handleCloseSnackbar} severity="error" sx={{ width: '100%', color: 'red' }}>
           You are not a member. Please purchase a membership package.
         </Alert>
       </Snackbar>

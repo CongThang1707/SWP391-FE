@@ -114,12 +114,7 @@ const EnhancedTable = () => {
                   <TableCell>{blog.date}</TableCell>
                   <TableCell>{renderStatusChip(blog.status)}</TableCell>
                   <TableCell>
-                    <Button
-                      variant="contained"
-                      color="primary"
-                      size="small"
-                      onClick={() => navigate(`/blog-detail/${blog.blogId}`)}
-                    >
+                    <Button variant="contained" color="primary" size="small" onClick={() => navigate(`/blog-detail/${blog.blogId}`)}>
                       Detail
                     </Button>
                     <Button

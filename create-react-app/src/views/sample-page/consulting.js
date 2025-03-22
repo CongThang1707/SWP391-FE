@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Box, Button, TextField, Typography, Grid } from '@mui/material';
 import { useLocation } from 'react-router-dom';
+import { getBooking } from '../../service/booking_services/get_booking.js';
 import { createConsulting } from '../../service/consulting_service/create_consulting.js';
 import { getHealthRecordByChildId } from '../../service/healthrecord_services/get_healthrecord.js';
 import { getConsultingByBookingId } from '../../service/consulting_service/get_consulting.js';
@@ -13,8 +14,9 @@ import { Card, CardHeader, CardContent, Divider, Rating, MenuItem } from '@mui/m
 
 const ConsultingForm = () => {
   const location = useLocation();
-  const { appointment: initialAppointment } = location.state || {};
-  const [appointment, setAppointment] = useState(initialAppointment);
+  const { state } = location;
+  const bookId = state.bookId;
+  const [appointment, setAppointment] = useState('');
   const [title, setTitle] = useState('');
   const [comment, setComment] = useState('');
   const [healthRecords, setHealthRecords] = useState([]);
@@ -38,6 +40,19 @@ const ConsultingForm = () => {
       setShowForm(false);
     }
   }, [appointment]);
+
+  useEffect(() => {
+    fetchBookedAppointment(bookId);
+  }, [bookId]);
+  const fetchBookedAppointment = async (bookId) => {
+    try {
+      const response = await getBooking(bookId);
+      setAppointment(response);
+      console.log('Fetched booked appointment:', response);
+    } catch (error) {
+      console.error('Error fetching booked appointment:', error);
+    }
+  };
 
   const fetchHealthRecords = async (childId) => {
     const data = await getHealthRecordByChildId(childId);
@@ -121,7 +136,9 @@ const ConsultingForm = () => {
 
   return (
     <Box p={3} sx={{ backgroundColor: '#f0f2f5', minHeight: '100vh' }}>
-      <Typography variant="h4" gutterBottom fontWeight="bold" fontSize={28} color="primary">Consulting Form</Typography>
+      <Typography variant="h4" gutterBottom fontWeight="bold" fontSize={28} color="primary">
+        Consulting Form
+      </Typography>
 
       <Grid container spacing={3}>
         <Grid item xs={12} md={4}>
@@ -136,10 +153,18 @@ const ConsultingForm = () => {
               />
               <Divider />
               <CardContent>
-                <Typography><strong>Parent Name:</strong> {appointment.parentName}</Typography>
-                <Typography><strong>Date:</strong> {appointment.bookDate}</Typography>
-                <Typography><strong>Time:</strong> {appointment.scheduleWork}</Typography>
-                <Typography><strong>Comment:</strong> {appointment.comment}</Typography>
+                <Typography>
+                  <strong>Parent Name:</strong> {appointment.parentName}
+                </Typography>
+                <Typography>
+                  <strong>Date:</strong> {appointment.bookDate}
+                </Typography>
+                <Typography>
+                  <strong>Time:</strong> {appointment.scheduleWork}
+                </Typography>
+                <Typography>
+                  <strong>Comment:</strong> {appointment.comment}
+                </Typography>
               </CardContent>
             </Card>
           )}
@@ -151,10 +176,15 @@ const ConsultingForm = () => {
                   background: 'linear-gradient(90deg, #388E3C 0%, #66BB6A 100%)',
                   color: '#fff'
                 }}
-              />              <Divider />
+              />{' '}
+              <Divider />
               <CardContent>
-                <Typography><strong>Title:</strong> {consulting.title}</Typography>
-                <Typography><strong>Comment:</strong> {consulting.comment}</Typography>
+                <Typography>
+                  <strong>Title:</strong> {consulting.title}
+                </Typography>
+                <Typography>
+                  <strong>Comment:</strong> {consulting.comment}
+                </Typography>
               </CardContent>
             </Card>
           )}
@@ -170,9 +200,13 @@ const ConsultingForm = () => {
               />
               <Divider />
               <CardContent>
-                <Typography><strong>Rating:</strong></Typography>
+                <Typography>
+                  <strong>Rating:</strong>
+                </Typography>
                 <Rating value={feedback.rate} readOnly />
-                <Typography sx={{ mt: 1 }}><strong>Comment:</strong> {feedback.comment}</Typography>
+                <Typography sx={{ mt: 1 }}>
+                  <strong>Comment:</strong> {feedback.comment}
+                </Typography>
               </CardContent>
             </Card>
           )}
@@ -199,7 +233,9 @@ const ConsultingForm = () => {
                   multiline
                   rows={4}
                 />
-                <Button type="submit" variant="contained" sx={{ mt: 2 }}>Submit</Button>
+                <Button type="submit" variant="contained" sx={{ mt: 2 }}>
+                  Submit
+                </Button>
               </form>
             </Box>
           )}
@@ -215,7 +251,9 @@ const ConsultingForm = () => {
                 mb: 3
               }}
             >
-              <Typography variant="h6" fontWeight="bold" color="primary" fontSize={18}>Health Records</Typography>
+              <Typography variant="h6" fontWeight="bold" color="primary" fontSize={18}>
+                Health Records
+              </Typography>
               <Box mb={2}>
                 <Typography>Select Year:</Typography>
                 <TextField
@@ -273,7 +311,9 @@ const ConsultingForm = () => {
             mb: 3
           }}
         >
-          <Typography variant="h6" fontWeight="bold" color="primary" fontSize={18}>Submit Consulting</Typography>
+          <Typography variant="h6" fontWeight="bold" color="primary" fontSize={18}>
+            Submit Consulting
+          </Typography>
           <form onSubmit={handleSubmitConsulting}>
             <TextField
               label="Title"
