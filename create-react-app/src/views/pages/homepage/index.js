@@ -206,7 +206,7 @@ const ParentLandingPage = () => {
                   <Typography variant="h3" fontWeight={700} sx={{ my: 2 }}>
                     ${plan.price.toFixed(0)}
                   </Typography>
-                  {plan.description.split(',').map((desc, i) => (
+                  {(plan.description || '').split(',').map((desc, i) => (
                     <Typography
                       key={i}
                       sx={{
