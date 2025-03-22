@@ -80,12 +80,12 @@ const ParentLandingPage = () => {
   };
 
   const gradients = [
-    'linear-gradient(135deg, #43cea2, #185a9d)', 
-    'linear-gradient(135deg, #ff512f, #dd2476)',  
-    'linear-gradient(135deg, #00c6ff, #0072ff)',   
-    'linear-gradient(135deg, #f7971e, #ffd200)',  
-    'linear-gradient(135deg, #8e2de2, #4a00e0)',  
-    'linear-gradient(135deg, #00b09b, #96c93d)'  
+    'linear-gradient(135deg, #43cea2, #185a9d)',
+    'linear-gradient(135deg, #ff512f, #dd2476)',
+    'linear-gradient(135deg, #00c6ff, #0072ff)',
+    'linear-gradient(135deg, #f7971e, #ffd200)',
+    'linear-gradient(135deg, #8e2de2, #4a00e0)',
+    'linear-gradient(135deg, #00b09b, #96c93d)'
   ];
 
   return (
