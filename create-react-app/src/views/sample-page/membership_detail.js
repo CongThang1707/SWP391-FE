@@ -31,6 +31,9 @@ const MembershipDetail = () => {
       <p>
         <strong>price:</strong> {memberships.price}
       </p>
+      <p>
+        <strong>Description:</strong> {memberships.description}
+      </p>
     </div>
   );
 };
