@@ -23,6 +23,7 @@ const getAllBookingAdmin = async () => {
 const getBooking = async (Booking_id) => {
   try {
     const response = await axios.get(`${API_URL}BookingAPI/getBooking?bookId=${Booking_id}`);
+    console.log(response.data);
     return response.data;
   } catch (error) {
     console.error('Error fetching booking:', error);

@@ -1,17 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { getBlogById, approveBlog, rejectBlog, checkBlogByAdmin } from '../../service/blog_services/get_blog.js';
-import {
-  Button,
-  Card,
-  CardContent,
-  Typography,
-  Stack,
-  Divider,
-  Box,
-  Chip,
-  Grid,
-} from '@mui/material';
+import { Button, Card, CardContent, Typography, Stack, Divider, Box, Chip, Grid } from '@mui/material';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import CancelIcon from '@mui/icons-material/Cancel';
 import ReportProblemIcon from '@mui/icons-material/ReportProblem';
@@ -73,11 +63,25 @@ const BlogDetail = () => {
   const renderStatusChip = (status) => {
     switch (status) {
       case 'COMPLETED':
-        return <Chip icon={<CheckCircleIcon />} label="COMPLETED" sx={{ bgcolor: '#00e676', color: 'black', fontWeight: 'bold', px: 2, py: 1 }} />;
+        return (
+          <Chip
+            icon={<CheckCircleIcon />}
+            label="COMPLETED"
+            sx={{ bgcolor: '#00e676', color: 'black', fontWeight: 'bold', px: 2, py: 1 }}
+          />
+        );
       case 'CANCELLED':
-        return <Chip icon={<CancelIcon />} label="CANCELLED" sx={{ bgcolor: '#e0e0e0', color: 'black', fontWeight: 'bold', px: 2, py: 1 }} />;
+        return (
+          <Chip icon={<CancelIcon />} label="CANCELLED" sx={{ bgcolor: '#e0e0e0', color: 'black', fontWeight: 'bold', px: 2, py: 1 }} />
+        );
       case 'PENDING':
-        return <Chip icon={<ReportProblemIcon />} label="PENDING" sx={{ bgcolor: '#ffe082', color: 'black', fontWeight: 'bold', px: 2, py: 1 }} />;
+        return (
+          <Chip
+            icon={<ReportProblemIcon />}
+            label="PENDING"
+            sx={{ bgcolor: '#ffe082', color: 'black', fontWeight: 'bold', px: 2, py: 1 }}
+          />
+        );
       default:
         return <Chip label={status} />;
     }
@@ -94,7 +98,7 @@ const BlogDetail = () => {
           p: 4,
           transition: '0.3s',
           '&:hover': { boxShadow: 12, transform: 'scale(1.01)' },
-          background: 'linear-gradient(135deg, #f0f0f0 0%, #ffffff 100%)',
+          background: 'linear-gradient(135deg, #f0f0f0 0%, #ffffff 100%)'
         }}
       >
         <CardContent>
@@ -106,24 +110,32 @@ const BlogDetail = () => {
           <Grid container spacing={4}>
             {/* LEFT */}
             <Grid item xs={12} md={6}>
-              <Typography variant="h5" sx={{ mb: 3, fontWeight: 'bold',  fontSize: '1rem' }}><strong>Title:</strong>{blog.title}</Typography>
-
-              <Typography variant="body1" sx={{ mb: 2, display: 'flex', alignItems: 'center', color: '#1976d2' }}>
-                <TagIcon sx={{ mr: 1,fontSize: '1rem'}} /> <strong>Hashtag:</strong> <Box component="span" sx={{ ml: 1, bgcolor: '#1976d2', color: 'white', px: 1.5, borderRadius: 2 ,fontSize: '1rem'}}>#{blog.hashtag}</Box>
+              <Typography variant="h5" sx={{ mb: 3, fontWeight: 'bold', fontSize: '1rem' }}>
+                <strong>Title:</strong>
+                {blog.title}
               </Typography>
 
-              <Typography variant="body1" sx={{ mb: 2, display: 'flex', alignItems: 'center',fontSize: '1rem'}}>
+              <Typography variant="body1" sx={{ mb: 2, display: 'flex', alignItems: 'center', color: '#1976d2' }}>
+                <TagIcon sx={{ mr: 1, fontSize: '1rem' }} /> <strong>Hashtag:</strong>{' '}
+                <Box component="span" sx={{ ml: 1, bgcolor: '#1976d2', color: 'white', px: 1.5, borderRadius: 2, fontSize: '1rem' }}>
+                  #{blog.hashtag}
+                </Box>
+              </Typography>
+
+              <Typography variant="body1" sx={{ mb: 2, display: 'flex', alignItems: 'center', fontSize: '1rem' }}>
                 <PersonIcon sx={{ mr: 1 }} /> <strong>Parent Name: </strong> {blog.fullName}
               </Typography>
 
-              <Typography variant="body1" sx={{ mb: 2, display: 'flex', alignItems: 'center',fontSize: '1rem'}}>
+              <Typography variant="body1" sx={{ mb: 2, display: 'flex', alignItems: 'center', fontSize: '1rem' }}>
                 <CalendarMonthIcon sx={{ mr: 1 }} /> <strong>Date:</strong> {blog.date}
               </Typography>
             </Grid>
 
             {/* RIGHT */}
             <Grid item xs={12} md={6}>
-              <Typography variant="body1" sx={{ mb: 1, fontWeight: 'bold',fontSize: '1rem' }}>Content:</Typography>
+              <Typography variant="body1" sx={{ mb: 1, fontWeight: 'bold', fontSize: '1rem' }}>
+                Content:
+              </Typography>
               <Typography
                 variant="body2"
                 sx={{
@@ -141,7 +153,9 @@ const BlogDetail = () => {
 
               {/* Status */}
               <Box sx={{ mt: 4 }}>
-                <Typography variant="body1" sx={{ mb: 1, fontWeight: 'bold',fontSize: '1rem' }}>Status:</Typography>
+                <Typography variant="body1" sx={{ mb: 1, fontWeight: 'bold', fontSize: '1rem' }}>
+                  Status:
+                </Typography>
                 <Box sx={{ animation: 'fadeIn 1s' }}>{renderStatusChip(blog.status)}</Box>
               </Box>
             </Grid>

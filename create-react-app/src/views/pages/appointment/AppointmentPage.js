@@ -147,7 +147,7 @@ const AppointmentPage = () => {
   const handleViewAndFeedback = (appointment) => {
     // Xử lý sự kiện khi người dùng nhấn nút View and Feedback
     console.log('View and Feedback:', appointment);
-    navigate(`/consulting`, { state: { appointment } });
+    navigate(`/consulting`, { state: { bookId: appointment.bookId } });
     // Thực hiện các hành động cần thiết, ví dụ: chuyển hướng đến trang chi tiết
   };
 
