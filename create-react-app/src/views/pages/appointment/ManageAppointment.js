@@ -33,7 +33,7 @@ import {
   Tab,
   Chip
 } from '@mui/material';
-import { CheckCircle, EventNote, EventAvailable, EventBusy, DoneAll, Cancel } from '@mui/icons-material';
+import { CheckCircle, EventNote, EventAvailable, EventBusy, DoneAll, Cancel, Visibility } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 
 const ManageAppointment = () => {
@@ -97,12 +97,7 @@ const ManageAppointment = () => {
   };
 
   const handleConfirmAppointment = async (appointment) => {
-    // Xử lý sự kiện khi người dùng nhấn nút Confirm
-    console.log('Confirm appointment:', appointment);
-    // await confirmBooking(appointment.bookId);
-    // fetchAppointments();
-    // Thực hiện các hành động cần thiết, ví dụ: cập nhật trạng thái cuộc hẹn
-    navigate('/consulting', { state: { appointment } });
+    navigate('/consulting', { state: { bookId: appointment.bookId } });
   };
 
   const handleCancelAppointment = async (bookId, parentId) => {
@@ -111,12 +106,23 @@ const ManageAppointment = () => {
   };
 
   const renderAppointments = (status) => {
+    const filteredAppointments = appointments.filter((appointment) => appointment.status === status);
     const statusIcon = {
       PENDING: <EventNote color="action" />,
       CONFIRMED: <EventAvailable color="success" />,
       CANCELLED: <EventBusy color="error" />,
       COMPLETED: <DoneAll color="primary" />
     };
+
+    if (filteredAppointments.length === 0) {
+      return (
+        <Grid item xs={12}>
+          <Typography variant="body2" align="center">
+            There are no appointments {status.toLowerCase()}
+          </Typography>
+        </Grid>
+      );
+    }
 
     return (
       <Grid container spacing={2}>
@@ -132,16 +138,23 @@ const ManageAppointment = () => {
                   <Typography variant="body2">Comment: {appointment.comment}</Typography>
                   <Typography variant="body2">Status: {appointment.status}</Typography>
                 </CardContent>
-                {status === 'PENDING' && (
-                  <CardActions>
+                <CardActions>
+                  {status === 'PENDING' && (
+                    <>
+                      <IconButton onClick={() => handleConfirmAppointment(appointment)}>
+                        <CheckCircle />
+                      </IconButton>
+                      <IconButton onClick={() => handleCancelAppointment(appointment.bookId, appointment.parentId)}>
+                        <Cancel />
+                      </IconButton>
+                    </>
+                  )}
+                  {status === 'COMPLETED' && (
                     <IconButton onClick={() => handleConfirmAppointment(appointment)}>
-                      <CheckCircle />
+                      <Visibility />
                     </IconButton>
-                    <IconButton onClick={() => handleCancelAppointment(appointment.bookId, appointment.parentId)}>
-                      <Cancel />
-                    </IconButton>
-                  </CardActions>
-                )}
+                  )}
+                </CardActions>
               </Card>
             </Grid>
           ))}

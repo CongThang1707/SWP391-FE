@@ -140,20 +140,10 @@ const EnhancedTable = () => {
                   <TableCell>{renderStatusChip(blog.status)}</TableCell>
                   <TableCell>
                     <Stack direction="row" spacing={1}>
-                      <Button
-                        variant="contained"
-                        color="primary"
-                        size="small"
-                        onClick={() => navigate(`/blog-detail/${blog.blogId}`)}
-                      >
+                      <Button variant="contained" color="primary" size="small" onClick={() => navigate(`/blog-detail/${blog.blogId}`)}>
                         Detail
                       </Button>
-                      <Button
-                        variant="contained"
-                        color="error"
-                        size="small"
-                        onClick={() => handleDeleteBlog(blog.blogId)}
-                      >
+                      <Button variant="contained" color="error" size="small" onClick={() => handleDeleteBlog(blog.blogId)}>
                         Delete
                       </Button>
                     </Stack>
