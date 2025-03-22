@@ -142,4 +142,15 @@ const checkBlogByAdmin = async (blogId) => {
 };
 
 export default getBlogs;
-export { getBlogById, deleteBlog, getBlogByUserId, updateBlog, getBlogByParentId, getAllBlogComplete, approveBlog, rejectBlog, checkBlog, checkBlogByAdmin };
+export {
+  getBlogById,
+  deleteBlog,
+  getBlogByUserId,
+  updateBlog,
+  getBlogByParentId,
+  getAllBlogComplete,
+  approveBlog,
+  rejectBlog,
+  checkBlog,
+  checkBlogByAdmin
+};

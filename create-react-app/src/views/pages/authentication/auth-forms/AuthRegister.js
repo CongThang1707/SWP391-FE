@@ -55,33 +55,28 @@ const FirebaseRegister = ({ ...others }) => {
           initialValues={{
             username: '',
             password: '',
-            email: '',
             fullName: '',
             gender: '',
-            phone: '',
-            rate: 5,
             address: ''
           }}
           validationSchema={Yup.object().shape({
             username: Yup.string().max(255).required('User Name is required'),
             password: Yup.string().max(255).required('Password is required'),
-            email: Yup.string().max(255).required('Email is required'),
             fullName: Yup.string().max(255).required('Full Name is required'),
-            gender: Yup.string().max(255).required('Gender is required'),
-            phone: Yup.string().max(255).required('Phone is required')
+            gender: Yup.string().max(255).required('Gender is required')
           })}
           onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
             try {
               const response = await createUser(1, values);
-              console.log('Register Success:', response.data);
+              console.log('Register Success:', response);
               navigate('/pages/login/login3');
               if (scriptedRef.current) {
                 setStatus({ success: true });
                 setSubmitting(false);
               }
             } catch (err) {
-              console.error('Register Error:', error);
-              setErrors({ submit: error.response?.data?.message || 'Registration failed' });
+              console.error('Register Error:', err);
+              setErrors({ submit: err.response?.data?.message || 'Registration failed' });
               if (scriptedRef.current) {
                 setStatus({ success: false });
                 setErrors({ submit: err.message });
@@ -132,7 +127,7 @@ const FirebaseRegister = ({ ...others }) => {
                 {touched.password && errors.password && <FormHelperText error>{errors.password}</FormHelperText>}
               </FormControl>
 
-              <FormControl fullWidth error={Boolean(touched.email && errors.email)} sx={{ mb: 2 }}>
+              {/* <FormControl fullWidth error={Boolean(touched.email && errors.email)} sx={{ mb: 2 }}>
                 <InputLabel htmlFor="outlined-adornment-email-register">Email</InputLabel>
                 <OutlinedInput
                   id="outlined-adornment-email-register"
@@ -144,7 +139,7 @@ const FirebaseRegister = ({ ...others }) => {
                   onChange={handleChange}
                 />
                 {touched.email && errors.email && <FormHelperText error>{errors.email}</FormHelperText>}
-              </FormControl>
+              </FormControl> */}
 
               <FormControl fullWidth error={Boolean(touched.fullName && errors.fullName)} sx={{ mb: 2 }}>
                 <InputLabel htmlFor="outlined-adornment-email-register">Full Name</InputLabel>
@@ -160,7 +155,7 @@ const FirebaseRegister = ({ ...others }) => {
                 {touched.fullName && errors.fullName && <FormHelperText error>{errors.fullName}</FormHelperText>}
               </FormControl>
               <Grid container spacing={matchDownSM ? 0 : 2}>
-                <Grid item xs={12} sm={6}>
+                <Grid item xs={12}>
                   <FormControl fullWidth error={Boolean(touched.gender && errors.gender)} sx={{ mb: 2 }}>
                     <InputLabel>Gender</InputLabel>
                     <Select value={values.gender} name="gender" label="Gender" onBlur={handleBlur} onChange={handleChange}>
@@ -170,7 +165,7 @@ const FirebaseRegister = ({ ...others }) => {
                     {touched.gender && errors.gender && <FormHelperText error>{errors.gender}</FormHelperText>}
                   </FormControl>
                 </Grid>
-                <Grid item xs={12} sm={6}>
+                {/* <Grid item xs={12} sm={6}>
                   <FormControl fullWidth error={Boolean(touched.phone && errors.phone)} sx={{ mb: 2 }}>
                     <InputLabel htmlFor="outlined-adornment-phone-register">Phone</InputLabel>
                     <OutlinedInput
@@ -184,7 +179,7 @@ const FirebaseRegister = ({ ...others }) => {
                     />
                     {touched.phone && errors.phone && <FormHelperText error>{errors.phone}</FormHelperText>}
                   </FormControl>
-                </Grid>
+                </Grid> */}
               </Grid>
               <Box sx={{ mt: 2 }}>
                 <AnimateButton>
@@ -218,25 +213,23 @@ const FirebaseRegister = ({ ...others }) => {
             </Button>
             <Divider sx={{ flexGrow: 1 }} orientation="horizontal" />
           </Box>
-          <Grid item xs={12}>
-            <AnimateButton>
-              <Button
-                variant="outlined"
-                fullWidth
-                onClick={() => {
-                  navigate('/pages/register/email-register');
-                }}
-                size="large"
-                sx={{
-                  color: 'grey.700',
-                  backgroundColor: theme.palette.grey[50],
-                  borderColor: theme.palette.grey[100]
-                }}
-              >
-                Sign up with Gmail
-              </Button>
-            </AnimateButton>
-          </Grid>
+        </Grid>
+        <Grid item xs={12}>
+          <AnimateButton>
+            <Button
+              variant="outlined"
+              fullWidth
+              onClick={() => navigate('/pages/register/email-register')}
+              size="large"
+              sx={{
+                color: 'grey.700',
+                backgroundColor: theme.palette.grey[50],
+                borderColor: theme.palette.grey[100]
+              }}
+            >
+              Sign up with Email
+            </Button>
+          </AnimateButton>
         </Grid>
         <Grid item xs={12}></Grid>
       </Grid>

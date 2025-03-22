@@ -55,7 +55,7 @@ const BlogPage = () => {
         title: post.title || 'Untitled Post', // Tiêu đề bài viết
         hashtag: post.hashtag || 'No hashtag available', // Mô tả ngắn
         content: post.content || 'No content available', // Nội dung bài viết
-        comments: post.comments || [], // Danh sách bình luận
+        comments: post.comments || [] // Danh sách bình luận
       }));
 
       setPosts(formattedPosts); // Cập nhật state posts
@@ -68,9 +68,9 @@ const BlogPage = () => {
 
   const filteredPosts = searchTerm
     ? posts.filter(
-      (post) =>
-        post.title.toLowerCase().includes(searchTerm.toLowerCase()) || post.content.toLowerCase().includes(searchTerm.toLowerCase())
-    )
+        (post) =>
+          post.title.toLowerCase().includes(searchTerm.toLowerCase()) || post.content.toLowerCase().includes(searchTerm.toLowerCase())
+      )
     : posts;
 
   const handleCommentToggle = async (index) => {
@@ -78,7 +78,8 @@ const BlogPage = () => {
     newShowComments[index] = !newShowComments[index];
     setShowComments(newShowComments);
 
-    if (newShowComments[index]) { // Luôn fetch mỗi khi mở comment (hoặc thêm flag đã fetch cũng được)
+    if (newShowComments[index]) {
+      // Luôn fetch mỗi khi mở comment (hoặc thêm flag đã fetch cũng được)
       try {
         const blogId = posts[index].blogId;
         const fetchedComments = await getCommentByBlogId(blogId);
@@ -121,7 +122,6 @@ const BlogPage = () => {
       console.error('Failed to post comment:', error);
     }
   };
-
 
   const userAvatar = 'https://randomuser.me/api/portraits/men/4.jpg';
   const userName = 'John Doe';
@@ -284,10 +284,12 @@ const BlogPage = () => {
         {currentPosts.map((post, index) => (
           <Card key={post.blogId} sx={{ position: 'relative', mb: 4, boxShadow: 4, transition: '0.3s', '&:hover': { boxShadow: 8 } }}>
             <CardContent>
-
               {/* ✅ ICON X + Dropdown Report */}
               <Box sx={{ position: 'absolute', top: 10, right: 10 }}>
-                <Button onClick={() => handleToggleReport(index)} sx={{ minWidth: 'auto', p: 0, color: 'gray', '&:hover': { color: 'red' } }}>
+                <Button
+                  onClick={() => handleToggleReport(index)}
+                  sx={{ minWidth: 'auto', p: 0, color: 'gray', '&:hover': { color: 'red' } }}
+                >
                   <CloseIcon />
                 </Button>
                 {showReport[index] && (
@@ -322,9 +324,7 @@ const BlogPage = () => {
               </Typography>
 
               <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mt: 2, color: '#555' }}>
-                <Typography variant="body2">
-                  {commentsData[index]?.length || 0} Comments
-                </Typography>
+                <Typography variant="body2">{commentsData[index]?.length || 0} Comments</Typography>
               </Box>
 
               <Stack direction="row" justifyContent="space-around" sx={{ mt: 1, borderTop: '1px solid #ddd', pt: 1 }}>
@@ -336,21 +336,26 @@ const BlogPage = () => {
               {/* Comment Section */}
               {showComments[index] && (
                 <Box sx={{ mt: 2, p: 2, borderTop: '1px solid #ddd' }}>
-
                   {/* 1️⃣ - Danh sách comment từ API */}
                   {commentsData[index] && commentsData[index].length > 0 ? (
                     commentsData[index].map((comment, cIndex) => (
                       <Box key={cIndex} sx={{ display: 'flex', alignItems: 'center', mt: 2, p: 1, background: '#f0f2f5', borderRadius: 2 }}>
                         <Avatar src={comment.avatar} sx={{ width: 32, height: 32, mr: 1 }} />
                         <Box>
-                          <Typography variant="body2" fontWeight={600}>{comment.name}</Typography>
-                          <Typography variant="body2" color="text.secondary">{comment.date}</Typography>
+                          <Typography variant="body2" fontWeight={600}>
+                            {comment.name}
+                          </Typography>
+                          <Typography variant="body2" color="text.secondary">
+                            {comment.date}
+                          </Typography>
                           <Typography variant="body1">{comment.comment}</Typography>
                         </Box>
                       </Box>
                     ))
                   ) : (
-                    <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>No comments yet.</Typography>
+                    <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
+                      No comments yet.
+                    </Typography>
                   )}
 
                   {/* 2️⃣ - Ô viết comment mới */}
@@ -385,7 +390,8 @@ const BlogPage = () => {
                 About Us
               </Typography>
               <Typography variant="body2" color={'white'} fontSize={15}>
-                We are a system dedicated to tracking child growth and development. Our platform helps parents and healthcare professionals monitor important growth metrics, ensuring children grow up healthy and strong.
+                We are a system dedicated to tracking child growth and development. Our platform helps parents and healthcare professionals
+                monitor important growth metrics, ensuring children grow up healthy and strong.
               </Typography>
             </Grid>
 
@@ -395,15 +401,21 @@ const BlogPage = () => {
               </Typography>
               <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
                 <EmailOutlinedIcon sx={{ mr: 1, fontSize: 20 }} />
-                <Typography variant="body2" color={'white'} fontSize={15}>Email: tienvnse183132@gmail.com</Typography>
+                <Typography variant="body2" color={'white'} fontSize={15}>
+                  Email: tienvnse183132@gmail.com
+                </Typography>
               </Box>
               <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
                 <LocalPhoneOutlinedIcon sx={{ mr: 1, fontSize: 20 }} />
-                <Typography variant="body2" color={'white'} fontSize={15}>Phone: 094-424-6472</Typography>
+                <Typography variant="body2" color={'white'} fontSize={15}>
+                  Phone: 094-424-6472
+                </Typography>
               </Box>
               <Box sx={{ display: 'flex', alignItems: 'center' }}>
                 <HomeOutlinedIcon sx={{ mr: 1, fontSize: 20 }} />
-                <Typography variant="body2" color={'white'} fontSize={15}>Address: Thu Duc City, Ho Chi Minh City, Vietnam</Typography>
+                <Typography variant="body2" color={'white'} fontSize={15}>
+                  Address: Thu Duc City, Ho Chi Minh City, Vietnam
+                </Typography>
               </Box>
             </Grid>
             <Grid item xs={12} md={4}>
@@ -481,7 +493,9 @@ const BlogPage = () => {
       <Divider sx={{ borderColor: '#424242' }} />
       {/* Copyright footer */}
       <Box sx={{ background: '#333', py: 2, textAlign: 'center', color: 'white', padding: '2rem' }}>
-        <Typography variant="body2" color={'white'} fontSize={15}>© 2025 CHILDGROWTH. CHILD DEVELOPMENT IS A TOP PRIORITY.</Typography>
+        <Typography variant="body2" color={'white'} fontSize={15}>
+          © 2025 CHILDGROWTH. CHILD DEVELOPMENT IS A TOP PRIORITY.
+        </Typography>
       </Box>
     </>
   );
