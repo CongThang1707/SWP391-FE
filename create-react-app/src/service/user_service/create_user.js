@@ -15,4 +15,14 @@ const createUser = async (roleId, userData) => {
   }
 };
 
-export { createUser };
+const verifyOtp = async (email, otp) => {
+  try {
+    const response = await axios.post(`${API_URL}api/verifyOtp?email=${email}&enterCode=${otp}`);
+    return response;
+  } catch (error) {
+    console.error('Error verifying OTP:', error.response ? error.response.data : error.message);
+    throw error;
+  }
+};
+
+export { createUser, verifyOtp };

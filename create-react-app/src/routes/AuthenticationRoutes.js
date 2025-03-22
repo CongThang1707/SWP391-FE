@@ -9,6 +9,7 @@ import UserLayout from 'layout/UserLayout'; // Import layout mới
 const AuthLogin3 = Loadable(lazy(() => import('views/pages/authentication/authentication3/Login3')));
 const AuthRegister3 = Loadable(lazy(() => import('views/pages/authentication/authentication3/Register3')));
 const AuthEmailRegister = Loadable(lazy(() => import('views/pages/authentication/authentication3/EmailRegister')));
+const AuthVerifyOTP = Loadable(lazy(() => import('views/pages/authentication/authentication3/VerifyOTP')));
 const HomePage = Loadable(lazy(() => import('views/pages/homepage/index.js')));
 const BlogPage = Loadable(lazy(() => import('views/pages/blog/index.js')));
 
@@ -42,6 +43,16 @@ const AuthenticationRoutes = [
       {
         path: '',
         element: <AuthEmailRegister />
+      }
+    ]
+  },
+  {
+    path: '/pages/register/email-verify',
+    element: <MinimalLayout />,
+    children: [
+      {
+        path: '',
+        element: <AuthVerifyOTP />
       }
     ]
   },

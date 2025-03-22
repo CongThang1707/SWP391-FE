@@ -107,7 +107,7 @@ const AppointmentPage = () => {
 
   const handleOpenDialog = (appointment = null) => {
     const membership = localStorage.getItem('membership');
-    if (membership === 'Default') {
+    if (membership === 'DEFAULT') {
       localStorage.setItem('openSnackbar', 'true');
       navigate('/');
       return;
