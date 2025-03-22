@@ -1,4 +1,3 @@
-//index.js
 import React, { useState, useEffect } from 'react';
 import {
   Avatar,
@@ -68,9 +67,9 @@ const BlogPage = () => {
 
   const filteredPosts = searchTerm
     ? posts.filter(
-      (post) =>
-        post.title.toLowerCase().includes(searchTerm.toLowerCase()) || post.content.toLowerCase().includes(searchTerm.toLowerCase())
-    )
+        (post) =>
+          post.title.toLowerCase().includes(searchTerm.toLowerCase()) || post.content.toLowerCase().includes(searchTerm.toLowerCase())
+      )
     : posts;
 
   const handleCommentToggle = async (index) => {
@@ -103,7 +102,7 @@ const BlogPage = () => {
     if (commentInputs[index].trim() === '') return;
 
     const commentData = {
-      comment: commentInputs[index],
+      comment: commentInputs[index]
     };
 
     try {
@@ -336,7 +335,7 @@ const BlogPage = () => {
                         <Avatar src={comment.avatar} sx={{ width: 32, height: 32, mr: 1 }} />
                         <Box>
                           <Typography variant="body2" fontWeight={600}>
-                            {comment.name}
+                            {comment.fullName}
                           </Typography>
                           <Typography variant="body2" color="text.secondary">
                             {comment.date}
