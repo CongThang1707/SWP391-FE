@@ -9,7 +9,8 @@ import {
   Divider,
   Chip,
   Grid,
-  CircularProgress
+  CircularProgress,
+  Paper
 } from '@mui/material';
 import PersonIcon from '@mui/icons-material/Person';
 import CommentIcon from '@mui/icons-material/Comment';
@@ -18,7 +19,7 @@ import StarIcon from '@mui/icons-material/Star';
 const FeedBackDetail = () => {
   const { id } = useParams();
   const [feedback, setFeedBack] = useState(null);
-  
+
   useEffect(() => {
     const fetchFeedBack = async () => {
       const data = await getFeedbackById(id);
@@ -38,7 +39,7 @@ const FeedBackDetail = () => {
         icon={<StarIcon sx={{ color: '#fff' }} />}
         label={`${rate} / 5`}
         color={color}
-        sx={{ fontWeight: 'bold', px: 2 }}
+        sx={{ fontWeight: 'bold', px: 2, fontSize: '1rem' }}
       />
     );
   };
@@ -51,52 +52,76 @@ const FeedBackDetail = () => {
   );
 
   return (
-    <Box sx={{ maxWidth: '1000px', margin: '50px auto', padding: '30px' }}>
+    <Box sx={{ maxWidth: '1000px', margin: '50px auto', padding: '20px' }}>
       <Card
         sx={{
           boxShadow: 8,
           borderRadius: 4,
           p: 4,
-          transition: '0.3s',
+          transition: '0.4s',
           '&:hover': { boxShadow: 12, transform: 'scale(1.01)' },
           background: 'linear-gradient(135deg, #f0f0f0 0%, #ffffff 100%)',
         }}
       >
         <CardContent>
-          <Typography variant="h4" gutterBottom sx={{ fontWeight: 'bold', color: '#1976d2', fontSize: '1.5rem' }}>
+          <Typography
+            variant="h4"
+            gutterBottom
+            sx={{ fontWeight: 'bold', color: '#1976d2', mb: 3 }}
+          >
             📝 Feedback Detail
           </Typography>
+
           <Divider sx={{ mb: 4 }} />
 
           <Grid container spacing={4}>
-            {/* LEFT */}
             <Grid item xs={12} md={6}>
               <Typography variant="body1" sx={{ mb: 2, display: 'flex', alignItems: 'center' }}>
-                <PersonIcon sx={{ mr: 1 }} /> <strong>Parent:</strong> {feedback.fullNameParent}
+                <PersonIcon sx={{ mr: 1, color: '#1976d2' }} /> 
+                <strong>Parent:</strong>&nbsp; {feedback.fullNameParent}
               </Typography>
               <Typography variant="body1" sx={{ mb: 2, display: 'flex', alignItems: 'center' }}>
-                <PersonIcon sx={{ mr: 1 }} /> <strong>Doctor:</strong> {feedback.fullNameDoctor}
+                <PersonIcon sx={{ mr: 1, color: '#1976d2' }} /> 
+                <strong>Doctor:</strong>&nbsp; {feedback.fullNameDoctor}
               </Typography>
             </Grid>
 
-            {/* RIGHT */}
             <Grid item xs={12} md={6}>
-              {/* Rate */}
-              <Box sx={{ mt: 3 }}>
-                <Typography variant="body1" sx={{ mb: 1, fontWeight: 'bold' }}>Rate:</Typography>
-                {renderRateChip(feedback.rate)}
-              </Box>
+              <Typography variant="body1" sx={{ mb: 1, fontWeight: 'bold' }}>
+                Rate:
+              </Typography>
+              {renderRateChip(feedback.rate)}
             </Grid>
 
-            {/* Comment */}
+            {/* COMMENT */}
             <Grid item xs={12}>
-              <Divider sx={{ mb: 2 }} />
-              <Typography variant="body1" sx={{ mb: 1, fontWeight: 'bold', display: 'flex', alignItems: 'center' }}>
+              <Divider sx={{ mb: 3 }} />
+              <Typography
+                variant="h6"
+                sx={{
+                  fontWeight: 'bold',
+                  color: '#1976d2',
+                  display: 'flex',
+                  alignItems: 'center',
+                  mb: 2
+                }}
+              >
                 <CommentIcon sx={{ mr: 1 }} /> Comment:
               </Typography>
-              <Typography variant="body1" sx={{ bgcolor: '#fff', p: 2, borderRadius: 2, boxShadow: 1 }}>
+
+              <Paper
+                elevation={3}
+                sx={{
+                  p: 3,
+                  borderRadius: 3,
+                  bgcolor: '#fafafa',
+                  borderLeft: '6px solid #1976d2',
+                  fontStyle: 'italic',
+                  color: '#555'
+                }}
+              >
                 {feedback.comment}
-              </Typography>
+              </Paper>
             </Grid>
           </Grid>
         </CardContent>
