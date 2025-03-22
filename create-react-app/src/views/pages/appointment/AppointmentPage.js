@@ -36,6 +36,9 @@ import { updateBooking } from '../../../service/booking_services/update_booking.
 import { getChildrenByParentId } from '../../../service/children_services/get_children.js';
 import { useNavigate } from 'react-router-dom';
 import dayjs from 'dayjs';
+import isSameOrAfter from 'dayjs/plugin/isSameOrAfter';
+
+dayjs.extend(isSameOrAfter);
 
 const AppointmentPage = () => {
   const [appointments, setAppointments] = useState([]);
@@ -170,7 +173,8 @@ const AppointmentPage = () => {
 
   const findNearestAppointment = () => {
     const now = dayjs();
-    const upcomingAppointments = appointments.filter((appointment) => {
+    const pendingAppointments = appointments.filter((appointment) => appointment.status === 'PENDING');
+    const upcomingAppointments = pendingAppointments.filter((appointment) => {
       const appointmentDate = dayjs(appointment.scheduleDate + ' ' + appointment.scheduleWork);
       return appointmentDate.isAfter(now);
     });
@@ -339,27 +343,34 @@ const AppointmentPage = () => {
                   <FormControl fullWidth margin="dense">
                     <InputLabel id="demo-simple-select-label">Date</InputLabel>
                     <Select label="Date" value={selectedDate} onChange={(e) => setSelectedDate(e.target.value)} fullWidth>
-                      {[...new Set(schedule.map((s) => s.scheduleDate))].map((date) => (
-                        <MenuItem key={date} value={date}>
-                          {date}
-                        </MenuItem>
-                      ))}
+                      {[...new Set(schedule.map((s) => s.scheduleDate))]
+                        .filter((date) => dayjs(date).isSameOrAfter(dayjs(), 'day'))
+                        .map((date) => (
+                          <MenuItem key={date} value={date}>
+                            {date}
+                          </MenuItem>
+                        ))}
                     </Select>
                   </FormControl>
                   <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, mt: 2 }}>
                     {schedule
                       .filter((s) => s.scheduleDate === selectedDate)
-                      .sort((a, b) => a.scheduleTime.localeCompare(b.scheduleTime)) // Sắp xếp thời gian theo thứ tự tăng dần
-                      .map((s) => (
-                        <Chip
-                          key={s.scheduleId}
-                          label={s.scheduleTime}
-                          clickable
-                          color={currentAppointment?.schedule === s.scheduleId ? 'primary' : 'default'}
-                          onClick={() => handleTimeChange(s.scheduleId)}
-                          disabled={s.book}
-                        />
-                      ))}
+                      .sort((a, b) => a.scheduleTime.localeCompare(b.scheduleTime))
+                      .map((s) => {
+                        const scheduleDateTime = dayjs(`${s.scheduleDate} ${s.scheduleTime}`, 'YYYY-MM-DD HH:mm');
+                        const now = dayjs();
+                        const isPast = scheduleDateTime.isBefore(now);
+                        return (
+                          <Chip
+                            key={s.scheduleId}
+                            label={s.scheduleTime}
+                            clickable
+                            color={currentAppointment?.schedule === s.scheduleId ? 'primary' : 'default'}
+                            onClick={() => handleTimeChange(s.scheduleId)}
+                            disabled={s.book || isPast} // Disable nếu đã book hoặc là giờ quá khứ
+                          />
+                        );
+                      })}
                   </Box>
                   <Typography variant="h6" sx={{ mt: 2 }}>
                     Select a Child
