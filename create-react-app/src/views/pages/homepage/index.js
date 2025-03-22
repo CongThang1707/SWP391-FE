@@ -237,10 +237,10 @@ const ParentLandingPage = () => {
                       }
                     }}
                     onClick={
-                      plan.type === 'Default' ? handleRegister : () => handleBuyNow(plan.price, plan.type) // Pass price and type here
+                      plan.type === 'DEFAULT' ? handleRegister : () => handleBuyNow(plan.price, plan.type) // Pass price and type here
                     }
                   >
-                    {plan.type === 'Default' ? 'Register' : 'BUY NOW'}
+                    {plan.type === 'DEFAULT' ? 'Register' : 'BUY NOW'}
                   </Button>
                 </CardActions>
               </Card>
@@ -464,7 +464,7 @@ const ParentLandingPage = () => {
         </Typography>
       </Box>
       <Snackbar open={openSnackbar} autoHideDuration={6000} onClose={handleCloseSnackbar}>
-        <Alert onClose={handleCloseSnackbar} severity="warning" sx={{ width: '100%' }}>
+        <Alert onClose={handleCloseSnackbar} severity="error" sx={{ width: '100%', color: 'red'}}>
           You are not a member. Please purchase a membership package.
         </Alert>
       </Snackbar>

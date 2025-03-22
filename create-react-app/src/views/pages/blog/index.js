@@ -20,7 +20,7 @@ import {
 } from '@mui/material';
 import { ChatBubbleOutline, Send, Search, Add } from '@mui/icons-material';
 import { Pagination } from '@mui/material';
-import getBlogs from '../../../service/blog_services/get_blog.js';
+import { getAllBlogComplete, checkBlog } from '../../../service/blog_services/get_blog.js';
 import { createBlog } from '../../../service/blog_services/post_blog.js';
 import { createComment } from '../../../service/comment_services/get_comment.js';
 import { getCommentByBlogId } from '../../../service/comment_services/get_comment.js';
@@ -28,6 +28,7 @@ import EmailOutlinedIcon from '@mui/icons-material/EmailOutlined';
 import LocalPhoneOutlinedIcon from '@mui/icons-material/LocalPhoneOutlined';
 import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
 import { Facebook, Twitter, Instagram } from '@mui/icons-material';
+import CloseIcon from '@mui/icons-material/Close';
 
 const BlogPage = () => {
   const [posts, setPosts] = useState([]);
@@ -37,32 +38,33 @@ const BlogPage = () => {
   const [openDialog, setOpenDialog] = useState(false);
   const [newPost, setNewPost] = useState({ title: '', hashtag: '', content: '' });
   const [commentsData, setCommentsData] = useState(Array(posts.length).fill([]));
+  const [showReport, setShowReport] = useState(Array(posts.length).fill(false));
 
   useEffect(() => {
-    const fetchBlogs = async () => {
-      try {
-        const blogData = await getBlogs(); // Gọi API lấy danh sách blog
-        const formattedPosts = blogData.map((post) => ({
-          blogId: post.blogId,
-          avatar: post.avatar || 'https://randomuser.me/api/portraits/men/4.jpg', // Avatar người đăng
-          fullName: post.parentId.fullName,
-          date: post.date || new Date().toLocaleDateString(), // Ngày đăng
-          title: post.title || 'Untitled Post', // Tiêu đề bài viết
-          hashtag: post.hashtag || 'No hashtag available', // Mô tả ngắn
-          content: post.content || 'No content available', // Nội dung bài viết
-          comments: post.comments || [], // Danh sách bình luận
-        }));
-
-        setPosts(formattedPosts); // Cập nhật state posts
-        setCommentInputs(Array(formattedPosts.length).fill('')); // Khởi tạo input cho comment
-        setShowComments(Array(formattedPosts.length).fill(false)); // Khởi tạo trạng thái hiển thị comment
-      } catch (error) {
-        console.error('Error fetching blogs:', error);
-      }
-    };
-
     fetchBlogs();
   }, []);
+
+  const fetchBlogs = async () => {
+    try {
+      const blogData = await getAllBlogComplete(); // Gọi API lấy danh sách blog
+      const formattedPosts = blogData.map((post) => ({
+        blogId: post.blogId,
+        avatar: post.avatar || 'https://randomuser.me/api/portraits/men/4.jpg', // Avatar người đăng
+        fullName: post.fullName,
+        date: post.date || new Date().toLocaleDateString(), // Ngày đăng
+        title: post.title || 'Untitled Post', // Tiêu đề bài viết
+        hashtag: post.hashtag || 'No hashtag available', // Mô tả ngắn
+        content: post.content || 'No content available', // Nội dung bài viết
+        comments: post.comments || [], // Danh sách bình luận
+      }));
+
+      setPosts(formattedPosts); // Cập nhật state posts
+      setCommentInputs(Array(formattedPosts.length).fill('')); // Khởi tạo input cho comment
+      setShowComments(Array(formattedPosts.length).fill(false)); // Khởi tạo trạng thái hiển thị comment
+    } catch (error) {
+      console.error('Error fetching blogs:', error);
+    }
+  };
 
   const filteredPosts = searchTerm
     ? posts.filter(
@@ -151,20 +153,30 @@ const BlogPage = () => {
     if (!newPost.title || !newPost.content) return;
 
     try {
-      const createdBlog = await createBlog(newPost);
-
-      const newEntry = {
-        avatar: 'https://randomuser.me/api/portraits/men/1.jpg',
-        fullName: 'John Doe',
-        date: new Date().toLocaleDateString(),
-        comments: [],
-        ...createdBlog,
-      };
-
-      setPosts([newEntry, ...posts]);
+      await createBlog(newPost);
+      fetchBlogs();
       handleCloseDialog();
     } catch (error) {
       console.error('Failed to create blog:', error);
+    }
+  };
+
+  const handleToggleReport = (index) => {
+    const newShowReport = [...showReport];
+    newShowReport[index] = !newShowReport[index];
+    setShowReport(newShowReport);
+  };
+
+  const handleReport = async (blogId) => {
+    try {
+      alert('Are you sure want to report this blog');
+      const response = await checkBlog(blogId);
+      console.log('Report result:', response);
+      alert('Reported successfully!');
+      fetchBlogs();
+    } catch (error) {
+      console.error('Failed to report blog:', error);
+      alert('Failed to report.');
     }
   };
 
@@ -270,8 +282,23 @@ const BlogPage = () => {
       {/* Blog Posts */}
       <Container maxWidth="md" sx={{ mt: 4 }}>
         {currentPosts.map((post, index) => (
-          <Card key={post.blogId} sx={{ mb: 4, boxShadow: 4, transition: '0.3s', '&:hover': { boxShadow: 8 } }}>
+          <Card key={post.blogId} sx={{ position: 'relative', mb: 4, boxShadow: 4, transition: '0.3s', '&:hover': { boxShadow: 8 } }}>
             <CardContent>
+
+              {/* ✅ ICON X + Dropdown Report */}
+              <Box sx={{ position: 'absolute', top: 10, right: 10 }}>
+                <Button onClick={() => handleToggleReport(index)} sx={{ minWidth: 'auto', p: 0, color: 'gray', '&:hover': { color: 'red' } }}>
+                  <CloseIcon />
+                </Button>
+                {showReport[index] && (
+                  <Box sx={{ mt: 1, p: 1, bgcolor: '#f8f8f8', borderRadius: 1, boxShadow: 2 }}>
+                    <Button color="error" onClick={() => handleReport(post.blogId)}>
+                      Report
+                    </Button>
+                  </Box>
+                )}
+              </Box>
+
               {/* Avatar + Author Info */}
               <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
                 <Avatar src={post.avatar} sx={{ width: 40, height: 40, mr: 2 }} />
@@ -349,8 +376,8 @@ const BlogPage = () => {
         </Box>
       </Container>
 
-       {/* Footer */}
-       <Box sx={{ background: '#333', py: 4, color: 'white', padding: '3rem' }}>
+      {/* Footer */}
+      <Box sx={{ background: '#333', py: 4, color: 'white', padding: '3rem' }}>
         <Container>
           <Grid container spacing={4}>
             <Grid item xs={12} md={4}>

@@ -12,6 +12,16 @@ const getBlogs = async () => {
   }
 };
 
+const getAllBlogComplete = async () => {
+  try {
+    const response = await axios.get(`${API_URL}blogAPI/getAllBlogCompleted`);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching blogs:', error);
+    return [];
+  }
+};
+
 const getBlogByUserId = async () => {
   try {
     const userId = localStorage.getItem('userId');
@@ -71,5 +81,65 @@ const updateBlog = async (blogId, updatedData) => {
   }
 };
 
+const approveBlog = async (blogId) => {
+  try {
+    const userId = localStorage.getItem('userId');
+    if (!userId) {
+      throw new Error('User ID not found in localStorage');
+    }
+
+    const response = await axios.put(`${API_URL}blogAPI/approve/${blogId}?adminId=${userId}`);
+    return response.data;
+  } catch (error) {
+    console.error(`Error approving blog with ID ${blogId}:`, error);
+    return null;
+  }
+};
+
+const rejectBlog = async (blogId) => {
+  try {
+    const userId = localStorage.getItem('userId');
+    if (!userId) {
+      throw new Error('User ID not found in localStorage');
+    }
+
+    const response = await axios.put(`${API_URL}blogAPI/reject?blogId=${blogId}&adminId=${userId}`);
+    return response.data;
+  } catch (error) {
+    console.error(`Error rejecting blog with ID ${blogId}:`, error);
+    return null;
+  }
+};
+
+const checkBlog = async (blogId) => {
+  try {
+    const userId = localStorage.getItem('userId');
+    if (!userId) {
+      throw new Error('User ID not found in localStorage');
+    }
+
+    const response = await axios.put(`${API_URL}blogAPI/check/${blogId}?parentId=${userId}`);
+    return response.data;
+  } catch (error) {
+    console.error(`Error checking blog with ID ${blogId}:`, error);
+    return null;
+  }
+};
+
+const checkBlogByAdmin = async (blogId) => {
+  try {
+    const userId = localStorage.getItem('userId');
+    if (!userId) {
+      throw new Error('User ID not found in localStorage');
+    }
+
+    const response = await axios.put(`${API_URL}blogAPI/checkByAdmin/${blogId}?adminId=${userId}`);
+    return response.data;
+  } catch (error) {
+    console.error(`Error checking blog with ID ${blogId}:`, error);
+    return null;
+  }
+};
+
 export default getBlogs;
-export { getBlogById, deleteBlog, getBlogByUserId, updateBlog, getBlogByParentId };
+export { getBlogById, deleteBlog, getBlogByUserId, updateBlog, getBlogByParentId, getAllBlogComplete, approveBlog, rejectBlog, checkBlog, checkBlogByAdmin };
