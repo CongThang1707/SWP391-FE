@@ -68,9 +68,9 @@ const BlogPage = () => {
 
   const filteredPosts = searchTerm
     ? posts.filter(
-        (post) =>
-          post.title.toLowerCase().includes(searchTerm.toLowerCase()) || post.content.toLowerCase().includes(searchTerm.toLowerCase())
-      )
+      (post) =>
+        post.title.toLowerCase().includes(searchTerm.toLowerCase()) || post.content.toLowerCase().includes(searchTerm.toLowerCase())
+    )
     : posts;
 
   const handleCommentToggle = async (index) => {
@@ -104,10 +104,6 @@ const BlogPage = () => {
 
     const commentData = {
       comment: commentInputs[index],
-      avatar: userAvatar,
-      name: userName,
-      date: new Date().toLocaleString(),
-      replies: []
     };
 
     try {
@@ -122,9 +118,6 @@ const BlogPage = () => {
       console.error('Failed to post comment:', error);
     }
   };
-
-  const userAvatar = 'https://randomuser.me/api/portraits/men/4.jpg';
-  const userName = 'John Doe';
 
   const [page, setPage] = useState(1);
   const postsPerPage = 10;
