@@ -4,7 +4,7 @@ import AddIcon from '@mui/icons-material/Add';
 import MainCard from 'ui-component/cards/MainCard';
 import React, { useState, useEffect } from 'react';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TableSortLabel, TablePagination, Paper } from '@mui/material';
-import { getAllMembership, deleteMembership, createMembership, updateMembership} from '../../service/membership_services/get_membership.js';
+import { getAllMembership, deleteMembership, createMembership, updateMembership } from '../../service/membership_services/get_membership.js';
 import { useNavigate } from 'react-router-dom';
 
 const EnhancedTable = () => {
@@ -15,14 +15,13 @@ const EnhancedTable = () => {
     const [rowsPerPage, setRowsPerPage] = useState(5);
     const [openDialog, setOpenDialog] = useState(false);
     const [openUpdateDialog, setOpenUpdateDialog] = useState(false);
-    const [newMembership, setNewMembership] = useState({ type: '', price: '' });
-    const [updateMembershipData, setUpdateMembershipData] = useState({ id: '', type: '', price: '' });
+    const [newMembership, setNewMembership] = useState({ type: '', price: '', description: '' });
+    const [updateMembershipData, setUpdateMembershipData] = useState({ id: '', type: '', price: '', description: '' });
 
     const [errors, setErrors] = useState({});
     const [touchedFields, setTouchedFields] = useState([]);
     const [updateErrors, setUpdateErrors] = useState({});
     const [updateTouchedFields, setUpdateTouchedFields] = useState([]);
-
 
     const navigate = useNavigate();
 
@@ -34,7 +33,7 @@ const EnhancedTable = () => {
             validateUpdate();
         }
         fetchMemberships();
-    }, [touchedFields,updateTouchedFields]);
+    }, [touchedFields, updateTouchedFields]);
 
     const fetchMemberships = async () => {
         const data = await getAllMembership();
@@ -45,7 +44,7 @@ const EnhancedTable = () => {
     const validate = () => {
         let tempErrors = {};
         Object.keys(newMembership).forEach((key) => {
-            if (!newMembership[key]?.trim()) {
+            if (!newMembership[key]?.toString().trim()) {
                 tempErrors[key] = 'This field is required';
             }
         });
@@ -57,19 +56,15 @@ const EnhancedTable = () => {
         let tempErrors = {};
         Object.keys(updateMembershipData).forEach((key) => {
             const value = updateMembershipData[key];
-    
             if (typeof value === 'string' && !value.trim()) {
                 tempErrors[key] = 'This field is required';
-            } else if (value === '' || value == null) { 
+            } else if (value === '' || value == null) {
                 tempErrors[key] = 'This field is required';
             }
         });
-    
         setUpdateErrors(tempErrors);
         return Object.keys(tempErrors).length === 0;
     };
-    
-    
 
     const handleRequestSort = (event, property) => {
         const isAsc = orderBy === property && order === 'asc';
@@ -107,35 +102,39 @@ const EnhancedTable = () => {
 
     const handleInputChange = (event) => {
         const { name, value } = event.target;
-    
+
         setNewMembership((prev) => ({
             ...prev,
             [name]: name === 'type' ? value.toUpperCase() : value
         }));
-    
+
         setTouchedFields((prev) => [...new Set([...prev, name])]);
     };
-    
+
 
     const handleUpdateInputChange = (event) => {
         const { name, value } = event.target;
-    
+
         setUpdateMembershipData((prev) => ({
             ...prev,
             [name]: name === 'type' ? value.toUpperCase() : value
         }));
-    
+
         setUpdateTouchedFields((prev) => [...new Set([...prev, name])]);
     };
 
     const handleSubmit = async (event) => {
         event.preventDefault();
         setTouchedFields(Object.keys(newMembership));
-        
+
         if (!validate()) return;
-    
+
         try {
-            await createMembership(newMembership.type.toUpperCase(), newMembership.price);
+            await createMembership(
+                newMembership.type.toUpperCase(),
+                newMembership.price,
+                newMembership.description
+            );
             await fetchMemberships();
             setOpenDialog(false);
         } catch (error) {
@@ -143,7 +142,7 @@ const EnhancedTable = () => {
             alert('Failed to create membership. Please try again.');
         }
     };
-    
+
     const handleUpdateSubmit = async (event) => {
         event.preventDefault();
         setUpdateTouchedFields(Object.keys(updateMembershipData));
@@ -151,7 +150,8 @@ const EnhancedTable = () => {
         try {
             await updateMembership(updateMembershipData.id, {
                 type: updateMembershipData.type,
-                price: updateMembershipData.price
+                price: updateMembershipData.price,
+                description: updateMembershipData.description
             });
             await fetchMemberships();
             setOpenUpdateDialog(false);
@@ -162,7 +162,12 @@ const EnhancedTable = () => {
     };
 
     const handleOpenUpdateDialog = (membership) => {
-        setUpdateMembershipData({ id: membership.membershipId, type: membership.type, price: membership.price });
+        setUpdateMembershipData({
+            id: membership.membershipId,
+            type: membership.type,
+            price: membership.price,
+            description: membership.description
+        });
         setOpenUpdateDialog(true);
     };
 
@@ -213,7 +218,7 @@ const EnhancedTable = () => {
             <Dialog open={openDialog} onClose={() => setOpenDialog(false)}>
                 <DialogTitle>Add New Membership</DialogTitle>
                 <DialogContent>
-                    {['type', 'price'].map((field) => (
+                    {['type', 'price', 'description'].map((field) => (
                         <TextField
                             key={field}
                             margin="dense"
@@ -236,29 +241,29 @@ const EnhancedTable = () => {
             </Dialog>
 
             <Dialog open={openUpdateDialog} onClose={() => setOpenUpdateDialog(false)}>
-            <DialogTitle>Update Membership</DialogTitle>
-            <DialogContent>
-                {['type', 'price'].map((field) => (
-                    <TextField
-                        key={field}
-                        margin="dense"
-                        name={field}
-                        label={field.charAt(0).toUpperCase() + field.slice(1)}
-                        fullWidth
-                        variant="outlined"
-                        value={updateMembershipData[field]}
-                        onChange={handleUpdateInputChange}
-                        onBlur={() => setUpdateTouchedFields((prev) => [...new Set([...prev, field])])}
-                        error={updateTouchedFields.includes(field) && !!updateErrors[field]}
-                        helperText={updateTouchedFields.includes(field) ? updateErrors[field] : ''}
-                    />
-                ))}
-            </DialogContent>
-            <DialogActions>
-                <Button onClick={() => setOpenUpdateDialog(false)}>Cancel</Button>
-                <Button onClick={handleUpdateSubmit} variant="contained" color="primary">Update</Button>
-            </DialogActions>
-        </Dialog>
+                <DialogTitle>Update Membership</DialogTitle>
+                <DialogContent>
+                    {['type', 'price', 'description'].map((field) => (
+                        <TextField
+                            key={field}
+                            margin="dense"
+                            name={field}
+                            label={field.charAt(0).toUpperCase() + field.slice(1)}
+                            fullWidth
+                            variant="outlined"
+                            value={updateMembershipData[field]}
+                            onChange={handleUpdateInputChange}
+                            onBlur={() => setUpdateTouchedFields((prev) => [...new Set([...prev, field])])}
+                            error={updateTouchedFields.includes(field) && !!updateErrors[field]}
+                            helperText={updateTouchedFields.includes(field) ? updateErrors[field] : ''}
+                        />
+                    ))}
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={() => setOpenUpdateDialog(false)}>Cancel</Button>
+                    <Button onClick={handleUpdateSubmit} variant="contained" color="primary">Update</Button>
+                </DialogActions>
+            </Dialog>
         </MainCard>
     );
 };
