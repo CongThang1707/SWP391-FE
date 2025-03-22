@@ -23,7 +23,6 @@ const EnhancedTable = () => {
     const [updateErrors, setUpdateErrors] = useState({});
     const [updateTouchedFields, setUpdateTouchedFields] = useState([]);
 
-
     const navigate = useNavigate();
 
     useEffect(() => {
