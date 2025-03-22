@@ -9,7 +9,8 @@ import {
   TableSortLabel,
   TablePagination,
   Paper,
-  Button
+  Button,
+  Chip
 } from '@mui/material';
 import MainCard from 'ui-component/cards/MainCard';
 import React, { useState, useEffect } from 'react';
@@ -59,16 +60,22 @@ const EnhancedTable = () => {
     if (window.confirm('Are you sure you want to delete this blog?')) {
       try {
         await deleteBlog(blogId);
-
-        // Cập nhật danh sách sau khi xóa thành công
         setBlogData((prevData) => prevData.filter((blog) => blog.blogId !== blogId));
-
         console.log(`Blog ${blogId} deleted successfully!`);
       } catch (error) {
         console.error('Failed to delete blog:', error.response ? error.response.data : error.message);
         alert('Error deleting blog. Please try again.');
       }
     }
+  };
+
+  const renderStatusChip = (status) => {
+    let color = 'default';
+    if (status === 'COMPLETED') color = 'success';
+    else if (status === 'PENDING') color = 'warning';
+    else if (status === 'CANCEL') color = 'error';
+
+    return <Chip label={status} color={color} />;
   };
 
   return (
@@ -81,8 +88,9 @@ const EnhancedTable = () => {
                 {[
                   { id: 'fullName', label: 'Author' },
                   { id: 'title', label: 'Title' },
-                  { id: 'description', label: 'Description' },
+                  { id: 'hashtag', label: 'Hashtag' },
                   { id: 'date', label: 'Date' },
+                  { id: 'status', label: 'Status' },
                   { id: 'action', label: 'Action' }
                 ].map((head) => (
                   <TableCell key={head.id}>
@@ -102,10 +110,16 @@ const EnhancedTable = () => {
                 <TableRow key={blog.blogId || `blog-${index}`}>
                   <TableCell>{blog.parentId.fullName}</TableCell>
                   <TableCell>{blog.title}</TableCell>
-                  <TableCell>{blog.description}</TableCell>
+                  <TableCell>{blog.hashtag}</TableCell>
                   <TableCell>{blog.date}</TableCell>
+                  <TableCell>{renderStatusChip(blog.status)}</TableCell>
                   <TableCell>
-                    <Button variant="contained" color="primary" size="small" onClick={() => navigate(`/blog-detail/${blog.blogId}`)}>
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      size="small"
+                      onClick={() => navigate(`/blog-detail/${blog.blogId}`)}
+                    >
                       Detail
                     </Button>
                     <Button
