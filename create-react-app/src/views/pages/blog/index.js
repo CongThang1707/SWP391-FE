@@ -107,10 +107,11 @@ const BlogPage = () => {
 
     try {
       const blogId = posts[index].blogId;
-      const createdComment = await createComment(blogId, commentData);
-
+      await createComment(blogId, commentData);
+      const fetchedComments = await getCommentByBlogId(blogId);
+      console.log('Fetched Comments:', fetchedComments);
       const newCommentsData = [...commentsData];
-      newCommentsData[index] = [...newCommentsData[index], createdComment];
+      newCommentsData[index] = fetchedComments;
       setCommentsData(newCommentsData);
       handleCommentChange(index, '');
     } catch (error) {
@@ -374,7 +375,7 @@ const BlogPage = () => {
       </Container>
 
       {/* Footer */}
-      <Box sx={{ background: '#333', py: 4, color: 'white', padding: '3rem' }}>
+      <Box sx={{ background: '#333', py: 4, color: 'white', padding: '3rem', mt: 4 }}>
         <Container>
           <Grid container spacing={4}>
             <Grid item xs={12} md={4}>

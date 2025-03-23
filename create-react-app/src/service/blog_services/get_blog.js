@@ -66,6 +66,16 @@ const getBlogByParentId = async () => {
   }
 };
 
+const getCompleteBlogByParentId = async () => {
+  try {
+    const response = await axios.get(`${API_URL}blogAPI/user/${localStorage.getItem('userId')}/completed`);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching blogs:', error);
+    return [];
+  }
+};
+
 const updateBlog = async (blogId, updatedData) => {
   try {
     const userId = localStorage.getItem('userId');
@@ -152,5 +162,6 @@ export {
   approveBlog,
   rejectBlog,
   checkBlog,
-  checkBlogByAdmin
+  checkBlogByAdmin,
+  getCompleteBlogByParentId
 };

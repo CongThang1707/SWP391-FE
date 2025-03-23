@@ -3,7 +3,7 @@ import { Container, Grid } from '@mui/material';
 import { getUserById } from '../../../service/user_service/get_user.js';
 import { updateUserById } from '../../../service/user_service/update_user.js';
 import { getChildrenByParentId } from '../../../service/children_services/get_children.js';
-import { getBlogByParentId, deleteBlog } from '../../../service/blog_services/get_blog.js';
+import { getCompleteBlogByParentId, deleteBlog } from '../../../service/blog_services/get_blog.js';
 import updateBlog from '../../../service/blog_services/update_blog.js';
 import { createBlog } from '../../../service/blog_services/post_blog.js';
 import { useNavigate } from 'react-router-dom';
@@ -53,7 +53,7 @@ const Profile = () => {
       console.log('Children data:', childrenData);
       setChildren(childrenData);
 
-      const blogsData = await getBlogByParentId();
+      const blogsData = await getCompleteBlogByParentId();
       setBlogs(blogsData);
 
       const feedbackData = await getFeedbackByDoctorId();
