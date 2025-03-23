@@ -3,12 +3,19 @@ import { Container, Grid } from '@mui/material';
 import { getUserById } from '../../../service/user_service/get_user.js';
 import { updateUserById } from '../../../service/user_service/update_user.js';
 import { getChildrenByParentId } from '../../../service/children_services/get_children.js';
-import { getBlogByParentId, deleteBlog } from '../../../service/blog_services/get_blog.js';
+import { getCompleteBlogByParentId, deleteBlog } from '../../../service/blog_services/get_blog.js';
 import updateBlog from '../../../service/blog_services/update_blog.js';
 import { createBlog } from '../../../service/blog_services/post_blog.js';
 import { useNavigate } from 'react-router-dom';
 import { createChild, updateChild, deleteChild } from '../../../service/children_services/get_children.js';
 import { getFeedbackByDoctorId } from '../../../service/feedback_service/get_feedback.js';
+import {
+  createComment,
+  getCommentByBlogId,
+  updateComment,
+  deleteCommentByAdmin,
+  reportByUser
+} from '../../../service/comment_services/get_comment.js';
 import UserProfile from './components/UserProfile';
 import AddChildDialog from './components/AddChildDialog';
 import EditChildDialog from './components/EditChildDialog';
@@ -31,6 +38,71 @@ const Profile = () => {
   const [editingBlog, setEditingBlog] = useState({ title: '', hashtag: '', content: '' });
   const [openAddBlogDialog, setOpenAddBlogDialog] = useState(false);
   const [newBlog, setNewBlog] = useState({ title: '', hashtag: '', content: '' });
+  const [commentsData, setCommentsData] = useState([]);
+  const [commentInputs, setCommentInputs] = useState([]);
+  const [showComments, setShowComments] = useState([]);
+  const [editingComment, setEditingComment] = useState({
+    blogIndex: null,
+    commentIndex: null,
+    comment: ''
+  });
+
+  const handleEditComment = (blogIndex, commentIndex, currentComment) => {
+    setEditingComment({
+      blogIndex,
+      commentIndex,
+      comment: currentComment
+    });
+  };
+
+  const handleSaveComment = async () => {
+    if (editingComment.blogIndex === null || editingComment.commentIndex === null) return;
+
+    try {
+      const commentId = commentsData[editingComment.blogIndex][editingComment.commentIndex].commentId;
+      console.log(commentId);
+      console.log(editingComment.comment);
+      await updateComment(commentId, editingComment.comment);
+
+      // Update the commentsData state
+      const updatedComments = await getCommentByBlogId(blogs[editingComment.blogIndex].blogId);
+      const newCommentsData = [...commentsData];
+      newCommentsData[editingComment.blogIndex] = updatedComments;
+      setCommentsData(newCommentsData);
+
+      // Reset the editingComment state
+      setEditingComment({ blogIndex: null, commentIndex: null, comment: '' });
+      alert('Comment updated successfully!');
+    } catch (error) {
+      console.error('Failed to update comment:', error);
+      alert('Failed to update comment. Please try again.');
+    }
+  };
+
+  const handleDeleteComment = async (blogIndex, commentIndex) => {
+    try {
+      await deleteCommentByAdmin(commentsData[blogIndex][commentIndex].commentId);
+      const updatedComments = await getCommentByBlogId(blogs[blogIndex].blogId);
+      const newCommentsData = [...commentsData];
+      newCommentsData[blogIndex] = updatedComments;
+      setCommentsData(newCommentsData);
+    } catch (error) {
+      console.error('Error deleting comment:', error);
+    }
+  };
+
+  const handleReportComment = async (blogIndex, commentIndex) => {
+    try {
+      await reportByUser(commentsData[blogIndex][commentIndex].commentId);
+      alert('Comment reported successfully!');
+      const updatedComments = await getCommentByBlogId(blogs[blogIndex].blogId);
+      const newCommentsData = [...commentsData];
+      newCommentsData[blogIndex] = updatedComments;
+      setCommentsData(newCommentsData);
+    } catch (error) {
+      console.error('Error reporting comment:', error);
+    }
+  };
 
   const handleNavigateToChildDetail = (childId) => {
     if (!childId) {
@@ -53,8 +125,18 @@ const Profile = () => {
       console.log('Children data:', childrenData);
       setChildren(childrenData);
 
-      const blogsData = await getBlogByParentId();
+      const blogsData = await getCompleteBlogByParentId();
       setBlogs(blogsData);
+
+      const initialCommentsData = await Promise.all(
+        blogsData.map(async (blog) => {
+          const comments = await getCommentByBlogId(blog.blogId);
+          return comments;
+        })
+      );
+      setCommentsData(initialCommentsData);
+      setCommentInputs(Array(blogsData.length).fill(''));
+      setShowComments(Array(blogsData.length).fill(false));
 
       const feedbackData = await getFeedbackByDoctorId();
       setFeedbacks(feedbackData);
@@ -221,6 +303,49 @@ const Profile = () => {
     }
   };
 
+  const handleCommentToggle = async (index) => {
+    const newShowComments = [...showComments];
+    newShowComments[index] = !newShowComments[index];
+    setShowComments(newShowComments);
+    if (newShowComments[index]) {
+      try {
+        const blogId = blogs[index].blogId;
+        const fetchedComments = await getCommentByBlogId(blogId);
+        const newCommentsData = [...commentsData];
+        newCommentsData[index] = fetchedComments;
+        setCommentsData(newCommentsData);
+      } catch (error) {
+        console.error('Failed to fetch comments:', error);
+      }
+    }
+  };
+
+  const handleCommentChange = (index, value) => {
+    const newCommentInputs = [...commentInputs];
+    newCommentInputs[index] = value;
+    setCommentInputs(newCommentInputs);
+  };
+
+  const handleCommentSubmit = async (index) => {
+    if (commentInputs[index].trim() === '') return;
+
+    const commentData = {
+      comment: commentInputs[index]
+    };
+
+    try {
+      const blogId = blogs[index].blogId;
+      await createComment(blogId, commentData);
+      const fetchedComments = await getCommentByBlogId(blogId);
+      const newCommentsData = [...commentsData];
+      newCommentsData[index] = fetchedComments;
+      setCommentsData(newCommentsData);
+      handleCommentChange(index, '');
+    } catch (error) {
+      console.error('Failed to post comment:', error);
+    }
+  };
+
   return (
     <Container maxWidth={false} sx={{ mt: 4, width: '1050px' }}>
       <Grid container spacing={2}>
@@ -241,6 +366,18 @@ const Profile = () => {
             handleOpenAddDialog={handleOpenAddDialog}
             handleOpenEditDialog={handleOpenEditDialog}
             handleDeleteChild={handleDeleteChild}
+            commentsData={commentsData} // Pass commentsData
+            handleCommentSubmit={handleCommentSubmit} // Pass handleCommentSubmit
+            handleCommentChange={handleCommentChange} // Pass handleCommentChange
+            commentInputs={commentInputs} // Pass commentInputs
+            handleCommentToggle={handleCommentToggle} // Pass handleCommentToggle
+            showComments={showComments}
+            handleDeleteComment={handleDeleteComment}
+            handleEditComment={handleEditComment}
+            handleSaveComment={handleSaveComment}
+            handleReportComment={handleReportComment}
+            editingComment={editingComment}
+            setEditingComment={setEditingComment}
           >
             {children}
           </UserProfile>

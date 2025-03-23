@@ -29,7 +29,6 @@ export const createComment = async (blogId, commentData) => {
 
 export const getCommentByBlogId = async (blogId) => {
   try {
-
     const response = await axios.get(`${API_URL}commentAPI/getCommentByBlogId?blogId=${blogId}`);
 
     return response.data;
@@ -37,7 +36,7 @@ export const getCommentByBlogId = async (blogId) => {
     console.error('Error fetching comments:', error?.response?.data || error.message);
     throw error;
   }
-}
+};
 
 export const getCommentById = async (commentId) => {
   try {
@@ -55,9 +54,9 @@ export const updateComment = async (commentId, newContent) => {
     if (!userId) {
       throw new Error('User ID not found in localStorage');
     }
-
     const response = await axios.put(
-      `${API_URL}commentAPI/updateComment?comment_id=${commentId}&parent_id=${userId}&newContent=${newContent}`);
+      `${API_URL}commentAPI/updateComment?comment_id=${commentId}&parent_id=${userId}&newContent=${newContent}`
+    );
     return response.data;
   } catch (error) {
     console.error('Error updating comment:', error?.response?.data || error.message);
@@ -82,9 +81,7 @@ export const deleteCommentByUser= async (commentId) => {
       throw new Error('User ID not found in localStorage');
     }
 
-    const response = await axios.delete(
-      `${API_URL}commentAPI/deleteByUser?commentId=${commentId}&parentId=${userId}`
-    );
+    const response = await axios.delete(`${API_URL}commentAPI/deleteByUser?commentId=${commentId}&parentId=${userId}`);
 
     return response.data;
   } catch (error) {
@@ -100,9 +97,7 @@ export const reportByUser = async (commentId) => {
       throw new Error('User ID not found in localStorage');
     }
 
-    const response = await axios.post(
-      `${API_URL}commentAPI/reportByUser?comment_id=${commentId}&parent_id=${userId}`
-    );
+    const response = await axios.post(`${API_URL}commentAPI/reportByUser?comment_id=${commentId}&parent_id=${userId}`);
 
     return response.data;
   } catch (error) {
@@ -118,9 +113,7 @@ export const approveCommentByAdmin = async (commentId) => {
       throw new Error('User ID not found in localStorage');
     }
 
-    const response = await axios.post(
-      `${API_URL}commentAPI/approve?comment_id=${commentId}&admin_id=${userId}`
-    );
+    const response = await axios.post(`${API_URL}commentAPI/approve?comment_id=${commentId}&admin_id=${userId}`);
 
     return response.data;
   } catch (error) {
@@ -136,9 +129,7 @@ export const rejectComment = async (commentId) => {
       throw new Error('User ID not found in localStorage');
     }
 
-    const response = await axios.post(
-      `${API_URL}commentAPI/reject?comment_id=${commentId}&admin_id=${userId}`
-    );
+    const response = await axios.post(`${API_URL}commentAPI/reject?comment_id=${commentId}&admin_id=${userId}`);
 
     return response.data;
   } catch (error) {
@@ -154,9 +145,7 @@ export const reportCommentByAdmin = async (commentId) => {
       throw new Error('User ID not found in localStorage');
     }
 
-    const response = await axios.post(
-      `${API_URL}commentAPI/reportByAdmin?comment_id=${commentId}&admin_id=${userId}`
-    );
+    const response = await axios.post(`${API_URL}commentAPI/reportByAdmin?comment_id=${commentId}&admin_id=${userId}`);
 
     return response.data;
   } catch (error) {
@@ -164,5 +153,3 @@ export const reportCommentByAdmin = async (commentId) => {
     throw error;
   }
 };
-
-

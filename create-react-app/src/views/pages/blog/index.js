@@ -21,11 +21,17 @@ import { ChatBubbleOutline, Send, Search, Add } from '@mui/icons-material';
 import { Pagination } from '@mui/material';
 import { getAllBlogComplete, checkBlog } from '../../../service/blog_services/get_blog.js';
 import { createBlog } from '../../../service/blog_services/post_blog.js';
-import { createComment, reportByUser, getCommentByBlogId, updateComment, deleteCommentByAdmin } from '../../../service/comment_services/get_comment.js';
+import {
+  createComment,
+  reportByUser,
+  getCommentByBlogId,
+  updateComment,
+  deleteCommentByAdmin
+} from '../../../service/comment_services/get_comment.js';
 import EmailOutlinedIcon from '@mui/icons-material/EmailOutlined';
 import LocalPhoneOutlinedIcon from '@mui/icons-material/LocalPhoneOutlined';
 import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
-import { Facebook, Twitter, Instagram, Edit, Delete, } from '@mui/icons-material';
+import { Facebook, Twitter, Instagram, Edit, Delete } from '@mui/icons-material';
 import CloseIcon from '@mui/icons-material/Close';
 
 const BlogPage = () => {
@@ -71,9 +77,9 @@ const BlogPage = () => {
 
   const filteredPosts = searchTerm
     ? posts.filter(
-      (post) =>
-        post.title.toLowerCase().includes(searchTerm.toLowerCase()) || post.content.toLowerCase().includes(searchTerm.toLowerCase())
-    )
+        (post) =>
+          post.hashtag.toLowerCase().includes(searchTerm.toLowerCase()) || post.content.toLowerCase().includes(searchTerm.toLowerCase())
+      )
     : posts;
 
   const handleCommentToggle = async (index) => {
@@ -166,7 +172,7 @@ const BlogPage = () => {
 
   const handleReport = async (blogId, parentId) => {
     if (parentId === userId) {
-      alert("You cannot report your own blog!");
+      alert('You cannot report your own blog!');
       return;
     }
     try {
@@ -182,7 +188,6 @@ const BlogPage = () => {
     }
   };
 
-
   const handleToggleCommentReport = (postIndex, commentIndex) => {
     const newShowReportComment = [...showReportComment];
     if (!newShowReportComment[postIndex]) newShowReportComment[postIndex] = [];
@@ -192,7 +197,7 @@ const BlogPage = () => {
 
   const handleReportComment = async (commentId, parentId) => {
     if (parentId === userId) {
-      alert("You cannot report your own comment!");
+      alert('You cannot report your own comment!');
       return;
     }
     try {
@@ -384,7 +389,7 @@ const BlogPage = () => {
                 {post.title}
               </Typography>
               <Typography variant="body2" color="text.secondary" sx={{ mt: 1, fontStyle: 'italic' }}>
-                {post.hashtag}
+                #{post.hashtag}
               </Typography>
               <Typography variant="body1" sx={{ mt: 2, color: '#444' }}>
                 {post.content}
@@ -406,18 +411,29 @@ const BlogPage = () => {
                   {/* 1️⃣ - Danh sách comment từ API */}
                   {commentsData[index] && commentsData[index].length > 0 ? (
                     commentsData[index].map((comment, cIndex) => (
-                      <Box key={cIndex} sx={{ position: 'relative', display: 'flex', alignItems: 'center', mt: 2, p: 1, background: '#f0f2f5', borderRadius: 2 }}>
+                      <Box
+                        key={cIndex}
+                        sx={{
+                          position: 'relative',
+                          display: 'flex',
+                          alignItems: 'center',
+                          mt: 2,
+                          p: 1,
+                          background: '#f0f2f5',
+                          borderRadius: 2
+                        }}
+                      >
                         <Avatar src={comment.avatar} sx={{ width: 32, height: 32, mr: 1 }} />
                         <Box sx={{ flexGrow: 1 }}>
-                          <Typography variant="body2" fontWeight={600}>{comment.fullName}</Typography>
-                          <Typography variant="body2" color="text.secondary">{comment.date}</Typography>
+                          <Typography variant="body2" fontWeight={600}>
+                            {comment.fullName}
+                          </Typography>
+                          <Typography variant="body2" color="text.secondary">
+                            {comment.date}
+                          </Typography>
                           {editCommentId === comment.commentId ? (
                             <Box>
-                              <TextField
-                                fullWidth
-                                value={editCommentContent}
-                                onChange={(e) => setEditCommentContent(e.target.value)}
-                              />
+                              <TextField fullWidth value={editCommentContent} onChange={(e) => setEditCommentContent(e.target.value)} />
                               <Button
                                 variant="contained"
                                 color="primary"
@@ -498,7 +514,7 @@ const BlogPage = () => {
       </Container>
 
       {/* Footer */}
-      <Box sx={{ background: '#333', py: 4, color: 'white', padding: '3rem' }}>
+      <Box sx={{ background: '#333', py: 4, color: 'white', padding: '3rem', mt: 4 }}>
         <Container>
           <Grid container spacing={4}>
             <Grid item xs={12} md={4}>

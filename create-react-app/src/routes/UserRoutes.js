@@ -7,6 +7,7 @@ import ResponsiveAppBar from 'layout/UserLayout';
 // login option 3 routing
 const HomePage = Loadable(lazy(() => import('views/pages/homepage/index.js')));
 const BlogPage = Loadable(lazy(() => import('views/pages/blog/index.js')));
+const News = Loadable(lazy(() => import('views/pages/news/index.js')));
 
 // ==============================|| PARENT ROUTING ||============================== //
 
@@ -21,6 +22,10 @@ const UserRoutes = {
     {
       path: '/blog',
       element: <BlogPage />
+    },
+    {
+      path: '/news',
+      element: <News />
     }
   ]
 };

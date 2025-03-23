@@ -13,6 +13,7 @@ const UserProfile = ({
   handleSave,
   setEditMode,
   blogs,
+  commentsData,
   handleNavigateToBlogDetail,
   handleOpenAddBlogDialog,
   handleOpenEditBlogDialog,
@@ -22,7 +23,18 @@ const UserProfile = ({
   handleNavigateToChildDetail,
   handleOpenAddDialog,
   handleOpenEditDialog,
-  handleDeleteChild
+  handleDeleteChild,
+  handleCommentSubmit, // New prop
+  handleCommentChange, // New prop
+  commentInputs, // New prop
+  handleCommentToggle, // New prop
+  showComments, // New prop
+  handleDeleteComment, // New prop
+  handleReportComment,
+  handleEditComment,
+  handleSaveComment,
+  editingComment,
+  setEditingComment
 }) => {
   const role = localStorage.getItem('role');
   const averageRating = useMemo(() => {
@@ -86,10 +98,22 @@ const UserProfile = ({
           <Grid item xs={12} md={8}>
             <BlogList
               blogs={blogs}
+              commentsData={commentsData}
               handleNavigateToBlogDetail={handleNavigateToBlogDetail}
               handleOpenAddBlogDialog={handleOpenAddBlogDialog}
               handleOpenEditBlogDialog={handleOpenEditBlogDialog}
               handleDeleteBlog={handleDeleteBlog}
+              handleCommentSubmit={handleCommentSubmit}
+              handleCommentChange={handleCommentChange}
+              commentInputs={commentInputs}
+              handleCommentToggle={handleCommentToggle}
+              showComments={showComments}
+              handleDeleteComment={handleDeleteComment}
+              handleReportComment={handleReportComment}
+              handleEditComment={handleEditComment}
+              handleSaveComment={handleSaveComment}
+              editingComment={editingComment}
+              setEditingComment={setEditingComment}
             />
           </Grid>
         )}
