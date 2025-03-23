@@ -25,6 +25,7 @@ const ChildrenDetail = () => {
   const [editRecord, setEditRecord] = useState(null);
   const [formData, setFormData] = useState({ weight: '', height: '', date: '' });
   const [growthStatusChange, setGrowthStatusChange] = useState('');
+  const [formErrors, setFormErrors] = useState({ weight: '', height: '', date: '' });
 
   useEffect(() => {
     fetchData();
@@ -69,6 +70,7 @@ const ChildrenDetail = () => {
   const handleAdd = () => {
     setEditRecord(null);
     setFormData({ weight: '', height: '', date: '' });
+    setFormErrors({ weight: '', height: '', date: '' }); // Reset errors
     setOpenDialog(true);
   };
 
@@ -81,17 +83,41 @@ const ChildrenDetail = () => {
       height: record.height,
       date: record.date ? record.date : '' // Đảm bảo giữ nguyên định dạng YYYY-MM-DD
     });
-
+    setFormErrors({ weight: '', height: '', date: '' }); // Reset errors
     setOpenDialog(true);
   };
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
+  const validateField = (name, value) => {
+    let error = '';
+    if (!value) {
+        error = `${name.charAt(0).toUpperCase() + name.slice(1)} is required`;
+    }
+    return error;
+};
+
+const handleInputChange = (e) => {
+  const { name, value } = e.target;
+  setFormData((prev) => ({ ...prev, [name]: value }));
+  setFormErrors((prevErrors) => ({ ...prevErrors, [name]: validateField(name, value) }));
+};
+
+const handleBlur = (e) => {
+  const { name, value } = e.target;
+  setFormErrors((prevErrors) => ({ ...prevErrors, [name]: validateField(name, value) }));
+};
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+
+    let errors = {};
+    if (!formData.weight) errors.weight = 'Weight is required';
+    if (!formData.height) errors.height = 'Height is required';
+    if (!formData.date) errors.date = 'Date is required';
+
+    if (Object.keys(errors).length > 0) {
+      setFormErrors(errors);
+      return;
+    }
 
     if (!window.confirm(editRecord ? 'Are you sure you want to update this record?' : 'Are you sure you want to create a new record?')) {
       return;
@@ -318,6 +344,9 @@ const ChildrenDetail = () => {
             margin="dense"
             value={formData.weight}
             onChange={handleInputChange}
+            onBlur={handleBlur}
+            error={!!formErrors.weight}
+            helperText={formErrors.weight}
           />
           <TextField
             label="Height(m)"
@@ -327,6 +356,9 @@ const ChildrenDetail = () => {
             margin="dense"
             value={formData.height}
             onChange={handleInputChange}
+            onBlur={handleBlur}
+            error={!!formErrors.height}
+            helperText={formErrors.height}
           />
           <TextField
             label="Date"
@@ -337,6 +369,9 @@ const ChildrenDetail = () => {
             InputLabelProps={{ shrink: true }}
             value={formData.date}
             onChange={handleInputChange}
+            onBlur={handleBlur}
+            error={!!formErrors.date}
+            helperText={formErrors.date}
           />
         </DialogContent>
         <DialogActions>

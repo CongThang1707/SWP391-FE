@@ -3,7 +3,7 @@ import { Container, Grid } from '@mui/material';
 import { getUserById } from '../../../service/user_service/get_user.js';
 import { updateUserById } from '../../../service/user_service/update_user.js';
 import { getChildrenByParentId } from '../../../service/children_services/get_children.js';
-import { getCompleteBlogByParentId, deleteBlog } from '../../../service/blog_services/get_blog.js';
+import { getCompleteBlogByParentId, deleteSoft } from '../../../service/blog_services/get_blog.js';
 import updateBlog from '../../../service/blog_services/update_blog.js';
 import { createBlog } from '../../../service/blog_services/post_blog.js';
 import { useNavigate } from 'react-router-dom';
@@ -57,6 +57,7 @@ const Profile = () => {
 
   const handleSaveComment = async () => {
     if (editingComment.blogIndex === null || editingComment.commentIndex === null) return;
+    if (window.confirm('Are you sure you want to update this comment?')) {
 
     try {
       const commentId = commentsData[editingComment.blogIndex][editingComment.commentIndex].commentId;
@@ -77,9 +78,12 @@ const Profile = () => {
       console.error('Failed to update comment:', error);
       alert('Failed to update comment. Please try again.');
     }
+  }
   };
 
   const handleDeleteComment = async (blogIndex, commentIndex) => {
+    if (window.confirm('Are you sure you want to delete this comment?')) {
+
     try {
       await deleteCommentByAdmin(commentsData[blogIndex][commentIndex].commentId);
       const updatedComments = await getCommentByBlogId(blogs[blogIndex].blogId);
@@ -89,9 +93,11 @@ const Profile = () => {
     } catch (error) {
       console.error('Error deleting comment:', error);
     }
+  }
   };
 
   const handleReportComment = async (blogIndex, commentIndex) => {
+    if (window.confirm('Are you sure you want to report this comment?')) {
     try {
       await reportByUser(commentsData[blogIndex][commentIndex].commentId);
       alert('Comment reported successfully!');
@@ -102,6 +108,7 @@ const Profile = () => {
     } catch (error) {
       console.error('Error reporting comment:', error);
     }
+  }
   };
 
   const handleNavigateToChildDetail = (childId) => {
@@ -178,14 +185,16 @@ const Profile = () => {
   };
 
   const handleAddChild = async () => {
-    try {
-      await createChild(newChild);
-      await fetchUserData();
-      handleCloseAddDialog();
-      alert('Child added successfully!');
-    } catch (error) {
-      console.error('Failed to add child:', error);
-      alert('Failed to add child. Please try again.');
+    if (window.confirm('Are you sure you want to add this child?')) {
+      try {
+        await createChild(newChild);
+        await fetchUserData();
+        handleCloseAddDialog();
+        alert('Child added successfully!');
+      } catch (error) {
+        console.error('Failed to add child:', error);
+        alert('Failed to add child. Please try again.');
+      }
     }
   };
 
@@ -204,17 +213,19 @@ const Profile = () => {
   };
 
   const handleUpdateChild = async () => {
-    try {
-      await updateChild(editingChild.childrenId, editingChild);
+    if (window.confirm('Are you sure you want to update this child?')) {
+      try {
+        await updateChild(editingChild.childrenId, editingChild);
 
-      // Cập nhật danh sách children sau khi chỉnh sửa
-      setChildren(children.map((child) => (child.childrenId === editingChild.childrenId ? editingChild : child)));
+        // Cập nhật danh sách children sau khi chỉnh sửa
+        setChildren(children.map((child) => (child.childrenId === editingChild.childrenId ? editingChild : child)));
 
-      handleCloseEditDialog();
-      alert('Child updated successfully!');
-    } catch (error) {
-      console.error('Failed to update child:', error);
-      alert('Failed to update child. Please try again.');
+        handleCloseEditDialog();
+        alert('Child updated successfully!');
+      } catch (error) {
+        console.error('Failed to update child:', error);
+        alert('Failed to update child. Please try again.');
+      }
     }
   };
 
@@ -255,6 +266,8 @@ const Profile = () => {
       hashtag: editingBlog.hashtag,
       content: editingBlog.content
     };
+    if (window.confirm('Are you sure you want to update this blog?')) {
+
     try {
       await updateBlog(editingBlog.blogId, blogData);
       setBlogs(blogs.map((blog) => (blog.blogId === editingBlog.blogId ? { ...blog, ...blogData } : blog)));
@@ -264,17 +277,20 @@ const Profile = () => {
       console.error('Failed to update blog:', error);
       alert('Failed to update blog. Please try again.');
     }
+  }
   };
 
   const handleDeleteBlog = async (blogId) => {
+    if (window.confirm('Are you sure you want to delete this blog?')) {
     try {
-      await deleteBlog(blogId);
+      await deleteSoft(blogId);
       setBlogs(blogs.filter((blog) => blog.blogId !== blogId));
       alert('Blog deleted successfully!');
     } catch (error) {
       console.error('Failed to delete blog:', error);
       alert('Failed to delete blog. Please try again.');
     }
+  }
   };
 
   const handleCloseAddBlogDialog = () => {
@@ -292,14 +308,16 @@ const Profile = () => {
       hashtag: newBlog.hashtag,
       content: newBlog.content
     };
-    try {
-      const createdBlog = await createBlog(blogData);
-      setBlogs([...blogs, createdBlog]);
-      handleCloseAddBlogDialog();
-      alert('Blog added successfully!');
-    } catch (error) {
-      console.error('Failed to add blog:', error);
-      alert('Failed to add blog. Please try again.');
+    if (window.confirm('Are you sure you want to create this blog?')) {
+      try {
+        const createdBlog = await createBlog(blogData);
+        setBlogs([...blogs, createdBlog]);
+        handleCloseAddBlogDialog();
+        alert('Blog added successfully!');
+      } catch (error) {
+        console.error('Failed to add blog:', error);
+        alert('Failed to add blog. Please try again.');
+      }
     }
   };
 

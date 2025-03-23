@@ -15,7 +15,7 @@ import {
 } from '@mui/material';
 import MainCard from 'ui-component/cards/MainCard';
 import React, { useState, useEffect } from 'react';
-import getBlogs, { deleteBlog } from '../../service/blog_services/get_blog.js';
+import getBlogs, { deleteSoft } from '../../service/blog_services/get_blog.js';
 import { useNavigate } from 'react-router-dom';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import CancelIcon from '@mui/icons-material/Cancel';
@@ -62,7 +62,7 @@ const EnhancedTable = () => {
   const handleDeleteBlog = async (blogId) => {
     if (window.confirm('Are you sure you want to delete this blog?')) {
       try {
-        await deleteBlog(blogId);
+        await deleteSoft(blogId);
         setBlogData((prevData) => prevData.filter((blog) => blog.blogId !== blogId));
         console.log(`Blog ${blogId} deleted successfully!`);
         alert('Blog deleted successfully!.');
