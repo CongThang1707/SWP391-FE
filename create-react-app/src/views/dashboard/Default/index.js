@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
-
+import { useLocation } from 'react-router-dom';
+// } from 'react-router';
 // material-ui
-import { Grid } from '@mui/material';
+import { Grid, Snackbar, Alert } from '@mui/material';
 
 // project imports
 import EarningCard from './EarningCard';
@@ -16,9 +17,19 @@ import { gridSpacing } from 'store/constant';
 
 const Dashboard = () => {
   const [isLoading, setLoading] = useState(true);
+  const location = useLocation();
+  const [successMessage, setSuccessMessage] = useState('');
+  useEffect(() => {
+    if (location.state && location.state.loginSuccess) {
+      setSuccessMessage('Login successful!');
+    }
+  }, [location]);
   useEffect(() => {
     setLoading(false);
   }, []);
+  const handleCloseSnackbar = () => {
+    setSuccessMessage(null);
+  };
 
   return (
     <Grid container spacing={gridSpacing}>
@@ -52,6 +63,16 @@ const Dashboard = () => {
           </Grid>
         </Grid>
       </Grid>
+      <Snackbar
+        open={successMessage !== null}
+        autoHideDuration={5000} // Adjust as needed (milliseconds)
+        onClose={handleCloseSnackbar}
+        anchorOrigin={{ vertical: 'top', horizontal: 'right' }} // Position the Snackbar
+      >
+        <Alert onClose={handleCloseSnackbar} severity="success" sx={{ width: '100%' }}>
+          {successMessage}
+        </Alert>
+      </Snackbar>
     </Grid>
   );
 };

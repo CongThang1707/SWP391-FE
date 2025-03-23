@@ -48,7 +48,7 @@ const VerifyOTP = () => {
                             Sign up
                           </Typography>
                           <Typography variant="caption" fontSize="16px" textAlign={matchDownSM ? 'center' : 'inherit'}>
-                            Enter your credentials to continue
+                            We have sent a verification code to your email. Please enter the code below to verify your account.
                           </Typography>
                         </Stack>
                       </Grid>

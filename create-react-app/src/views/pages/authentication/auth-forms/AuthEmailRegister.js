@@ -70,16 +70,30 @@ const EmailRegisterForm = ({ ...others }) => {
               const response = await createUser(1, values);
               console.log('Register Success:', response.data);
               navigate('/pages/register/email-verify', { state: { email: values.email } });
+
               if (scriptedRef.current) {
                 setStatus({ success: true });
                 setSubmitting(false);
               }
             } catch (err) {
               console.error('Register Error:', err);
-              setErrors({ submit: err.response?.data?.message || 'Registration failed' });
+
+              if (
+                err.response &&
+                err.response.status === 400 &&
+                err.response.data &&
+                typeof err.response.data === 'string' &&
+                err.response.data.startsWith('Email:')
+              ) {
+                // Xử lý lỗi email bị trùng
+                setErrors({ email: err.response.data }); // Hiển thị thông báo lỗi từ API
+              } else {
+                // Xử lý các lỗi khác
+                setErrors({ submit: err.response?.data?.message || 'Registration failed' });
+              }
+
               if (scriptedRef.current) {
                 setStatus({ success: false });
-                setErrors({ submit: err.message });
                 setSubmitting(false);
               }
             }

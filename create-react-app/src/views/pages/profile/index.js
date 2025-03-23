@@ -58,57 +58,55 @@ const Profile = () => {
   const handleSaveComment = async () => {
     if (editingComment.blogIndex === null || editingComment.commentIndex === null) return;
     if (window.confirm('Are you sure you want to update this comment?')) {
+      try {
+        const commentId = commentsData[editingComment.blogIndex][editingComment.commentIndex].commentId;
+        console.log(commentId);
+        console.log(editingComment.comment);
+        await updateComment(commentId, editingComment.comment);
 
-    try {
-      const commentId = commentsData[editingComment.blogIndex][editingComment.commentIndex].commentId;
-      console.log(commentId);
-      console.log(editingComment.comment);
-      await updateComment(commentId, editingComment.comment);
+        // Update the commentsData state
+        const updatedComments = await getCommentByBlogId(blogs[editingComment.blogIndex].blogId);
+        const newCommentsData = [...commentsData];
+        newCommentsData[editingComment.blogIndex] = updatedComments;
+        setCommentsData(newCommentsData);
 
-      // Update the commentsData state
-      const updatedComments = await getCommentByBlogId(blogs[editingComment.blogIndex].blogId);
-      const newCommentsData = [...commentsData];
-      newCommentsData[editingComment.blogIndex] = updatedComments;
-      setCommentsData(newCommentsData);
-
-      // Reset the editingComment state
-      setEditingComment({ blogIndex: null, commentIndex: null, comment: '' });
-      alert('Comment updated successfully!');
-    } catch (error) {
-      console.error('Failed to update comment:', error);
-      alert('Failed to update comment. Please try again.');
+        // Reset the editingComment state
+        setEditingComment({ blogIndex: null, commentIndex: null, comment: '' });
+        alert('Comment updated successfully!');
+      } catch (error) {
+        console.error('Failed to update comment:', error);
+        alert('Failed to update comment. Please try again.');
+      }
     }
-  }
   };
 
   const handleDeleteComment = async (blogIndex, commentIndex) => {
     if (window.confirm('Are you sure you want to delete this comment?')) {
-
-    try {
-      await deleteCommentByAdmin(commentsData[blogIndex][commentIndex].commentId);
-      const updatedComments = await getCommentByBlogId(blogs[blogIndex].blogId);
-      const newCommentsData = [...commentsData];
-      newCommentsData[blogIndex] = updatedComments;
-      setCommentsData(newCommentsData);
-    } catch (error) {
-      console.error('Error deleting comment:', error);
+      try {
+        await deleteCommentByAdmin(commentsData[blogIndex][commentIndex].commentId);
+        const updatedComments = await getCommentByBlogId(blogs[blogIndex].blogId);
+        const newCommentsData = [...commentsData];
+        newCommentsData[blogIndex] = updatedComments;
+        setCommentsData(newCommentsData);
+      } catch (error) {
+        console.error('Error deleting comment:', error);
+      }
     }
-  }
   };
 
   const handleReportComment = async (blogIndex, commentIndex) => {
     if (window.confirm('Are you sure you want to report this comment?')) {
-    try {
-      await reportByUser(commentsData[blogIndex][commentIndex].commentId);
-      alert('Comment reported successfully!');
-      const updatedComments = await getCommentByBlogId(blogs[blogIndex].blogId);
-      const newCommentsData = [...commentsData];
-      newCommentsData[blogIndex] = updatedComments;
-      setCommentsData(newCommentsData);
-    } catch (error) {
-      console.error('Error reporting comment:', error);
+      try {
+        await reportByUser(commentsData[blogIndex][commentIndex].commentId);
+        alert('Comment reported successfully!');
+        const updatedComments = await getCommentByBlogId(blogs[blogIndex].blogId);
+        const newCommentsData = [...commentsData];
+        newCommentsData[blogIndex] = updatedComments;
+        setCommentsData(newCommentsData);
+      } catch (error) {
+        console.error('Error reporting comment:', error);
+      }
     }
-  }
   };
 
   const handleNavigateToChildDetail = (childId) => {
@@ -267,30 +265,29 @@ const Profile = () => {
       content: editingBlog.content
     };
     if (window.confirm('Are you sure you want to update this blog?')) {
-
-    try {
-      await updateBlog(editingBlog.blogId, blogData);
-      setBlogs(blogs.map((blog) => (blog.blogId === editingBlog.blogId ? { ...blog, ...blogData } : blog)));
-      handleCloseEditBlogDialog();
-      alert('Blog updated successfully!');
-    } catch (error) {
-      console.error('Failed to update blog:', error);
-      alert('Failed to update blog. Please try again.');
+      try {
+        await updateBlog(editingBlog.blogId, blogData);
+        setBlogs(blogs.map((blog) => (blog.blogId === editingBlog.blogId ? { ...blog, ...blogData } : blog)));
+        handleCloseEditBlogDialog();
+        alert('Blog updated successfully!');
+      } catch (error) {
+        console.error('Failed to update blog:', error);
+        alert('Failed to update blog. Please try again.');
+      }
     }
-  }
   };
 
   const handleDeleteBlog = async (blogId) => {
     if (window.confirm('Are you sure you want to delete this blog?')) {
-    try {
-      await deleteSoft(blogId);
-      setBlogs(blogs.filter((blog) => blog.blogId !== blogId));
-      alert('Blog deleted successfully!');
-    } catch (error) {
-      console.error('Failed to delete blog:', error);
-      alert('Failed to delete blog. Please try again.');
+      try {
+        await deleteSoft(blogId);
+        setBlogs(blogs.filter((blog) => blog.blogId !== blogId));
+        alert('Blog deleted successfully!');
+      } catch (error) {
+        console.error('Failed to delete blog:', error);
+        alert('Failed to delete blog. Please try again.');
+      }
     }
-  }
   };
 
   const handleCloseAddBlogDialog = () => {
@@ -308,10 +305,10 @@ const Profile = () => {
       hashtag: newBlog.hashtag,
       content: newBlog.content
     };
-    if (window.confirm('Are you sure you want to create this blog?')) {
+    if (window.confirm('Are you sure you want to add this blog?')) {
       try {
-        const createdBlog = await createBlog(blogData);
-        setBlogs([...blogs, createdBlog]);
+        createBlog(blogData);
+        fetchUserData();
         handleCloseAddBlogDialog();
         alert('Blog added successfully!');
       } catch (error) {

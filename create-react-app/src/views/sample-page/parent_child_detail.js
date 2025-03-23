@@ -167,7 +167,6 @@ const handleBlur = (e) => {
     }
   };
 
-
   const handleDelete = async (recordId) => {
     if (window.confirm('Are you sure you want to delete this record?')) {
       try {

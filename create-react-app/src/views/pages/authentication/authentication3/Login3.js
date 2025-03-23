@@ -67,6 +67,16 @@ const Login = () => {
                       </Typography>
                     </Grid>
                   </Grid>
+                  <Grid item xs={12}>
+                    <Divider />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <Grid item container direction="column" alignItems="center" xs={12}>
+                      <Typography component={Link} to="/" variant="subtitle1" sx={{ textDecoration: 'none' }}>
+                        Continue as Guest
+                      </Typography>
+                    </Grid>
+                  </Grid>
                 </Grid>
               </AuthCardWrapper>
             </Grid>
