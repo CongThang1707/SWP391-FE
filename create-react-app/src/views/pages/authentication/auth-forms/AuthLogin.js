@@ -1,7 +1,7 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useTheme } from '@mui/material/styles';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import {
   Box,
   Button,
@@ -12,7 +12,9 @@ import {
   InputAdornment,
   InputLabel,
   OutlinedInput,
-  Typography
+  Typography,
+  Snackbar,
+  Alert
 } from '@mui/material';
 
 // third party
@@ -33,6 +35,9 @@ const FirebaseLogin = ({ ...others }) => {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [loginError, setLoginError] = useState(null);
+  const [successMessage, setSuccessMessage] = useState(null);
+  const [warningMessage, setWarningMessage] = useState(null);
+  const location = useLocation();
   const handleClickShowPassword = () => {
     setShowPassword(!showPassword);
   };
@@ -40,6 +45,23 @@ const FirebaseLogin = ({ ...others }) => {
   const handleMouseDownPassword = (event) => {
     event.preventDefault();
   };
+
+  const handleCloseSnackbar = () => {
+    setSuccessMessage(null); // Function to close the Snackbar
+    setWarningMessage(null);
+  };
+
+  useEffect(() => {
+    if (location.state && location.state.registrationSuccess) {
+      setSuccessMessage('Registration successful! Please login.');
+      // Optionally clear the state after displaying the message
+      // location.state = {};
+    } else if (location.state && location.state.logoutSuccess) {
+      setSuccessMessage('Logout successful!');
+    } else if (location.state && location.state.loginFirst) {
+      setWarningMessage('Please login first!');
+    }
+  }, [location]);
 
   return (
     <>
@@ -74,16 +96,16 @@ const FirebaseLogin = ({ ...others }) => {
               setStatus({ success: true });
               setSubmitting(false);
               if (response.data.roleName === 'Admin') {
-                navigate('/dashboard/default', { replace: true });
+                navigate('/dashboard/default', { state: { loginSuccess: true } });
               } else if (response.data.roleName === 'Parent') {
-                navigate('/', { replace: true });
+                navigate('/', { state: { loginSuccess: true } });
               } else if (response.data.roleName === 'Doctor') {
-                navigate('/', { replace: true });
+                navigate('/', { state: { loginSuccess: true } });
               }
             }
           } catch (error) {
             // Handle login error
-            let errorMessage = 'Login failed. Please try again.';
+            let errorMessage = 'Username or password is incorrect. Please try again.';
             if (error.response) {
               // Nếu API trả về lỗi (4xx/5xx)
               if (error.response.status === 400) {
@@ -178,6 +200,26 @@ const FirebaseLogin = ({ ...others }) => {
           </form>
         )}
       </Formik>
+      <Snackbar
+        open={successMessage !== null}
+        autoHideDuration={5000} // Adjust as needed (milliseconds)
+        onClose={handleCloseSnackbar}
+        anchorOrigin={{ vertical: 'top', horizontal: 'right' }} // Position the Snackbar
+      >
+        <Alert onClose={handleCloseSnackbar} severity="success" sx={{ width: '100%' }}>
+          {successMessage}
+        </Alert>
+      </Snackbar>
+      <Snackbar
+        open={warningMessage !== null}
+        autoHideDuration={5000} // Adjust as needed (milliseconds)
+        onClose={handleCloseSnackbar}
+        anchorOrigin={{ vertical: 'top', horizontal: 'right' }} // Position the Snackbar
+      >
+        <Alert onClose={handleCloseSnackbar} severity="warning" sx={{ width: '100%' }}>
+          {warningMessage}
+        </Alert>
+      </Snackbar>
     </>
   );
 };

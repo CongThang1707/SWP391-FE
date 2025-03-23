@@ -38,7 +38,9 @@ const VerifyOTP = ({ ...others }) => {
             try {
               const response = await verifyOtp(email, values.otp);
               console.log('Register Success:', response);
-              navigate('/pages/login/login3');
+              navigate('/pages/login/login3', {
+                state: { registrationSuccess: true }
+              });
               if (scriptedRef.current) {
                 setStatus({ success: true });
                 setSubmitting(false);

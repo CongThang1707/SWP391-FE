@@ -15,7 +15,7 @@ import {
 } from '@mui/material';
 import { CheckCircle, Facebook, Twitter, Instagram } from '@mui/icons-material';
 import submitOrder from '../../../service/vnpay_services/get_vnpay.js';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import imageSrc from '../../../assets/images/doctor_banner.jpg';
 import EmailOutlinedIcon from '@mui/icons-material/EmailOutlined';
 import LocalPhoneOutlinedIcon from '@mui/icons-material/LocalPhoneOutlined';
@@ -24,8 +24,20 @@ import { getAllMembership } from '../../../service/membership_services/get_membe
 
 const ParentLandingPage = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [memberships, setMemberships] = useState([]);
-  const [openSnackbar, setOpenSnackbar] = useState(false);
+  const [successMessage, setSuccessMessage] = useState('');
+  const [showSnackbar, setShowSnackbar] = useState(false);
+
+  useEffect(() => {
+    if (location.state && location.state.logoutSuccess) {
+      setSuccessMessage('Logout successful!');
+      setShowSnackbar(true);
+    } else if (location.state && location.state.loginSuccess) {
+      setSuccessMessage('Login successful!');
+      setShowSnackbar(true);
+    }
+  }, [location]);
 
   useEffect(() => {
     const fetchMemberships = async () => {
@@ -39,16 +51,11 @@ const ParentLandingPage = () => {
     };
 
     fetchMemberships();
-
-    const snackbarState = localStorage.getItem('openSnackbar');
-    if (snackbarState === 'true') {
-      setOpenSnackbar(true);
-      localStorage.removeItem('openSnackbar');
-    }
   }, []);
 
   const handleCloseSnackbar = () => {
-    setOpenSnackbar(false);
+    setSuccessMessage(null);
+    setShowSnackbar(false);
   };
 
   const handleBuyNow = async (price, type) => {
@@ -463,9 +470,14 @@ const ParentLandingPage = () => {
           © 2025 CHILDGROWTH. CHILD DEVELOPMENT IS A TOP PRIORITY.
         </Typography>
       </Box>
-      <Snackbar open={openSnackbar} autoHideDuration={6000} onClose={handleCloseSnackbar}>
-        <Alert onClose={handleCloseSnackbar} severity="error" sx={{ width: '100%', color: 'red' }}>
-          You are not a member. Please purchase a membership package.
+      <Snackbar
+        open={showSnackbar}
+        autoHideDuration={5000} // Adjust as needed (milliseconds)
+        onClose={handleCloseSnackbar}
+        anchorOrigin={{ vertical: 'top', horizontal: 'right' }} // Position the Snackbar
+      >
+        <Alert onClose={handleCloseSnackbar} severity="success" sx={{ width: '100%' }}>
+          {successMessage}
         </Alert>
       </Snackbar>
     </>

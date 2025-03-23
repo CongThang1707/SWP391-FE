@@ -69,17 +69,33 @@ const FirebaseRegister = ({ ...others }) => {
             try {
               const response = await createUser(1, values);
               console.log('Register Success:', response);
-              navigate('/pages/login/login3');
+              navigate('/pages/login/login3', {
+                state: { registrationSuccess: true }
+              });
+
               if (scriptedRef.current) {
                 setStatus({ success: true });
                 setSubmitting(false);
               }
             } catch (err) {
               console.error('Register Error:', err);
-              setErrors({ submit: err.response?.data?.message || 'Registration failed' });
+
+              if (
+                err.response &&
+                err.response.status === 400 &&
+                err.response.data &&
+                typeof err.response.data === 'string' &&
+                err.response.data.startsWith('Username:')
+              ) {
+                // Xử lý lỗi tên người dùng bị trùng
+                setErrors({ username: err.response.data }); // Hiển thị thông báo lỗi từ API
+              } else {
+                // Xử lý các lỗi khác
+                setErrors({ submit: err.response?.data?.message || 'Registration failed' });
+              }
+
               if (scriptedRef.current) {
                 setStatus({ success: false });
-                setErrors({ submit: err.message });
                 setSubmitting(false);
               }
             }
@@ -127,20 +143,6 @@ const FirebaseRegister = ({ ...others }) => {
                 {touched.password && errors.password && <FormHelperText error>{errors.password}</FormHelperText>}
               </FormControl>
 
-              {/* <FormControl fullWidth error={Boolean(touched.email && errors.email)} sx={{ mb: 2 }}>
-                <InputLabel htmlFor="outlined-adornment-email-register">Email</InputLabel>
-                <OutlinedInput
-                  id="outlined-adornment-email-register"
-                  type="email"
-                  value={values.email}
-                  name="email"
-                  label="Email"
-                  onBlur={handleBlur}
-                  onChange={handleChange}
-                />
-                {touched.email && errors.email && <FormHelperText error>{errors.email}</FormHelperText>}
-              </FormControl> */}
-
               <FormControl fullWidth error={Boolean(touched.fullName && errors.fullName)} sx={{ mb: 2 }}>
                 <InputLabel htmlFor="outlined-adornment-email-register">Full Name</InputLabel>
                 <OutlinedInput
@@ -165,21 +167,6 @@ const FirebaseRegister = ({ ...others }) => {
                     {touched.gender && errors.gender && <FormHelperText error>{errors.gender}</FormHelperText>}
                   </FormControl>
                 </Grid>
-                {/* <Grid item xs={12} sm={6}>
-                  <FormControl fullWidth error={Boolean(touched.phone && errors.phone)} sx={{ mb: 2 }}>
-                    <InputLabel htmlFor="outlined-adornment-phone-register">Phone</InputLabel>
-                    <OutlinedInput
-                      id="outlined-adornment-phone-register"
-                      type="phone"
-                      value={values.phone}
-                      name="phone"
-                      label="Phone"
-                      onBlur={handleBlur}
-                      onChange={handleChange}
-                    />
-                    {touched.phone && errors.phone && <FormHelperText error>{errors.phone}</FormHelperText>}
-                  </FormControl>
-                </Grid> */}
               </Grid>
               <Box sx={{ mt: 2 }}>
                 <AnimateButton>

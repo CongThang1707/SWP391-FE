@@ -15,9 +15,11 @@ import {
   DialogContent,
   DialogTitle,
   Grid,
-  Divider
+  Divider,
+  Snackbar,
+  Alert
 } from '@mui/material';
-import { ChatBubbleOutline, Send, Search, Add } from '@mui/icons-material';
+import { ChatBubbleOutline, Send, Search } from '@mui/icons-material';
 import { Pagination } from '@mui/material';
 import { getAllBlogComplete, checkBlog } from '../../../service/blog_services/get_blog.js';
 import { createBlog } from '../../../service/blog_services/post_blog.js';
@@ -33,6 +35,7 @@ import LocalPhoneOutlinedIcon from '@mui/icons-material/LocalPhoneOutlined';
 import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
 import { Facebook, Twitter, Instagram, Edit, Delete } from '@mui/icons-material';
 import CloseIcon from '@mui/icons-material/Close';
+import { useNavigate } from 'react-router-dom';
 
 const BlogPage = () => {
   const [posts, setPosts] = useState([]);
@@ -47,6 +50,9 @@ const BlogPage = () => {
   const userId = localStorage.getItem('userId');
   const [editCommentId, setEditCommentId] = useState(null);
   const [editCommentContent, setEditCommentContent] = useState('');
+  const navigate = useNavigate();
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState('');
 
   useEffect(() => {
     fetchBlogs();
@@ -109,6 +115,15 @@ const BlogPage = () => {
   };
 
   const handleCommentSubmit = async (index) => {
+    if (!localStorage.getItem('userId')) {
+      navigate('/pages/login/login3', { state: { loginFirst: true } });
+      return; // Dừng thực thi nếu localStorage không có dữ liệu
+    }
+    if (localStorage.getItem('role') === 'Doctor') {
+      setSnackbarOpen(true);
+      setSnackbarMessage('Doctors cannot post comments.');
+      return;
+    }
     if (commentInputs[index].trim() === '') return;
 
     const commentData = {
@@ -141,7 +156,21 @@ const BlogPage = () => {
   const indexOfFirstPost = indexOfLastPost - postsPerPage;
   const currentPosts = filteredPosts.slice(indexOfFirstPost, indexOfLastPost);
 
-  const handleOpenDialog = () => setOpenDialog(true);
+  const handleOpenDialog = () => {
+    const data = localStorage.getItem('userId'); // Thay 'yourKey' bằng key dữ liệu bạn muốn kiểm tra
+    if (data) {
+      if (localStorage.getItem('role') === 'Doctor') {
+        setSnackbarOpen(true);
+        setSnackbarMessage('Doctors cannot create blogs.');
+        return;
+      }
+      setOpenDialog(true);
+    } else {
+      navigate('/pages/login/login3', { state: { loginFirst: true } });
+      // Có thể thêm thông báo hoặc xử lý khác nếu localStorage không có dữ liệu
+      console.log('localStorage is empty!');
+    }
+  };
 
   const handleCloseDialog = () => {
     setOpenDialog(false);
@@ -170,9 +199,14 @@ const BlogPage = () => {
     setShowReport(newShowReport);
   };
 
-  const handleReport = async (blogId, parentId) => {
-    if (parentId === userId) {
-      alert('You cannot report your own blog!');
+  const handleReport = async (blogId) => {
+    if (!localStorage.getItem('userId')) {
+      navigate('/pages/login/login3', { state: { loginFirst: true } });
+      return;
+    }
+    if (localStorage.getItem('role') === 'Doctor') {
+      setSnackbarOpen(true);
+      setSnackbarMessage('Doctors cannot report blogs.');
       return;
     }
     try {
@@ -195,9 +229,14 @@ const BlogPage = () => {
     setShowReportComment(newShowReportComment);
   };
 
-  const handleReportComment = async (commentId, parentId) => {
-    if (parentId === userId) {
-      alert('You cannot report your own comment!');
+  const handleReportComment = async (commentId) => {
+    if (!localStorage.getItem('userId')) {
+      navigate('/pages/login/login3', { state: { loginFirst: true } });
+      return;
+    }
+    if (localStorage.getItem('role') === 'Doctor') {
+      setSnackbarOpen(true);
+      setSnackbarMessage('Doctors cannot report comments.');
       return;
     }
     try {
@@ -292,10 +331,7 @@ const BlogPage = () => {
 
       {/* Add Post Section */}
       <Container maxWidth="md" sx={{ mt: 3, mb: 4 }}>
-        <Card
-          sx={{ display: 'flex', alignItems: 'center', p: 2, cursor: 'pointer', boxShadow: 3, '&:hover': { boxShadow: 6 } }}
-          onClick={handleOpenDialog}
-        >
+        <Card sx={{ display: 'flex', alignItems: 'center', p: 2, cursor: 'pointer', boxShadow: 3, '&:hover': { boxShadow: 6 } }}>
           <Avatar src="https://randomuser.me/api/portraits/men/1.jpg" sx={{ width: 50, height: 50, mr: 2 }} />
           <TextField
             fullWidth
@@ -305,9 +341,6 @@ const BlogPage = () => {
             inputProps={{ readOnly: true }}
             sx={{ background: '#f0f2f5', borderRadius: 2 }}
           />
-          <Button startIcon={<Add />} sx={{ ml: 2 }} variant="contained" onClick={handleOpenDialog}>
-            Add
-          </Button>
         </Card>
       </Container>
 
@@ -629,6 +662,16 @@ const BlogPage = () => {
           © 2025 CHILDGROWTH. CHILD DEVELOPMENT IS A TOP PRIORITY.
         </Typography>
       </Box>
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={6000}
+        onClose={() => setSnackbarOpen(false)}
+        anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+      >
+        <Alert onClose={() => setSnackbarOpen(false)} severity="error" sx={{ width: '100%' }}>
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
     </>
   );
 };

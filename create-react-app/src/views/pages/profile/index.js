@@ -293,8 +293,8 @@ const Profile = () => {
       content: newBlog.content
     };
     try {
-      const createdBlog = await createBlog(blogData);
-      setBlogs([...blogs, createdBlog]);
+      createBlog(blogData);
+      fetchUserData();
       handleCloseAddBlogDialog();
       alert('Blog added successfully!');
     } catch (error) {

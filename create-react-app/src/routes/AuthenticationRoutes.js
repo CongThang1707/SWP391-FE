@@ -12,6 +12,7 @@ const AuthEmailRegister = Loadable(lazy(() => import('views/pages/authentication
 const AuthVerifyOTP = Loadable(lazy(() => import('views/pages/authentication/authentication3/VerifyOTP')));
 const HomePage = Loadable(lazy(() => import('views/pages/homepage/index.js')));
 const BlogPage = Loadable(lazy(() => import('views/pages/blog/index.js')));
+const News = Loadable(lazy(() => import('views/pages/news/index.js')));
 
 // ==============================|| AUTHENTICATION ROUTING ||============================== //
 
@@ -67,6 +68,10 @@ const AuthenticationRoutes = [
       {
         path: 'blog',
         element: <BlogPage />
+      },
+      {
+        path: 'news',
+        element: <News />
       }
     ]
   }

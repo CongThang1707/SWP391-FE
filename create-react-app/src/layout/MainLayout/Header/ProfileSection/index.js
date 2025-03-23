@@ -58,7 +58,7 @@ const ProfileSection = () => {
   const handleLogout = async () => {
     console.log('Logout');
     localStorage.clear();
-    navigate('/pages/login/login3');
+    navigate('/pages/login/login3', { state: { logoutSuccess: true } });
   };
 
   const handleClose = (event) => {

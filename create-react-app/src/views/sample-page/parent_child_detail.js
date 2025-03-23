@@ -25,6 +25,11 @@ const ChildrenDetail = () => {
   const [editRecord, setEditRecord] = useState(null);
   const [formData, setFormData] = useState({ weight: '', height: '', date: '' });
   const [growthStatusChange, setGrowthStatusChange] = useState('');
+  const [currentToday, setCurrentToday] = useState(new Date().toISOString().split('T')[0]);
+
+  useEffect(() => {
+    setCurrentToday(new Date().toISOString().split('T')[0]);
+  }, [openDialog]);
 
   useEffect(() => {
     fetchData();
@@ -140,7 +145,6 @@ const ChildrenDetail = () => {
       console.error('Failed to save record:', error);
     }
   };
-
 
   const handleDelete = async (recordId) => {
     if (window.confirm('Are you sure you want to delete this record?')) {
@@ -337,6 +341,7 @@ const ChildrenDetail = () => {
             InputLabelProps={{ shrink: true }}
             value={formData.date}
             onChange={handleInputChange}
+            max={currentToday}
           />
         </DialogContent>
         <DialogActions>

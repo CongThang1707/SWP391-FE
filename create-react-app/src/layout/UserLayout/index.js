@@ -3,6 +3,7 @@ import { AppBar, Box, Toolbar, IconButton, Typography, Menu, Container, Avatar, 
 import { Outlet, useNavigate } from 'react-router-dom';
 import imageLogo from '../../../src/assets/images/logo.jpg';
 
+
 const pages = [
   { name: 'Home', path: '/' },
   { name: 'Appointments', path: '/appointment' },
@@ -39,7 +40,7 @@ function ResponsiveAppBar() {
   const handleLogout = () => {
     localStorage.clear();
     setIsLoggedIn(false); //
-    navigate('/');
+    navigate('/', { state: { logoutSuccess: true } });
   };
 
   return (
