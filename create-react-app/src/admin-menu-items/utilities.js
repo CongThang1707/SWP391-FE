@@ -50,6 +50,14 @@ const utilities = {
       breadcrumbs: false
     },
     {
+      id: 'util-comment',
+      title: 'Comment',
+      type: 'item',
+      url: '/utils/util-comment',
+      icon: icons.IconShadow,
+      breadcrumbs: false
+    },
+    {
       id: 'util-booking',
       title: 'Booking',
       type: 'item',
