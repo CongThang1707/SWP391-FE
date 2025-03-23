@@ -13,6 +13,8 @@ const UtilsTypography = Loadable(lazy(() => import('views/utilities/Typography')
 const UtilsColor = Loadable(lazy(() => import('views/utilities/Color')));
 const UtilsShadow = Loadable(lazy(() => import('views/utilities/Shadow')));
 const UtilsBlog = Loadable(lazy(() => import('views/utilities/Blog')));
+const UtilsComment = Loadable(lazy(() => import('views/utilities/Comment')));
+
 const UtilsBooking = Loadable(lazy(() => import('views/utilities/Booking')));
 const UtilsFeedBack = Loadable(lazy(() => import('views/utilities/FeedBack')));
 const UtilsConsulting = Loadable(lazy(() => import('views/utilities/Consulting')));
@@ -24,6 +26,8 @@ const DoctorDetail = Loadable(lazy(() => import('views/sample-page/doctor_detail
 const ParentDetail = Loadable(lazy(() => import('views/sample-page/parent_detail')));
 const ChildrenDetail = Loadable(lazy(() => import('views/sample-page/children_detail')));
 const BlogDetail = Loadable(lazy(() => import('views/sample-page/blog_detail')));
+const CommentDetail = Loadable(lazy(() => import('views/sample-page/comment_detail')));
+
 const BookingDetail = Loadable(lazy(() => import('views/sample-page/booking_detail')));
 const FeedBackDetail = Loadable(lazy(() => import('views/sample-page/feedback_detail')));
 const ConsultingDetail = Loadable(lazy(() => import('views/sample-page/consulting_detail')));
@@ -78,6 +82,15 @@ const AdminRoutes = {
         {
           path: 'util-blog',
           element: <UtilsBlog />
+        }
+      ]
+    },
+    {
+      path: 'utils',
+      children: [
+        {
+          path: 'util-comment',
+          element: <UtilsComment />
         }
       ]
     },
@@ -159,6 +172,10 @@ const AdminRoutes = {
     {
       path: 'blog-detail/:id',
       element: <BlogDetail />
+    },
+    {
+      path: 'comment-detail/:id',
+      element: <CommentDetail />
     },
     {
       path: 'booking-detail/:id',

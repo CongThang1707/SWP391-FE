@@ -21,12 +21,11 @@ import { ChatBubbleOutline, Send, Search, Add } from '@mui/icons-material';
 import { Pagination } from '@mui/material';
 import { getAllBlogComplete, checkBlog } from '../../../service/blog_services/get_blog.js';
 import { createBlog } from '../../../service/blog_services/post_blog.js';
-import { createComment } from '../../../service/comment_services/get_comment.js';
-import { getCommentByBlogId } from '../../../service/comment_services/get_comment.js';
+import { createComment, reportByUser, getCommentByBlogId, updateComment, deleteCommentByAdmin } from '../../../service/comment_services/get_comment.js';
 import EmailOutlinedIcon from '@mui/icons-material/EmailOutlined';
 import LocalPhoneOutlinedIcon from '@mui/icons-material/LocalPhoneOutlined';
 import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
-import { Facebook, Twitter, Instagram } from '@mui/icons-material';
+import { Facebook, Twitter, Instagram, Edit, Delete, } from '@mui/icons-material';
 import CloseIcon from '@mui/icons-material/Close';
 
 const BlogPage = () => {
@@ -38,6 +37,10 @@ const BlogPage = () => {
   const [newPost, setNewPost] = useState({ title: '', hashtag: '', content: '' });
   const [commentsData, setCommentsData] = useState(Array(posts.length).fill([]));
   const [showReport, setShowReport] = useState(Array(posts.length).fill(false));
+  const [showReportComment, setShowReportComment] = useState(Array(posts.length).fill([]));
+  const userId = localStorage.getItem('userId');
+  const [editCommentId, setEditCommentId] = useState(null);
+  const [editCommentContent, setEditCommentContent] = useState('');
 
   useEffect(() => {
     fetchBlogs();
@@ -48,6 +51,7 @@ const BlogPage = () => {
       const blogData = await getAllBlogComplete(); // Gọi API lấy danh sách blog
       const formattedPosts = blogData.map((post) => ({
         blogId: post.blogId,
+        parentId: post.parentId,
         avatar: post.avatar || 'https://randomuser.me/api/portraits/men/4.jpg', // Avatar người đăng
         fullName: post.fullName,
         date: post.date || new Date().toLocaleDateString(), // Ngày đăng
@@ -67,9 +71,9 @@ const BlogPage = () => {
 
   const filteredPosts = searchTerm
     ? posts.filter(
-        (post) =>
-          post.title.toLowerCase().includes(searchTerm.toLowerCase()) || post.content.toLowerCase().includes(searchTerm.toLowerCase())
-      )
+      (post) =>
+        post.title.toLowerCase().includes(searchTerm.toLowerCase()) || post.content.toLowerCase().includes(searchTerm.toLowerCase())
+    )
     : posts;
 
   const handleCommentToggle = async (index) => {
@@ -107,10 +111,11 @@ const BlogPage = () => {
 
     try {
       const blogId = posts[index].blogId;
-      const createdComment = await createComment(blogId, commentData);
-
+      await createComment(blogId, commentData);
+      const fetchedComments = await getCommentByBlogId(blogId);
+      console.log('Fetched Comments:', fetchedComments);
       const newCommentsData = [...commentsData];
-      newCommentsData[index] = [...newCommentsData[index], createdComment];
+      newCommentsData[index] = fetchedComments;
       setCommentsData(newCommentsData);
       handleCommentChange(index, '');
     } catch (error) {
@@ -159,9 +164,14 @@ const BlogPage = () => {
     setShowReport(newShowReport);
   };
 
-  const handleReport = async (blogId) => {
+  const handleReport = async (blogId, parentId) => {
+    if (parentId === userId) {
+      alert("You cannot report your own blog!");
+      return;
+    }
     try {
-      alert('Are you sure want to report this blog');
+      const confirm = window.confirm('Are you sure you want to report this blog?');
+      if (!confirm) return;
       const response = await checkBlog(blogId);
       console.log('Report result:', response);
       alert('Reported successfully!');
@@ -169,6 +179,69 @@ const BlogPage = () => {
     } catch (error) {
       console.error('Failed to report blog:', error);
       alert('Failed to report.');
+    }
+  };
+
+
+  const handleToggleCommentReport = (postIndex, commentIndex) => {
+    const newShowReportComment = [...showReportComment];
+    if (!newShowReportComment[postIndex]) newShowReportComment[postIndex] = [];
+    newShowReportComment[postIndex][commentIndex] = !newShowReportComment[postIndex][commentIndex];
+    setShowReportComment(newShowReportComment);
+  };
+
+  const handleReportComment = async (commentId, parentId) => {
+    if (parentId === userId) {
+      alert("You cannot report your own comment!");
+      return;
+    }
+    try {
+      const confirm = window.confirm('Are you sure you want to report this comment?');
+      if (!confirm) return;
+      await reportByUser(commentId);
+      alert('Comment reported successfully!');
+      fetchBlogs();
+    } catch (error) {
+      console.error('Failed to report comment:', error);
+      alert('Failed to report comment.');
+    }
+  };
+
+  const handleEditComment = (commentId, content) => {
+    setEditCommentId(commentId);
+    setEditCommentContent(content);
+  };
+
+  const handleUpdateComment = async (index, commentIndex) => {
+    try {
+      if (!editCommentContent.trim()) return;
+      const commentId = commentsData[index][commentIndex].commentId;
+      await updateComment(commentId, editCommentContent);
+      const fetchedComments = await getCommentByBlogId(posts[index].blogId);
+      const newCommentsData = [...commentsData];
+      newCommentsData[index] = fetchedComments;
+      setCommentsData(newCommentsData);
+      setEditCommentId(null);
+      setEditCommentContent('');
+    } catch (error) {
+      console.error('Failed to update comment:', error);
+      alert('Failed to update comment.');
+    }
+  };
+
+  const handleDeleteComment = async (index, commentIndex) => {
+    try {
+      const commentId = commentsData[index][commentIndex].commentId;
+      const confirm = window.confirm('Are you sure you want to delete this comment?');
+      if (!confirm) return;
+      await deleteCommentByAdmin(commentId);
+      const fetchedComments = await getCommentByBlogId(posts[index].blogId);
+      const newCommentsData = [...commentsData];
+      newCommentsData[index] = fetchedComments;
+      setCommentsData(newCommentsData);
+    } catch (error) {
+      console.error('Failed to delete comment:', error);
+      alert('Failed to delete comment.');
     }
   };
 
@@ -278,15 +351,17 @@ const BlogPage = () => {
             <CardContent>
               {/* ✅ ICON X + Dropdown Report */}
               <Box sx={{ position: 'absolute', top: 10, right: 10 }}>
-                <Button
-                  onClick={() => handleToggleReport(index)}
-                  sx={{ minWidth: 'auto', p: 0, color: 'gray', '&:hover': { color: 'red' } }}
-                >
-                  <CloseIcon />
-                </Button>
+                {post.parentId !== userId ? (
+                  <Button
+                    onClick={() => handleToggleReport(index)}
+                    sx={{ minWidth: 'auto', p: 0, color: 'gray', '&:hover': { color: 'red' } }}
+                  >
+                    <CloseIcon />
+                  </Button>
+                ) : null}
                 {showReport[index] && (
                   <Box sx={{ mt: 1, p: 1, bgcolor: '#f8f8f8', borderRadius: 1, boxShadow: 2 }}>
-                    <Button color="error" onClick={() => handleReport(post.blogId)}>
+                    <Button color="error" onClick={() => handleReport(post.blogId, post.parentId)}>
                       Report
                     </Button>
                   </Box>
@@ -331,16 +406,65 @@ const BlogPage = () => {
                   {/* 1️⃣ - Danh sách comment từ API */}
                   {commentsData[index] && commentsData[index].length > 0 ? (
                     commentsData[index].map((comment, cIndex) => (
-                      <Box key={cIndex} sx={{ display: 'flex', alignItems: 'center', mt: 2, p: 1, background: '#f0f2f5', borderRadius: 2 }}>
+                      <Box key={cIndex} sx={{ position: 'relative', display: 'flex', alignItems: 'center', mt: 2, p: 1, background: '#f0f2f5', borderRadius: 2 }}>
                         <Avatar src={comment.avatar} sx={{ width: 32, height: 32, mr: 1 }} />
-                        <Box>
-                          <Typography variant="body2" fontWeight={600}>
-                            {comment.fullName}
-                          </Typography>
-                          <Typography variant="body2" color="text.secondary">
-                            {comment.date}
-                          </Typography>
-                          <Typography variant="body1">{comment.comment}</Typography>
+                        <Box sx={{ flexGrow: 1 }}>
+                          <Typography variant="body2" fontWeight={600}>{comment.fullName}</Typography>
+                          <Typography variant="body2" color="text.secondary">{comment.date}</Typography>
+                          {editCommentId === comment.commentId ? (
+                            <Box>
+                              <TextField
+                                fullWidth
+                                value={editCommentContent}
+                                onChange={(e) => setEditCommentContent(e.target.value)}
+                              />
+                              <Button
+                                variant="contained"
+                                color="primary"
+                                size="small"
+                                onClick={() => handleUpdateComment(index, cIndex)}
+                                sx={{ mt: 1 }}
+                              >
+                                Submit
+                              </Button>
+                            </Box>
+                          ) : (
+                            <Typography variant="body1">{comment.comment}</Typography>
+                          )}
+                        </Box>
+
+                        {/* ICON X */}
+                        <Box sx={{ position: 'absolute', top: 8, right: 8 }}>
+                          {comment.parentId === userId ? (
+                            <>
+                              <Button
+                                sx={{ minWidth: 'auto', p: 0, color: 'gray', '&:hover': { color: 'blue' }, mr: 1 }}
+                                onClick={() => handleEditComment(comment.commentId, comment.comment)}
+                              >
+                                <Edit fontSize="small" />
+                              </Button>
+                              <Button
+                                sx={{ minWidth: 'auto', p: 0, color: 'gray', '&:hover': { color: 'red' } }}
+                                onClick={() => handleDeleteComment(index, cIndex)}
+                              >
+                                <Delete fontSize="small" />
+                              </Button>
+                            </>
+                          ) : (
+                            <Button
+                              onClick={() => handleToggleCommentReport(index, cIndex)} // Changed this line
+                              sx={{ minWidth: 'auto', p: 0, color: 'gray', '&:hover': { color: 'red' } }}
+                            >
+                              <CloseIcon fontSize="small" />
+                            </Button>
+                          )}
+                          {showReportComment[index] && showReportComment[index][cIndex] && (
+                            <Box sx={{ mt: 1, p: 1, bgcolor: '#f8f8f8', borderRadius: 1, boxShadow: 2 }}>
+                              <Button color="error" size="small" onClick={() => handleReportComment(comment.commentId, comment.parentId)}>
+                                Report
+                              </Button>
+                            </Box>
+                          )}
                         </Box>
                       </Box>
                     ))
