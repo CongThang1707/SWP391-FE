@@ -55,6 +55,7 @@ const AppointmentPage = () => {
   const [nearestAppointment, setNearestAppointment] = useState(null);
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const navigate = useNavigate();
+  const [errors, setErrors] = useState({});
 
   useEffect(() => {
     fetchAppointments();
@@ -117,29 +118,63 @@ const AppointmentPage = () => {
     }
     setCurrentAppointment(appointment);
     setOpenDialog(true);
+    setErrors({});
+    if (!appointment) {
+      setSelectedDoctor(null);
+      setSelectedChild(null);
+      setSelectedDate('');
+    }
+
   };
 
   const handleCloseDialog = () => {
     setCurrentAppointment(null);
     setOpenDialog(false);
+    setErrors({});
   };
 
   const handleSaveAppointment = async () => {
-    const parentId = localStorage.getItem('userId'); // Lấy parentId từ local storage
+    const parentId = localStorage.getItem('userId');
     const appointmentData = {
-      scheduleId: currentAppointment.schedule,
+      scheduleId: currentAppointment?.schedule,
       parentId: parentId,
-      comment: currentAppointment.comment,
+      comment: currentAppointment?.comment,
       childId: selectedChild
     };
+    let isValid = true;
+    const newErrors = {};
 
-    if (currentAppointment.bookId) {
-      await updateBooking({ id: currentAppointment.bookId, comment: currentAppointment.comment });
-    } else {
-      await createBooking(appointmentData);
+    if (!currentAppointment?.schedule) {
+      newErrors.schedule = 'Please select a time.';
+      isValid = false;
     }
-    fetchAppointments();
-    handleCloseDialog();
+
+    if (!selectedChild) {
+      newErrors.child = 'Please select a child.';
+      isValid = false;
+    }
+
+    if (!currentAppointment?.doctor && !currentAppointment?.bookId) {
+      newErrors.doctor = 'Please select a Doctor.';
+      isValid = false;
+    }
+
+    if (!selectedDate && !currentAppointment?.bookId) {
+      newErrors.date = 'Please select a date.';
+      isValid = false;
+    }
+
+    setErrors(newErrors);
+
+    if (isValid) {
+      if (currentAppointment?.bookId) {
+        await updateBooking({ id: currentAppointment.bookId, comment: currentAppointment.comment });
+      } else {
+        await createBooking(appointmentData);
+      }
+      fetchAppointments();
+      handleCloseDialog();
+    }
   };
 
   const handleCancelAppointment = async (bookId, parentId) => {
@@ -158,10 +193,12 @@ const AppointmentPage = () => {
     setCurrentAppointment({ ...currentAppointment, doctor: doctor.user_id });
     setSelectedDoctor(doctor);
     setSelectedDate('');
+    setErrors({ ...errors, doctor: null });
   };
 
   const handleSelectChild = (child) => {
     setSelectedChild(child.childrenId);
+    setErrors({ ...errors, child: null });
   };
 
   const handleTimeChange = (time) => {
@@ -169,6 +206,7 @@ const AppointmentPage = () => {
       ...prevState,
       schedule: prevState.schedule === time ? '' : time
     }));
+    setErrors({ ...errors, schedule: null });
   };
 
   const findNearestAppointment = () => {
@@ -338,6 +376,7 @@ const AppointmentPage = () => {
                   </Box>
                 ))}
               </Box>
+
               {selectedDoctor && (
                 <>
                   <FormControl fullWidth margin="dense">
@@ -352,6 +391,7 @@ const AppointmentPage = () => {
                         ))}
                     </Select>
                   </FormControl>
+                  {errors.doctor && <Typography color="error">{errors.doctor}</Typography>}
                   <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, mt: 2 }}>
                     {schedule
                       .filter((s) => s.scheduleDate === selectedDate)
@@ -372,6 +412,7 @@ const AppointmentPage = () => {
                         );
                       })}
                   </Box>
+                  {errors.date && <Typography color="error">{errors.date}</Typography>}
                   <Typography variant="h6" sx={{ mt: 2 }}>
                     Select a Child
                   </Typography>
@@ -399,6 +440,7 @@ const AppointmentPage = () => {
                       </Box>
                     ))}
                   </Box>
+                  {errors.child && <Typography color="error">{errors.child}</Typography>}
                 </>
               )}
             </>

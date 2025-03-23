@@ -56,6 +56,16 @@ const deleteBlog = async (Blog_id) => {
   }
 };
 
+const deleteSoft = async (Blog_id) => {
+  try {
+    const response = await axios.delete(`${API_URL}blogAPI/deleteBlogSoft?blog_id=${Blog_id}`);
+    return response.data;
+  } catch (error) {
+    console.error(`Error deleting blog with ID ${Blog_id}:`, error);
+    return null;
+  }
+};
+
 const getBlogByParentId = async () => {
   try {
     const response = await axios.get(`${API_URL}blogAPI/getBlogsByUserId/${localStorage.getItem('userId')}`);
@@ -163,5 +173,6 @@ export {
   rejectBlog,
   checkBlog,
   checkBlogByAdmin,
-  getCompleteBlogByParentId
+  getCompleteBlogByParentId,
+  deleteSoft
 };

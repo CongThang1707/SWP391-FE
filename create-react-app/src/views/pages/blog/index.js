@@ -83,9 +83,9 @@ const BlogPage = () => {
 
   const filteredPosts = searchTerm
     ? posts.filter(
-        (post) =>
-          post.hashtag.toLowerCase().includes(searchTerm.toLowerCase()) || post.content.toLowerCase().includes(searchTerm.toLowerCase())
-      )
+      (post) =>
+        post.hashtag.toLowerCase().includes(searchTerm.toLowerCase()) || post.content.toLowerCase().includes(searchTerm.toLowerCase())
+    )
     : posts;
 
   const handleCommentToggle = async (index) => {
@@ -183,13 +183,16 @@ const BlogPage = () => {
 
   const handleAddPost = async () => {
     if (!newPost.title || !newPost.content) return;
+    if (window.confirm('Are you sure you want to add this blog?')) {
 
-    try {
-      await createBlog(newPost);
-      fetchBlogs();
-      handleCloseDialog();
-    } catch (error) {
-      console.error('Failed to create blog:', error);
+      try {
+        await createBlog(newPost);
+        fetchBlogs();
+        handleCloseDialog();
+        alert('Please wait for admin to approve');
+      } catch (error) {
+        console.error('Failed to create blog:', error);
+      }
     }
   };
 
