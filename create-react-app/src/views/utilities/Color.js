@@ -14,8 +14,6 @@ import { getUserByRoleId } from '../../service/user_service/get_user.js';
 import { deleteUser } from '../../service/user_service/delete_user.js';
 import { createUser } from '../../service/user_service/create_user.js';
 import { useNavigate } from 'react-router-dom';
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import CancelIcon from '@mui/icons-material/Cancel';
 
 const EnhancedTable = () => {
   const [parentData, setParentData] = useState([]);
@@ -149,7 +147,6 @@ const EnhancedTable = () => {
                   { id: 'fullName', label: 'Full Name' },
                   { id: 'email', label: 'Email' },
                   { id: 'phone', label: 'Phone' },
-                  { id: 'delete', label: 'Delete' }, // ✅ Thêm cột Delete
                   { id: 'action', label: 'Action' }
                 ].map((head) => (
                   <TableCell key={head.id}>
@@ -171,9 +168,6 @@ const EnhancedTable = () => {
                   <TableCell>{doctor.fullName}</TableCell>
                   <TableCell>{doctor.email}</TableCell>
                   <TableCell>{doctor.phone}</TableCell>
-                  <TableCell>
-                    {doctor.delete ? <CheckCircleIcon color="success" /> : <CancelIcon color="error" />}
-                  </TableCell>
                   <TableCell>
                     <Button variant="contained" color="primary" size="small" onClick={() => navigate(`/doctor-detail/${doctor.user_id}`)}>
                       Detail
