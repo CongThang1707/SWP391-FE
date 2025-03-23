@@ -11,4 +11,14 @@ const deleteUserById = async (userId) => {
   }
 };
 
-export { deleteUserById };
+const deleteUser = async (userId) => {
+  try {
+    const response = await axios.delete(`${API_URL}api/deleteUser_User/${userId}`);
+    return response.data;
+  } catch (error) {
+    console.error('Error deleting user:', error);
+    throw error;
+  }
+};
+
+export { deleteUserById, deleteUser };

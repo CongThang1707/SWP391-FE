@@ -3,7 +3,7 @@ import MainCard from 'ui-component/cards/MainCard';
 import React, { useState, useEffect } from 'react';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TableSortLabel, TablePagination, Paper } from '@mui/material';
 import { getUserByRoleId } from '../../service/user_service/get_user.js';
-import { deleteUserById } from '../../service/user_service/delete_user.js';
+import { deleteUser } from '../../service/user_service/delete_user.js';
 import { useNavigate } from 'react-router-dom';
 
 const EnhancedTable = () => {
@@ -50,7 +50,7 @@ const EnhancedTable = () => {
   const handleDeleteUser = async (userId) => {
     if (window.confirm('Are you sure you want to delete this user?')) {
       try {
-        await deleteUserById(userId);
+        await deleteUser(userId);
 
         // Cập nhật danh sách sau khi xóa thành công
         setParentData((prevData) => prevData.filter((user) => user.user_id !== userId));

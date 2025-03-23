@@ -69,6 +69,7 @@ const CommentTable = () => {
                 await deleteCommentByAdmin(commentId);
                 setCommentData((prevData) => prevData.filter((comment) => comment.commentId !== commentId));
                 console.log(`Comment ${commentId} deleted successfully!`);
+                alert('Comment deleted successfully!.');
             } catch (error) {
                 console.error('Failed to delete comment:', error.response ? error.response.data : error.message);
                 alert('Error deleting comment. Please try again.');

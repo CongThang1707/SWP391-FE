@@ -79,9 +79,9 @@ const FeedbackTable = () => {
             <TableHead>
               <TableRow>
                 {[
-                  { id: 'feedbackId', label: 'Feedback ID' },
+                  { id: 'parent', label: 'Parent' },
+                  { id: 'doctor', label: 'Doctor' },
                   { id: 'rate', label: 'Rate' },
-                  { id: 'comment', label: 'Comment' },
                   { id: 'action', label: 'Action' }
                 ].map((head) => (
                   <TableCell key={head.id}>
@@ -99,9 +99,9 @@ const FeedbackTable = () => {
             <TableBody>
               {feedbackData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((feedback, index) => (
                 <TableRow key={feedback.feedbackId || `feedback-${index}`}>
-                  <TableCell>{feedback.feedbackId}</TableCell>
+                  <TableCell>{feedback.fullNameParent}</TableCell>
+                  <TableCell>{feedback.fullNameDoctor}</TableCell>
                   <TableCell>{feedback.rate}</TableCell>
-                  <TableCell>{feedback.comment}</TableCell>
                   <TableCell>
                     <Button
                       variant="contained"

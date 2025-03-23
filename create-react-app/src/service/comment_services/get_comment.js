@@ -74,7 +74,7 @@ export const deleteCommentByAdmin = async (commentId) => {
   }
 };
 
-export const deleteCommentByUser = async (commentId) => {
+export const deleteCommentByUser= async (commentId) => {
   try {
     const userId = localStorage.getItem('userId');
     if (!userId) {
