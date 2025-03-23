@@ -1,13 +1,21 @@
-//Doctor.js
-import { Grid, Button, IconButton, TextField, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material';
+// Doctor.js
+import {
+  Grid, Button, IconButton, TextField, Dialog, DialogActions, DialogContent, DialogTitle,
+  Select, MenuItem
+} from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import MainCard from 'ui-component/cards/MainCard';
 import React, { useState, useEffect } from 'react';
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TableSortLabel, TablePagination, Paper } from '@mui/material';
+import {
+  Table, TableBody, TableCell, TableContainer, TableHead, TableRow,
+  TableSortLabel, TablePagination, Paper
+} from '@mui/material';
 import { getUserByRoleId } from '../../service/user_service/get_user.js';
-import { deleteUserById } from '../../service/user_service/delete_user.js';
+import { deleteUser } from '../../service/user_service/delete_user.js';
 import { createUser } from '../../service/user_service/create_user.js';
 import { useNavigate } from 'react-router-dom';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import CancelIcon from '@mui/icons-material/Cancel';
 
 const EnhancedTable = () => {
   const [parentData, setParentData] = useState([]);
@@ -28,13 +36,10 @@ const EnhancedTable = () => {
 
   const [errors, setErrors] = useState({});
   const [touchedField, setTouchedField] = useState();
-
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (touchedField && Array.isArray(touchedField)) {
-      validate();
-    }
+    if (touchedField && Array.isArray(touchedField)) validate();
     const fetchUserData = async () => {
       const data = await getUserByRoleId(2);
       setParentData(data);
@@ -59,9 +64,7 @@ const EnhancedTable = () => {
     setOrderBy(property);
     setParentData((prevData) =>
       [...prevData].sort((a, b) => {
-        if (property === 'phone') {
-          return isAsc ? a[property] - b[property] : b[property] - a[property];
-        }
+        if (property === 'phone') return isAsc ? a[property] - b[property] : b[property] - a[property];
         if (a[property] < b[property]) return isAsc ? -1 : 1;
         if (a[property] > b[property]) return isAsc ? 1 : -1;
         return 0;
@@ -69,9 +72,7 @@ const EnhancedTable = () => {
     );
   };
 
-  const handleChangePage = (event, newPage) => {
-    setPage(newPage);
-  };
+  const handleChangePage = (event, newPage) => setPage(newPage);
 
   const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(parseInt(event.target.value, 10));
@@ -81,9 +82,10 @@ const EnhancedTable = () => {
   const handleDeleteUser = async (userId) => {
     if (window.confirm('Are you sure you want to delete this user?')) {
       try {
-        await deleteUserById(userId);
+        await deleteUser(userId);
         setParentData((prevData) => prevData.filter((user) => user.user_id !== userId));
         console.log(`User ${userId} deleted successfully!`);
+        alert('User deleted successfully!'); 
       } catch (error) {
         console.error('Failed to delete user:', error.response ? error.response.data : error.message);
         alert('Error deleting user. Please try again.');
@@ -91,9 +93,7 @@ const EnhancedTable = () => {
     }
   };
 
-  const handleOpenDialog = () => {
-    setOpenDialog(true);
-  };
+  const handleOpenDialog = () => setOpenDialog(true);
 
   const handleCloseDialog = () => {
     setOpenDialog(false);
@@ -110,19 +110,19 @@ const EnhancedTable = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-
-    // Đánh dấu tất cả các field đã được chạm
     setTouchedField(Object.keys(newUser));
-
-    if (!validate()) {
-      return; // Nếu có lỗi, không submit
-    }
-
+  
+    if (!validate()) return;
+  
+    const isConfirmed = window.confirm('Are you sure you want to add this doctor?');
+    if (!isConfirmed) return; 
+  
     try {
       await createUser(2, newUser);
       const updatedData = await getUserByRoleId(2);
       setParentData(updatedData);
       handleCloseDialog();
+      alert('Doctor added successfully!');
     } catch (error) {
       console.error('Error creating user:', error.response ? error.response.data : error.message);
       alert(`Failed to create user: ${error.response ? JSON.stringify(error.response.data) : error.message}`);
@@ -144,11 +144,12 @@ const EnhancedTable = () => {
           <Table sx={{ minWidth: 650 }}>
             <TableHead>
               <TableRow>
-                {[
+                {[ 
                   { id: 'username', label: 'Username' },
                   { id: 'fullName', label: 'Full Name' },
                   { id: 'email', label: 'Email' },
                   { id: 'phone', label: 'Phone' },
+                  { id: 'delete', label: 'Delete' }, // ✅ Thêm cột Delete
                   { id: 'action', label: 'Action' }
                 ].map((head) => (
                   <TableCell key={head.id}>
@@ -170,6 +171,9 @@ const EnhancedTable = () => {
                   <TableCell>{doctor.fullName}</TableCell>
                   <TableCell>{doctor.email}</TableCell>
                   <TableCell>{doctor.phone}</TableCell>
+                  <TableCell>
+                    {doctor.delete ? <CheckCircleIcon color="success" /> : <CancelIcon color="error" />}
+                  </TableCell>
                   <TableCell>
                     <Button variant="contained" color="primary" size="small" onClick={() => navigate(`/doctor-detail/${doctor.user_id}`)}>
                       Detail
@@ -204,7 +208,7 @@ const EnhancedTable = () => {
       <Dialog open={openDialog} onClose={handleCloseDialog}>
         <DialogTitle>Add New Doctor</DialogTitle>
         <DialogContent>
-          {['username', 'password', 'email', 'fullName', 'gender', 'phone', 'address'].map((field) => (
+          {['username', 'password', 'email', 'fullName', 'phone', 'address'].map((field) => (
             <TextField
               key={field}
               margin="dense"
@@ -220,6 +224,25 @@ const EnhancedTable = () => {
               helperText={touchedField?.includes(field) ? errors[field] : ''}
             />
           ))}
+
+          {/* Gender Select */}
+          <Select
+            fullWidth
+            name="gender"
+            value={newUser.gender}
+            onChange={handleInputChange}
+            onBlur={() => setTouchedField((prev) => (Array.isArray(prev) ? [...new Set([...prev, 'gender'])] : ['gender']))}
+            displayEmpty
+            error={touchedField?.includes('gender') && !!errors['gender']}
+            sx={{ mt: 2 }}
+          >
+            <MenuItem value="" disabled>Select Gender</MenuItem>
+            <MenuItem value="Male">Male</MenuItem>
+            <MenuItem value="Female">Female</MenuItem>
+          </Select>
+          {touchedField?.includes('gender') && errors['gender'] && (
+            <span style={{ color: 'red', fontSize: '12px' }}>{errors['gender']}</span>
+          )}
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCloseDialog}>Cancel</Button>

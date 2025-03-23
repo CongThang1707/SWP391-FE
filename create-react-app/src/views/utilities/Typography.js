@@ -3,8 +3,10 @@ import MainCard from 'ui-component/cards/MainCard';
 import React, { useState, useEffect } from 'react';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TableSortLabel, TablePagination, Paper } from '@mui/material';
 import { getUserByRoleId } from '../../service/user_service/get_user.js';
-import { deleteUserById } from '../../service/user_service/delete_user.js';
+import { deleteUser } from '../../service/user_service/delete_user.js';
 import { useNavigate } from 'react-router-dom';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import CancelIcon from '@mui/icons-material/Cancel';
 
 const EnhancedTable = () => {
   const [parentData, setParentData] = useState([]);
@@ -50,7 +52,7 @@ const EnhancedTable = () => {
   const handleDeleteUser = async (userId) => {
     if (window.confirm('Are you sure you want to delete this user?')) {
       try {
-        await deleteUserById(userId);
+        await deleteUser(userId);
 
         // Cập nhật danh sách sau khi xóa thành công
         setParentData((prevData) => prevData.filter((user) => user.user_id !== userId));
@@ -76,6 +78,7 @@ const EnhancedTable = () => {
                   { id: 'fullName', label: 'Full Name' },
                   { id: 'email', label: 'Email' },
                   { id: 'phone', label: 'Phone' },
+                  { id: 'delete', label: 'Delete' },
                   { id: 'action', label: 'Action' }
                 ].map((head) => (
                   <TableCell key={head.id}>
@@ -97,6 +100,9 @@ const EnhancedTable = () => {
                   <TableCell>{parent.fullName}</TableCell>
                   <TableCell>{parent.email}</TableCell>
                   <TableCell>{parent.phone}</TableCell>
+                  <TableCell>
+                    {parent.delete ? <CheckCircleIcon color="success" /> : <CancelIcon color="error" />}
+                  </TableCell>
                   <TableCell>
                     <Button variant="contained" color="primary" size="small" onClick={() => navigate(`/parent-detail/${parent.user_id}`)}>
                       Detail

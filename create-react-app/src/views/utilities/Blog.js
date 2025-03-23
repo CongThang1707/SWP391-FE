@@ -65,6 +65,7 @@ const EnhancedTable = () => {
         await deleteBlog(blogId);
         setBlogData((prevData) => prevData.filter((blog) => blog.blogId !== blogId));
         console.log(`Blog ${blogId} deleted successfully!`);
+        alert('Blog deleted successfully!.');
       } catch (error) {
         console.error('Failed to delete blog:', error.response ? error.response.data : error.message);
         alert('Error deleting blog. Please try again.');
