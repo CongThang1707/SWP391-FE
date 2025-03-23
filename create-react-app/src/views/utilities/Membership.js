@@ -89,6 +89,7 @@ const EnhancedTable = () => {
             try {
                 await deleteMembership(type);
                 setMemberships((prevData) => prevData.filter((membership) => membership.type !== type));
+                alert('Membership deleted successfully!');
             } catch (error) {
                 console.error('Failed to delete membership:', error);
                 alert('Error deleting membership. Please try again.');
@@ -147,6 +148,7 @@ const EnhancedTable = () => {
         event.preventDefault();
         setUpdateTouchedFields(Object.keys(updateMembershipData));
         if (!validateUpdate()) return;
+        if (!window.confirm('Are you sure you want to update this membership?')) return;
         try {
             await updateMembership(updateMembershipData.id, {
                 type: updateMembershipData.type,
@@ -155,6 +157,7 @@ const EnhancedTable = () => {
             });
             await fetchMemberships();
             setOpenUpdateDialog(false);
+            alert('Membership updated successfully!');
         } catch (error) {
             console.error('Error updating membership:', error);
             alert('Failed to update membership. Please try again.');
@@ -186,7 +189,7 @@ const EnhancedTable = () => {
                     <Table sx={{ minWidth: 650 }}>
                         <TableHead>
                             <TableRow>
-                                {[{ id: 'membershipId', label: 'ID' }, { id: 'type', label: 'Type' }, { id: 'price', label: 'Price' }, { id: 'action', label: 'Action' }].map((head) => (
+                                {[{ id: 'type', label: 'Type' }, { id: 'price', label: 'Price' }, { id: 'action', label: 'Action' }].map((head) => (
                                     <TableCell key={head.id}>
                                         <TableSortLabel active={orderBy === head.id} direction={orderBy === head.id ? order : 'asc'} onClick={(event) => handleRequestSort(event, head.id)}>
                                             {head.label}
@@ -198,7 +201,6 @@ const EnhancedTable = () => {
                         <TableBody>
                             {memberships.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((membership) => (
                                 <TableRow key={membership.membershipId}>
-                                    <TableCell>{membership.membershipId}</TableCell>
                                     <TableCell>{membership.type}</TableCell>
                                     <TableCell>{membership.price}</TableCell>
                                     <TableCell>

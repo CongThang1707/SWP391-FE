@@ -65,6 +65,7 @@ const EnhancedTable = () => {
         await deleteBookingById(bookingId);
         setBookingData((prevData) => prevData.filter((booking) => booking.bookId !== bookingId));
         console.log(`Booking ${bookingId} deleted successfully!`);
+        alert('Booking deleted successfully!'); 
       } catch (error) {
         console.error('Failed to delete booking:', error.response ? error.response.data : error.message);
         alert('Error deleting booking. Please try again.');

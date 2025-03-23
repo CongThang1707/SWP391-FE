@@ -78,11 +78,12 @@ const ConsultingTable = () => {
                     <Table sx={{ minWidth: 650 }}>
                         <TableHead>
                             <TableRow>
-                                {[{ id: 'consultingId', label: 'Consulting ID' },
-                                { id: 'title', label: 'Title' },
-                                { id: 'comment', label: 'Comment' },
-                                { id: 'date', label: 'Date' },
-                                { id: 'action', label: 'Action' }
+                                {[
+                                    { id: 'doctor', label: 'Doctor' },
+                                    { id: 'parent', label: 'Parent' },
+                                    { id: 'children', label: 'Children' },
+                                    { id: 'title', label: 'Title' },
+                                    { id: 'action', label: 'Action' }
                                 ].map((head) => (
                                     <TableCell key={head.id}>
                                         <TableSortLabel
@@ -99,10 +100,10 @@ const ConsultingTable = () => {
                         <TableBody>
                             {consultingData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((consulting, index) => (
                                 <TableRow key={consulting.consultingId || `consulting-${index}`}>
-                                    <TableCell>{consulting.consultingId}</TableCell>
+                                    <TableCell>{consulting.nameDoctor}</TableCell>
+                                    <TableCell>{consulting.nameParent}</TableCell>
+                                    <TableCell>{consulting.nameChild}</TableCell>
                                     <TableCell>{consulting.title}</TableCell>
-                                    <TableCell>{consulting.comment}</TableCell>
-                                    <TableCell>{consulting.date}</TableCell>
                                     <TableCell>
                                         <Button
                                             variant="contained"
