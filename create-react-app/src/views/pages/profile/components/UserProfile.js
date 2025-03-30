@@ -65,6 +65,9 @@ const UserProfile = ({
             <Typography variant="body2" sx={{ mt: 1, fontStyle: 'italic', color: 'gray' }}>
               {user.roleName || 'N/A'}
             </Typography>
+            <Typography variant="body2" sx={{ mt: 1, fontStyle: 'italic', color: 'gray' }}>
+              {localStorage.getItem('membership') || 'N/A'}
+            </Typography>
             {role === 'Doctor' && (
               <Box sx={{ display: 'flex', alignItems: 'center', mt: 1, width: 'fit-content' }}>
                 <Rating value={averageRating} readOnly precision={0.5} />
