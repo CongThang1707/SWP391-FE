@@ -32,4 +32,14 @@ const submitOrder = async (amount, type) => {
   }
 };
 
+
+export const getPaymentHistory = async () => {
+  try {
+    const response = await axios.get(`${API_URL}payment/getAllPayment`);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching payment history:', error);
+  }
+};
+
 export default submitOrder;
