@@ -15,7 +15,7 @@ import {
 import MainCard from 'ui-component/cards/MainCard';
 import React, { useState, useEffect } from 'react';
 import getAllBookingAdmin from '../../service/booking_services/get_booking.js';
-import { deleteBookingById } from '../../service/booking_services/delete_booking.js';
+import { deleteBookingByIdSoft } from '../../service/booking_services/delete_booking.js';
 import { useNavigate } from 'react-router-dom';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import ReportProblemIcon from '@mui/icons-material/ReportProblem';
@@ -62,7 +62,7 @@ const EnhancedTable = () => {
   const handleDeleteBooking = async (bookingId) => {
     if (window.confirm('Are you sure you want to delete this booking?')) {
       try {
-        await deleteBookingById(bookingId);
+        await deleteBookingByIdSoft(bookingId);
         setBookingData((prevData) => prevData.filter((booking) => booking.bookId !== bookingId));
         console.log(`Booking ${bookingId} deleted successfully!`);
         alert('Booking deleted successfully!'); 
@@ -134,11 +134,11 @@ const EnhancedTable = () => {
             <TableBody>
               {bookingData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((booking, index) => (
                 <TableRow key={booking.bookId || `booking-${index}`}>
-                  <TableCell>{booking.schedule.doctor.fullName}</TableCell>
-                  <TableCell>{booking.parent.fullName}</TableCell>
+                  <TableCell>{booking.doctorName}</TableCell>
+                  <TableCell>{booking.parentName}</TableCell>
                   <TableCell>{booking.bookDate}</TableCell>
                   <TableCell>{booking.comment}</TableCell>
-                  <TableCell>{renderStatusChip(booking.bookingStatus)}</TableCell>
+                  <TableCell>{renderStatusChip(booking.status)}</TableCell>
                   <TableCell>
                     <Button variant="contained" color="primary" size="small" onClick={() => navigate(`/booking-detail/${booking.bookId}`)}>
                       Detail
