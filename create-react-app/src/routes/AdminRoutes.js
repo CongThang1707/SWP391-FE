@@ -14,6 +14,7 @@ const UtilsColor = Loadable(lazy(() => import('views/utilities/Color')));
 const UtilsShadow = Loadable(lazy(() => import('views/utilities/Shadow')));
 const UtilsBlog = Loadable(lazy(() => import('views/utilities/Blog')));
 const UtilsComment = Loadable(lazy(() => import('views/utilities/Comment')));
+const UtilsPaymentHistory = Loadable(lazy(() => import('views/utilities/PaymentHistory')));
 
 const UtilsBooking = Loadable(lazy(() => import('views/utilities/Booking')));
 const UtilsFeedBack = Loadable(lazy(() => import('views/utilities/FeedBack')));
@@ -136,6 +137,15 @@ const AdminRoutes = {
         {
           path: 'util-parentpremium',
           element: <UtilsParentPremium />
+        }
+      ]
+    },
+    {
+      path: 'utils',
+      children: [
+        {
+          path: 'util-paymenthistory',
+          element: <UtilsPaymentHistory />
         }
       ]
     },

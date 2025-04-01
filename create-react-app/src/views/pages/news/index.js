@@ -22,7 +22,7 @@ const NewsPage = () => {
             {/* Header */}
             <Box
                 sx={{
-                    height: '60vh',
+                    height: '40vh',
                     width: '100%', 
                     display: 'flex',
                     flexDirection: 'column',
