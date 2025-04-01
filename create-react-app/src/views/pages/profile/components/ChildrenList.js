@@ -9,7 +9,7 @@ const ChildrenList = ({ children, handleNavigateToChildDetail, handleOpenAddDial
   const handleAddChildClick = () => {
     if (children.length >= 2) {
       const membership = localStorage.getItem('membership');
-      if (membership === 'DEFAULT') {
+      if (membership === 'BASIC') {
         localStorage.setItem('openSnackbar', 'true');
         navigate('/');
         return;
