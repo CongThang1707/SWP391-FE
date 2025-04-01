@@ -10,9 +10,10 @@ export const getBookingByParentId = async () => {
     throw error;
   }
 };
+
 const getAllBookingAdmin = async () => {
   try {
-    const response = await axios.get(`${API_URL}BookingAPI/getAllBooking-admin`);
+    const response = await axios.get(`${API_URL}BookingAPI/getAllBooking-user`);
     return response.data;
   } catch (error) {
     console.error('Error fetching bookings:', error);

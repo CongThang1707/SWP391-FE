@@ -37,7 +37,7 @@ const EnhancedTable = () => {
 
     const fetchMemberships = async () => {
         const data = await getAllMembership();
-        const filteredMemberships = data.filter(membership => membership.type !== 'DEFAULT');
+        const filteredMemberships = data.filter(membership => membership.type !== 'BASIC');
         setMemberships(filteredMemberships);
     };
 
