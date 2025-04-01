@@ -90,21 +90,21 @@ const ChildrenDetail = () => {
   const validateField = (name, value) => {
     let error = '';
     if (!value) {
-        error = `${name.charAt(0).toUpperCase() + name.slice(1)} is required`;
+      error = `${name.charAt(0).toUpperCase() + name.slice(1)} is required`;
     }
     return error;
-};
+  };
 
-const handleInputChange = (e) => {
-  const { name, value } = e.target;
-  setFormData((prev) => ({ ...prev, [name]: value }));
-  setFormErrors((prevErrors) => ({ ...prevErrors, [name]: validateField(name, value) }));
-};
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+    setFormErrors((prevErrors) => ({ ...prevErrors, [name]: validateField(name, value) }));
+  };
 
-const handleBlur = (e) => {
-  const { name, value } = e.target;
-  setFormErrors((prevErrors) => ({ ...prevErrors, [name]: validateField(name, value) }));
-};
+  const handleBlur = (e) => {
+    const { name, value } = e.target;
+    setFormErrors((prevErrors) => ({ ...prevErrors, [name]: validateField(name, value) }));
+  };
 
   const handleSubmit = async (event) => {
     event.preventDefault();

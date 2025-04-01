@@ -22,7 +22,8 @@ const ConsultingForm = () => {
   const [healthRecords, setHealthRecords] = useState([]);
   const [consulting, setConsulting] = useState(null);
   const [feedback, setFeedback] = useState(null);
-  const [newFeedback, setNewFeedback] = useState({ rate: '', comment: '' });
+  // const [newFeedback, setNewFeedback] = useState({ rate: '', comment: '' });
+  const [newFeedback, setNewFeedback] = useState({ rate: 0, comment: '' });
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
   const [showForm, setShowForm] = useState(true);
 
@@ -105,10 +106,33 @@ const ConsultingForm = () => {
     }
   };
 
+  // const handleSubmitFeedback = async (event) => {
+  //   event.preventDefault();
+  //   const requestBody = {
+  //     rate: newFeedback.rate,
+  //     comment: newFeedback.comment
+  //   };
+
+  //   try {
+  //     const response = await createFeedback(appointment.doctorId, appointment.parentId, consulting.consultingId, requestBody);
+  //     console.log('Create feedback successfully:', response);
+  //     setFeedback(response.data);
+  //     console.log('Feedback:', response.data);
+  //     setNewFeedback({ rate: '', comment: '' }); // Reset feedback form
+  //     await fetchConsultingAndFeedback(appointment);
+
+  //     // Ẩn form feedback sau khi tạo thành công
+  //     setShowForm(false);
+  //   } catch (error) {
+  //     console.error('Error creating feedback:', error);
+  //     // Xử lý lỗi nếu cần
+  //   }
+  // };
+
   const handleSubmitFeedback = async (event) => {
     event.preventDefault();
     const requestBody = {
-      rate: newFeedback.rate,
+      rate: newFeedback.rate, // Giá trị rating từ Rating component
       comment: newFeedback.comment
     };
 
@@ -117,14 +141,12 @@ const ConsultingForm = () => {
       console.log('Create feedback successfully:', response);
       setFeedback(response.data);
       console.log('Feedback:', response.data);
-      setNewFeedback({ rate: '', comment: '' }); // Reset feedback form
+      setNewFeedback({ rate: 0, comment: '' }); // Reset feedback form, rate = 0
       await fetchConsultingAndFeedback(appointment);
 
-      // Ẩn form feedback sau khi tạo thành công
       setShowForm(false);
     } catch (error) {
       console.error('Error creating feedback:', error);
-      // Xử lý lỗi nếu cần
     }
   };
 
@@ -210,7 +232,7 @@ const ConsultingForm = () => {
               </CardContent>
             </Card>
           )}
-          {!feedback && role === 'Parent' && (
+          {/* {!feedback && role === 'Parent' && (
             <Box border={1} borderRadius={2} p={2} mb={3}>
               <Typography variant="h6">Submit Feedback</Typography>
               <form onSubmit={handleSubmitFeedback}>
@@ -221,6 +243,35 @@ const ConsultingForm = () => {
                   onChange={(e) => setNewFeedback({ ...newFeedback, rate: e.target.value })}
                   fullWidth
                   margin="dense"
+                  required
+                />
+                <TextField
+                  label="Comment"
+                  value={newFeedback.comment}
+                  onChange={(e) => setNewFeedback({ ...newFeedback, comment: e.target.value })}
+                  fullWidth
+                  margin="dense"
+                  required
+                  multiline
+                  rows={4}
+                />
+                <Button type="submit" variant="contained" sx={{ mt: 2 }}>
+                  Submit
+                </Button>
+              </form>
+            </Box>
+          )} */}
+          {!feedback && role === 'Parent' && (
+            <Box border={1} borderRadius={2} p={2} mb={3}>
+              <Typography variant="h6">Submit Feedback</Typography>
+              <form onSubmit={handleSubmitFeedback}>
+                <Rating
+                  name="rating"
+                  value={newFeedback.rate}
+                  onChange={(event, newValue) => {
+                    setNewFeedback({ ...newFeedback, rate: newValue });
+                  }}
+                  precision={1} // Cho phép rating với bước 1 sao
                   required
                 />
                 <TextField

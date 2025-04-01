@@ -244,10 +244,10 @@ const ParentLandingPage = () => {
                       }
                     }}
                     onClick={
-                      plan.type === 'DEFAULT' ? handleRegister : () => handleBuyNow(plan.price, plan.type) // Pass price and type here
+                      plan.type === 'BASIC' ? handleRegister : () => handleBuyNow(plan.price, plan.type) // Pass price and type here
                     }
                   >
-                    {plan.type === 'DEFAULT' ? 'Register' : 'BUY NOW'}
+                    {plan.type === 'BASIC' ? 'Register' : 'BUY NOW'}
                   </Button>
                 </CardActions>
               </Card>
