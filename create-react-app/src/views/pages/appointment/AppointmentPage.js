@@ -111,7 +111,7 @@ const AppointmentPage = () => {
 
   const handleOpenDialog = (appointment = null) => {
     const membership = localStorage.getItem('membership');
-    if (membership === 'DEFAULT') {
+    if (membership === 'BASIC') {
       localStorage.setItem('openSnackbar', 'true');
       navigate('/');
       return;
@@ -467,7 +467,7 @@ const AppointmentPage = () => {
       </Dialog>
       <Snackbar open={openSnackbar} autoHideDuration={6000} onClose={handleCloseSnackbar}>
         <Alert onClose={handleCloseSnackbar} severity="warning" sx={{ width: '100%' }}>
-          You are not a member. Please purchase a membership package.
+          You are not a Premium member. Please purchase to be Premium member.
         </Alert>
       </Snackbar>
     </Box>

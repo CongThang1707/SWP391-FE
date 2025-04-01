@@ -83,9 +83,9 @@ const BlogPage = () => {
 
   const filteredPosts = searchTerm
     ? posts.filter(
-      (post) =>
-        post.hashtag.toLowerCase().includes(searchTerm.toLowerCase()) || post.content.toLowerCase().includes(searchTerm.toLowerCase())
-    )
+        (post) =>
+          post.hashtag.toLowerCase().includes(searchTerm.toLowerCase()) || post.content.toLowerCase().includes(searchTerm.toLowerCase())
+      )
     : posts;
 
   const handleCommentToggle = async (index) => {
@@ -184,7 +184,6 @@ const BlogPage = () => {
   const handleAddPost = async () => {
     if (!newPost.title || !newPost.content) return;
     if (window.confirm('Are you sure you want to add this blog?')) {
-
       try {
         await createBlog(newPost);
         fetchBlogs();
@@ -354,6 +353,7 @@ const BlogPage = () => {
           <TextField
             fullWidth
             label="Title"
+            placeholder="Enter post title"
             margin="dense"
             value={newPost.title}
             onChange={(e) => handleNewPostChange('title', e.target.value)}
@@ -361,6 +361,7 @@ const BlogPage = () => {
           <TextField
             fullWidth
             label="Hashtag"
+            placeholder="Enter post hashtag, no need to add # symbol"
             margin="dense"
             value={newPost.hashtag}
             onChange={(e) => handleNewPostChange('hashtag', e.target.value)}
@@ -368,6 +369,7 @@ const BlogPage = () => {
           <TextField
             fullWidth
             label="Content"
+            placeholder="Your post content here..."
             multiline
             rows={4}
             margin="dense"
